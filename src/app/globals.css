@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: vazir;
+  src: url(/fonts/Vazir-Medium.ttf) format(truetype);
+}
+
+@font-face {
+  font-family: titr;
+  src: url(/fonts/Titr.ttf) format(truetype);
+}
+
+@theme inline {
+  --font-vazir: "vazir";
+
+  --font-titr: "titr";
+}
+
+@layer base {
+  body {
+    font-family: var(--font-vazir);
+  }
+}
+
+@layer utilities {
+  .font-vazir {
+    font-family: var(--font-vazir);
+  }
+
+  .font-titr {
+    font-family: var(--font-titr);
+  }
+}
