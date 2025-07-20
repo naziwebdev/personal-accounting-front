@@ -1,6 +1,13 @@
+"use client";
+
 import Image from "next/image";
+import { useState} from "react";
+import PhoneForm from "@/components/templates/AuthForms/PhoneForm";
+import OtpForm from "@/components/templates/AuthForms/OtpForm";
 
 export default function page() {
+  const [step, setStep] = useState<"phone" | "otp">("otp");
+
   return (
     <div
       className="relative w-full bg-white h-dvh bg-[url('/images/bg.webp')] bg-bottom
@@ -17,25 +24,11 @@ export default function page() {
             priority
             className="mx-auto"
           />
+
           <h2 className="font-titr mt-5 text-2xl text-center">
             ورود / ثبت نام
           </h2>
-          <p className="mt-10 text-sm text-right">
-            لطفا شماره موبایل خود را وارد کنید
-          </p>
-          <form className="w-full flex flex-col gap-y-10 items-center justify-center mt-5">
-            <input
-              type="text"
-              placeholder="09120987654 : مثال"
-              className="w-full placeholder:text-right placeholder:text-stone-700 placeholder:text-sm p-3 rounded-xl  border-[1.7px] border-white/30  shadow-2xl outline-0"
-            />
-            <button
-              type="submit"
-              className="w-full p-3 rounded-xl  shadow-2xl text-white font-titr bg-rose-300/90 cursor-pointer text-lg"
-            >
-              ورود
-            </button>
-          </form>
+          {step === "phone" ? <PhoneForm /> : <OtpForm  setStep={setStep}/>}
           <p className="text-sm text-stone-700 text-center mt-5">
             ورود شما به معنای پذیزش قوانین هست
           </p>
