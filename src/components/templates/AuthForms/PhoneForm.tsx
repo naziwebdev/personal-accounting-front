@@ -1,6 +1,13 @@
 import React from "react";
+import { StepType } from "@/types/auth";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
-export default function PhoneForm() {
+interface StepProps {
+  step: StepType;
+}
+
+export default function PhoneForm({ step }: StepProps) {
   return (
     <>
       <p className="mt-10 text-sm text-right">
@@ -10,7 +17,7 @@ export default function PhoneForm() {
         <input
           type="text"
           placeholder="09120987654 : مثال"
-          className="w-full placeholder:text-right placeholder:text-stone-700 placeholder:text-sm p-3 rounded-xl  border-[1.7px] border-white/30  shadow-2xl outline-0"
+          className="w-full text-white placeholder:text-right placeholder:text-stone-700 placeholder:text-sm p-3 rounded-xl  border-[1.7px] border-white/30  shadow-2xl outline-0"
         />
         <button
           type="submit"

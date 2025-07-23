@@ -4,9 +4,10 @@ import Image from "next/image";
 import { useState } from "react";
 import PhoneForm from "@/components/templates/AuthForms/PhoneForm";
 import OtpForm from "@/components/templates/AuthForms/OtpForm";
+import { StepType } from "@/types/auth";
 
 export default function page() {
-  const [step, setStep] = useState<"phone" | "otp">("otp");
+  const [step, setStep] = useState<StepType>("phone");
 
   return (
     <div
@@ -28,7 +29,11 @@ export default function page() {
           <h2 className="font-titr mt-5 text-2xl text-center">
             ورود / ثبت نام
           </h2>
-          {step === "phone" ? <PhoneForm /> : <OtpForm setStep={setStep} />}
+          {step === "phone" ? (
+            <PhoneForm step={step} />
+          ) : (
+            <OtpForm setStep={setStep} />
+          )}
           <p className="text-sm text-stone-700 text-center mt-5">
             ورود شما به معنای پذیزش قوانین هست
           </p>

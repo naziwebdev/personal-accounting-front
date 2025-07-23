@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-
-export type StepType = "phone" | "otp";
+import { StepType } from "@/types/auth";
 
 interface Props {
   setStep: React.Dispatch<React.SetStateAction<StepType>>;
