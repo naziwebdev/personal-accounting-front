@@ -34,11 +34,25 @@ export default function OtpForm({ setStep }: Props) {
   };
 
   const handleChange = (index: number, value: string) => {
-    //codes
+    if (!/^\d?$/.test(value)) return;
+
+    //copy another digits without change
+    const newOtp = [...otp];
+
+    //just update value in special index that made change
+    newOtp[index] = value;
+
+    setOtp(newOtp);
+
+    if (value && index < 3) {
+      inputRefs.current[index + 1]?.focus();
+    }
   };
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
-    //codes
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
   };
   return (
     <>
@@ -62,7 +76,7 @@ export default function OtpForm({ setStep }: Props) {
               }}
               type="text"
               inputMode="numeric"
-              className="w-1/5 placeholder:text-right placeholder:text-stone-700 placeholder:text-sm p-3 rounded-xl  border-[1.7px] border-white/30  shadow-2xl outline-0"
+              className="w-1/5 text-center text-white p-3 rounded-xl  border-[1.7px] border-white/30  shadow-2xl outline-0"
               maxLength={1}
               value={digit}
               onChange={(e) => handleChange(index, e.target.value)}

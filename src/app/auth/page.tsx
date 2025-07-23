@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState} from "react";
+import { useState } from "react";
 import PhoneForm from "@/components/templates/AuthForms/PhoneForm";
 import OtpForm from "@/components/templates/AuthForms/OtpForm";
 
@@ -28,7 +28,7 @@ export default function page() {
           <h2 className="font-titr mt-5 text-2xl text-center">
             ورود / ثبت نام
           </h2>
-          {step === "phone" ? <PhoneForm /> : <OtpForm  setStep={setStep}/>}
+          {step === "phone" ? <PhoneForm /> : <OtpForm setStep={setStep} />}
           <p className="text-sm text-stone-700 text-center mt-5">
             ورود شما به معنای پذیزش قوانین هست
           </p>
