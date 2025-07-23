@@ -1,13 +1,10 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { StepType } from "@/types/auth";
+import { SetStepProps } from "@/types/auth";
+import { toEnglishDigits } from "@/utils/normalizeDigits";
 
-interface Props {
-  setStep: React.Dispatch<React.SetStateAction<StepType>>;
-}
-
-export default function OtpForm({ setStep }: Props) {
+export default function OtpForm({ setStep }: SetStepProps) {
   const [otp, setOtp] = useState<string[]>(new Array(4).fill(""));
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const [timeLeft, setTimeLeft] = useState<number>(120); //seconds
@@ -33,17 +30,18 @@ export default function OtpForm({ setStep }: Props) {
   };
 
   const handleChange = (index: number, value: string) => {
-    if (!/^\d?$/.test(value)) return;
+    const englishValue = toEnglishDigits(value);
+    if (!/^[\d۰-۹]?$/.test(value)) return;
 
     //copy another digits without change
     const newOtp = [...otp];
 
     //just update value in special index that made change
-    newOtp[index] = value;
+    newOtp[index] = englishValue;
 
     setOtp(newOtp);
 
-    if (value && index < 3) {
+    if (englishValue && index < otp.length - 1) {
       inputRefs.current[index + 1]?.focus();
     }
   };

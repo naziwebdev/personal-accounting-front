@@ -30,7 +30,7 @@ export default function page() {
             ورود / ثبت نام
           </h2>
           {step === "phone" ? (
-            <PhoneForm step={step} />
+            <PhoneForm setStep={setStep} />
           ) : (
             <OtpForm setStep={setStep} />
           )}
