@@ -4,11 +4,16 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { phoneNumberValidator } from "@/validations/auth";
 import { toEnglishDigits } from "@/utils/normalizeDigits";
+import { StepType } from "@/types/auth";
 import swal from "sweetalert";
 
 type FormValues = { phone: string };
+type PhoneFormProps = {
+  setStep: (step: StepType) => void;
+  setPhone: (phone: string) => void;
+};
 
-export default function PhoneForm({ setStep }: SetStepProps) {
+export default function PhoneForm({ setStep, setPhone }: PhoneFormProps) {
   const {
     register,
     handleSubmit,
@@ -33,6 +38,7 @@ export default function PhoneForm({ setStep }: SetStepProps) {
     const result = await res.json();
 
     if (result.statusCode === 200) {
+      setPhone(data.phone);
       setStep("otp");
     } else if (result.statusCode === 429) {
       swal({

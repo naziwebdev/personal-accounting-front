@@ -1,6 +1,5 @@
 export type StepType = "phone" | "otp";
 
-
 export interface SetStepProps {
-  setStep: React.Dispatch<React.SetStateAction<StepType>>;
+  setStep: (step: StepType) => void;
 }

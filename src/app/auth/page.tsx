@@ -8,6 +8,7 @@ import { StepType } from "@/types/auth";
 
 export default function page() {
   const [step, setStep] = useState<StepType>("phone");
+  const [phone, setPhone] = useState<string>("");
 
   return (
     <div
@@ -30,9 +31,9 @@ export default function page() {
             ورود / ثبت نام
           </h2>
           {step === "phone" ? (
-            <PhoneForm setStep={setStep} />
+            <PhoneForm setStep={setStep} setPhone={setPhone} />
           ) : (
-            <OtpForm setStep={setStep} />
+            <OtpForm setStep={setStep} phone={phone} />
           )}
           <p className="text-sm text-stone-700 text-center mt-5">
             ورود شما به معنای پذیزش قوانین هست
