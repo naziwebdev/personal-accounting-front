@@ -10,6 +10,23 @@
   src: url(/fonts/Titr.ttf) format(truetype);
 }
 
+/* sweetalert */
+.swal-footer {
+  text-align: center;
+}
+
+.swal-button,
+.swal-button--confirm {
+  background-color: #000 !important;
+}
+
+.swal-button:hover,
+.swal-button--confirm:hover {
+  background-color: #000 !important;
+}
+
+/* sweetalert */
+
 @theme inline {
   --font-vazir: "vazir";
 

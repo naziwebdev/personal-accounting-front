@@ -4,6 +4,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { phoneNumberValidator } from "@/validations/auth";
 import { toEnglishDigits } from "@/utils/normalizeDigits";
+import swal from "sweetalert";
 
 type FormValues = { phone: string };
 
@@ -21,8 +22,31 @@ export default function PhoneForm({ setStep }: SetStepProps) {
   });
 
   const sendOtpHandle: SubmitHandler<FormValues> = async (data: FormValues) => {
-    //codes
-    setStep("otp");
+    const res = await fetch("http://localhost:4002/api/v1/auth/send", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ phone: data.phone }),
+    });
+
+    const result = await res.json();
+
+    if (result.statusCode === 200) {
+      setStep("otp");
+    } else if (result.statusCode === 429) {
+      swal({
+        title: "کد از قبل برای شما ارسال شده",
+        icon: "warning",
+        buttons: "بستن" as any,
+      });
+    } else {
+      swal({
+        title: "خطایی رخ داد دوباره تلاش کنید",
+        icon: "error",
+        buttons: "تلاش دوباره" as any,
+      });
+    }
   };
 
   return (
