@@ -162,7 +162,7 @@ export default function OtpForm({ setStep, phone }: OtpFormProps) {
         </div>
         <button
           type="submit"
-          className="w-full p-3 rounded-xl  shadow-2xl text-white font-titr bg-rose-300/90 cursor-pointer text-lg"
+          className="w-full p-3 rounded-xl  shadow-2xl text-white font-titr bg-[var(--color-primary)] cursor-pointer text-lg"
         >
           تایید
         </button>
