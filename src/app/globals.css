@@ -35,7 +35,13 @@
 
 @layer theme {
   :root {
-    --color-primary: #fda4af;
+    --color-primary: #f1aac2;
+    /* --color-primary: #f4c1d8; */
+
+    /* --color-secondary: #e0bbf4; */
+    --color-secondary: #c2b7f3;
+
+    --color-theme: #e4e2f1;
   }
 }
 

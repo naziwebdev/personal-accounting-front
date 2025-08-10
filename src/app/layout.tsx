@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Sidebar from "@/components/modules/Sidebar/Sidebar";
 
 export const metadata: Metadata = {
   title: "Personal Accounting App",
@@ -15,8 +16,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa">
-      <body>{children}</body>
+    <html lang="fa" dir="rtl">
+      <body>
+        <div>{children}</div>
+      </body>
     </html>
   );
 }
