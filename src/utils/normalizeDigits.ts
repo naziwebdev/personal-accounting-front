@@ -14,3 +14,6 @@ export const toEnglishDigits = (value: string): string => {
 
   return value.replace(/[۰-۹]/g, (digit) => faToEnMap[digit] || digit);
 };
+
+export const toPersianDigits = (str: string) =>
+  str.replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]);

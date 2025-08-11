@@ -1,11 +1,12 @@
+"use client";
+
 import React from "react";
-import { SetStepProps } from "@/types/auth";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { phoneNumberValidator } from "@/validations/auth";
 import { toEnglishDigits } from "@/utils/normalizeDigits";
 import { StepType } from "@/types/auth";
-import swal from "sweetalert";
+import { toast } from "sonner";
 
 type FormValues = { phone: string };
 type PhoneFormProps = {
@@ -27,31 +28,28 @@ export default function PhoneForm({ setStep, setPhone }: PhoneFormProps) {
   });
 
   const sendOtpHandle: SubmitHandler<FormValues> = async (data: FormValues) => {
-    const res = await fetch("http://localhost:4002/api/v1/auth/send", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({ phone: data.phone }),
-    });
-
-    const result = await res.json();
-
-    if (result.statusCode === 200) {
-      setPhone(data.phone);
-      setStep("otp");
-    } else if (result.statusCode === 429) {
-      swal({
-        title: "کد از قبل برای شما ارسال شده",
-        icon: "warning",
-        buttons: "بستن" as any,
+    try {
+      const res = await fetch("http://localhost:4002/api/v1/auth/send", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ phone: data.phone }),
       });
-    } else {
-      swal({
-        title: "خطایی رخ داد دوباره تلاش کنید",
-        icon: "error",
-        buttons: "تلاش دوباره" as any,
-      });
+
+      const result = await res.json();
+
+      if (result.statusCode === 200) {
+        setPhone(data.phone);
+        setStep("otp");
+      } else if (result.statusCode === 429) {
+        toast.error("کد از قبل برای شما ارسال شده");
+      } else {
+        toast.error("خطایی رخ داد دوباره تلاش کنید");
+      }
+    } catch (error) {
+      toast.error("ارتباط با سرور برقرار نشد");
+      console.error("Send OTP error:", error);
     }
   };
 
@@ -66,6 +64,7 @@ export default function PhoneForm({ setStep, setPhone }: PhoneFormProps) {
       >
         <div className="w-full flex flex-col gap-y-1.5">
           <input
+          dir="rtl"
             {...register("phone", {
               onChange: (e) => {
                 const englishValue = toEnglishDigits(e.target.value);
@@ -73,8 +72,8 @@ export default function PhoneForm({ setStep, setPhone }: PhoneFormProps) {
               },
             })}
             type="text"
-            placeholder="09120987654 : مثال"
-            className="w-full text-white placeholder:text-right placeholder:text-stone-700 placeholder:text-sm p-3 rounded-xl  border-[1.7px] border-white/30  shadow-2xl outline-0"
+            placeholder="09120987654"
+            className="w-full text-white placeholder:text-left placeholder:text-stone-700  text-left p-3 rounded-xl  border-[1.7px] border-white/30  shadow-2xl outline-0"
           />
           <span className="text-right pt-1.5 text-xs text-red-600">
             {errors.phone && ` * ${errors.phone.message} *`}

@@ -2,11 +2,12 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { StepType } from "@/types/auth";
-import { toEnglishDigits } from "@/utils/normalizeDigits";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { toEnglishDigits, toPersianDigits } from "@/utils/normalizeDigits";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { verifyOtpValidator } from "@/validations/auth";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type OtpFormProps = {
   setStep: (step: StepType) => void;
@@ -38,17 +39,25 @@ export default function OtpForm({ setStep, phone }: OtpFormProps) {
       return;
     }
 
-    const timer = setTimeout(() => setTimeLeft((prev) => prev - 1), 1000);
-    return () => clearTimeout(timer);
+    const timer = (): ReturnType<typeof setTimeout> => {
+      return setTimeout(() => {
+        setTimeLeft((prev) => prev - 1);
+      }, 1000);
+    };
+
+    const timeoutId = timer();
+
+    return () => clearTimeout(timeoutId);
   }, [timeLeft]);
 
   const formatTime = () => {
     const minutes = Math.floor(timeLeft / 60);
     const seconds = timeLeft % 60;
-    return `${String(minutes).padStart(2, "0")} : ${String(seconds).padStart(
-      2,
-      "0"
-    )}`;
+    const formatted = `${String(seconds).padStart(2, "0")} : ${String(
+      minutes
+    ).padStart(2, "0")}`;
+
+    return toPersianDigits(formatted);
   };
 
   const handleChange = (index: number, value: string) => {
@@ -78,39 +87,55 @@ export default function OtpForm({ setStep, phone }: OtpFormProps) {
   };
 
   const verifyOtpHandle = async (data: { otp: string }) => {
-    console.log(data);
-    const res = await fetch("http://localhost:4002/api/v1/auth/verify", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({ phone, otp: data.otp }),
-    });
+    try {
+      const res = await fetch("http://localhost:4002/api/v1/auth/verify", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ phone, otp: data.otp }),
+      });
 
-    const result = await res.json();
+      const result = await res.json();
 
-    if (result.statusCode === 200 || result.statusCode === 201) {
-      swal({
-        title: "با موفقیت وارد شدید",
-        icon: "success",
-        buttons: "صفحه اصلی" as any,
-      }).then((value) => {
-        if (value) {
-          router.push("/");
-        }
+      if (result.statusCode === 200 || result.statusCode === 201) {
+        toast.success("با موفقیت وارد شدید");
+        router.push("/");
+      } else if (result.statusCode === 400 || result.statusCode === 404) {
+        toast.error("کد وارد شده صحیح نیست");
+      } else {
+        toast.error("خطایی رخ داد دوباره تلاش کنید");
+      }
+    } catch (error) {
+      toast.error("ارتباط با سرور برقرار نشد");
+      console.error("verify OTP error:", error);
+    }
+  };
+
+  const sendOtpAgain = async () => {
+    try {
+      const res = await fetch("http://localhost:4002/api/v1/auth/send", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ phone }),
       });
-    } else if (result.statusCode === 400 || result.statusCode === 404) {
-      swal({
-        title: "کد وارد شده اشتباه است",
-        icon: "warning",
-        buttons: "بستن" as any,
-      });
-    } else {
-      swal({
-        title: "خطایی رخ داد دوباره تلاش کنید",
-        icon: "error",
-        buttons: "تلاش دوباره" as any,
-      });
+
+      const result = await res.json();
+
+      if (result.statusCode === 200) {
+        toast.success("کد برای شماره همراه شما ارسال شد");
+        setIsExpireTime(false);
+        setTimeLeft(120);
+      } else if (result.statusCode === 429) {
+        toast.error("کد از قبل برای شما ارسال شده");
+      } else {
+        toast.error("خطایی رخ داد دوباره تلاش کنید");
+      }
+    } catch (error) {
+      toast.error("ارتباط با سرور برقرار نشد");
+      console.error("Send OTP error:", error);
     }
   };
   return (
@@ -126,10 +151,11 @@ export default function OtpForm({ setStep, phone }: OtpFormProps) {
       </div>
 
       <form
+        dir="rtl"
         onSubmit={handleSubmit(verifyOtpHandle)}
         className="w-full flex flex-col gap-y-6 items-center justify-center"
       >
-        <div className="w-full flex gap-x-4 flex-nowrap items-center justify-center mt-5">
+        <div className="w-full flex gap-x-4  flex-row-reverse flex-nowrap items-center justify-center mt-5">
           {otp.map((digit, index) => (
             <input
               key={index}
@@ -151,7 +177,7 @@ export default function OtpForm({ setStep, phone }: OtpFormProps) {
         </p>
         <div className="text-center">
           {isExpireTime ? (
-            <button className="cursor-pointer ">
+            <button onClick={() => sendOtpAgain()} className="cursor-pointer ">
               <strong>دریافت مجدد کد</strong>
             </button>
           ) : (
