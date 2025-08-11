@@ -3,3 +3,8 @@ export type IconPropsType = {
   colorIcon: string;
   colorBg: string;
 };
+
+export type IconWithoutBgPropsType = {
+  size: string;
+  color: string;
+};
