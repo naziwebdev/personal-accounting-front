@@ -1,4 +1,5 @@
 import Sidebar from "@/components/modules/Sidebar";
+import Header from "@/components/modules/Header";
 
 export default function MainLayout({
   children,
@@ -6,11 +7,14 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex justify-center items-center w-full h-auto">
+    <div className=" w-full h-auto">
       <div className="relative flex justify-between bg-[var(--color-theme)] w-full h-full">
         <Sidebar />
-        <div className="absolute top-7/12 right-9 w-40 h-48 rounded-full bg-violet-400 opacity-50 blur-2xl z-10" />
-        <div className="flex-1 px-4 py-6  z-20">{children}</div>
+        <div className="absolute top-72 right-0 w-48 h-72 rounded-full bg-violet-400 opacity-50 blur-3xl z-10" />
+        <div className="flex-1 z-20">
+          <Header />
+          <div className="p-4 ">{children}</div>
+        </div>
       </div>
     </div>
   );
