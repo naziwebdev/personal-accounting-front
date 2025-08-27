@@ -16,7 +16,7 @@ import Link from "next/link";
 
 export default function Sidebar() {
   return (
-    <div className="w-[60px] md:w-[80px] h-full flex flex-col items-center gap-y-3 rounded-r-4xl overflow-hidden py-4">
+    <div className="w-[60px] md:w-[80px] h-full flex flex-col items-center gap-y-3 rounded-4xl overflow-hidden py-4 z-20">
       <Link href={"/"}>
         <IconHome
           size="w-10 h-10"

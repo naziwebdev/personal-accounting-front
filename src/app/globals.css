@@ -39,10 +39,16 @@
     /* --color-primary: #f4c1d8; */
 
     /* --color-secondary: #e0bbf4; */
-    --color-secondary: #c2b7f3;
+    /* --color-secondary: #c2b7f3; */
+    --color-secondary: #a78bfa;
+    /* --color-secondary: #C4B5FD; */
 
     --color-theme: #e4e2f1;
   }
+}
+
+@theme {
+  --breakpoint-xs: 450px;
 }
 
 @layer base {

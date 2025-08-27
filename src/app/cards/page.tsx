@@ -1,15 +1,17 @@
 import React from "react";
 import MainLayout from "../main-layout";
 import BankCard from "@/components/modules/BankCard";
+import { IconAdd } from "@/components/icons/IconAdd";
 
 export default function page() {
   return (
     <MainLayout>
       <div className="">
-        <button className="mb-10 bg-[var(--color-secondary)] text-white w-42 h-14 rounded-3xl shadow-xl cursor-pointer">
+        <button className="flex justify-center items-center p-4 gap-2 mb-10  text-xl bg-[var(--color-secondary)] text-white w-auto h-auto rounded-3xl shadow-xl cursor-pointer">
           افزودن کارت جدید
+          <IconAdd size="w-7 h-7" color="#ffffff" />
         </button>
-        <div className="flex justify-center items-center flex-wrap gap-4">
+        <div className="flex justify-center items-center flex-wrap gap-5">
           <BankCard
             bgCard="bg-card-2"
             fillOne="oklch(70.2% 0.183 293.541)"

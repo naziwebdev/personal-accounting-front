@@ -15,10 +15,10 @@ export default function BankCard({
 }: BgcardPropsType) {
   return (
     <div
-      className={`relative overflow-hidden flex flex-col justify-between w-[350px] h-[200px] rounded-[40px] ${bgCard} text-white p-6 shadow-xl`}
+      className={`relative overflow-hidden flex flex-col justify-between w-full h-[180px] xs:w-[350px] xs:h-[200px] rounded-[40px] ${bgCard} text-white p-6 shadow-xl`}
     >
       {/* Decorative SVG Background */}
-      <div className="absolute -bottom-14 left-0 w-full h-full z-0 pointer-events-none">
+      <div className="absolute -bottom-16 xs:-bottom-14 left-0 w-full h-full z-0 pointer-events-none">
         <svg
           viewBox="0 0 1440 390"
           xmlns="http://www.w3.org/2000/svg"
@@ -39,25 +39,33 @@ export default function BankCard({
 
       {/* Card Content */}
       <div className="flex justify-between items-center z-10">
-        <Image alt="chip" src="/images/chip.png" width={40} height={35} />
-        <p className="text-shadow-lg text-[18px]">بانک سامان</p>
+        <Image
+          alt="chip"
+          src="/images/chip.png"
+          width={40}
+          height={35}
+          className="w-9 h-6  xs:w-12 xs:h-9"
+        />
+        <p className="text-shadow-lg text-base xs:text-[18px]">بانک سامان</p>
       </div>
 
-      <div className="text-xl text-center tracking-widest text-shadow-lg z-10">
+      <div className="text-base xs:text-xl whitespace-nowrap text-center tracking-widest text-shadow-lg z-10">
         ۶۲۱۹ - ۸۶۱۹ - ۷۷۹۵ - ۹۸۷۶
       </div>
 
       <div className="flex items-center justify-between z-10">
         <div>
-          <p className="mb-2 text-shadow-lg text-sm">موجودی</p>
-          <span className="text-shadow-lg">۱۲۰۰۰۰ تومان</span>
+          <p className="mb-2 text-shadow-lg text-xs xs:text-sm">موجودی</p>
+          <span className="text-shadow-lg text-sm xs:text-base">
+            ۱۲۰۰۰۰ تومان
+          </span>
         </div>
         <div className="flex flex-col gap-y-0.5">
           <button className="cursor-pointer">
-            <IconDelete color="#fff" size="w-6 h-6" />
+            <IconDelete color="#fff" size="w-5 h-5 xs:w-6 xs:h-6" />
           </button>
           <button className="cursor-pointer">
-            <IconEdit color="#fff" size="w-6 h-6" />
+            <IconEdit color="#fff" size="w-5 h-5 xs:w-6 xs:h-6" />
           </button>
         </div>
       </div>
