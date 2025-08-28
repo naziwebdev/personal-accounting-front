@@ -1,16 +1,13 @@
 import React from "react";
 import MainLayout from "../main-layout";
 import BankCard from "@/components/modules/BankCard";
-import { IconAdd } from "@/components/icons/IconAdd";
+import AddCardBtn from "@/components/templates/Card/AddCardBtn";
 
 export default function page() {
   return (
     <MainLayout>
       <div>
-        <button className="flex justify-center items-center  p-3 lg:p-4 gap-2 mb-10 text-base xs:text-lg lg:text-[19px] bg-[var(--color-secondary)] text-white w-auto h-auto rounded-2xl lg:rounded-3xl shadow-xl cursor-pointer">
-          افزودن کارت جدید
-          <IconAdd size="hw-6 lg:w-7 h-6 lg:h-7" color="#ffffff" />
-        </button>
+        <AddCardBtn />
         <div className="flex justify-center items-center flex-wrap gap-5">
           <BankCard
             bgCard="bg-card-2"
