@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { verifyOtpValidator } from "@/validations/auth";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 
 type OtpFormProps = {
@@ -19,6 +20,8 @@ export default function OtpForm({ setStep, phone }: OtpFormProps) {
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const [timeLeft, setTimeLeft] = useState<number>(120); //seconds
   const [isExpireTime, setIsExpireTime] = useState<boolean>(false);
+
+  const { setAccessToken } = useAuth();
 
   const router = useRouter();
 
@@ -100,6 +103,7 @@ export default function OtpForm({ setStep, phone }: OtpFormProps) {
 
       if (result.statusCode === 200 || result.statusCode === 201) {
         toast.success("با موفقیت وارد شدید");
+        setAccessToken(result.data.accessToken);
         router.push("/");
       } else if (result.statusCode === 400 || result.statusCode === 404) {
         toast.error("کد وارد شده صحیح نیست");
