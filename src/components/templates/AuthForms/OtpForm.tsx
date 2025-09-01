@@ -96,6 +96,7 @@ export default function OtpForm({ setStep, phone }: OtpFormProps) {
         headers: {
           "content-type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({ phone, otp: data.otp }),
       });
 
@@ -123,6 +124,7 @@ export default function OtpForm({ setStep, phone }: OtpFormProps) {
         headers: {
           "content-type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({ phone }),
       });
 

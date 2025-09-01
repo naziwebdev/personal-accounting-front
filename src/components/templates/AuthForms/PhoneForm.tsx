@@ -34,6 +34,7 @@ export default function PhoneForm({ setStep, setPhone }: PhoneFormProps) {
         headers: {
           "content-type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({ phone: data.phone }),
       });
 
@@ -64,7 +65,7 @@ export default function PhoneForm({ setStep, setPhone }: PhoneFormProps) {
       >
         <div className="w-full flex flex-col gap-y-1.5">
           <input
-          dir="rtl"
+            dir="rtl"
             {...register("phone", {
               onChange: (e) => {
                 const englishValue = toEnglishDigits(e.target.value);

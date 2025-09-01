@@ -1,5 +1,6 @@
 import Sidebar from "@/components/modules/Sidebar";
 import Header from "@/components/modules/Header";
+import AuthGuard from "@/components/modules/AuthGuard";
 
 export default function MainLayout({
   children,
@@ -13,7 +14,9 @@ export default function MainLayout({
         <div className="absolute top-72 right-0 w-44 h-72 rounded-full bg-violet-400 opacity-50 blur-3xl z-10" />
         <div className="flex-1 z-20">
           <Header />
-          <div className="p-4">{children}</div>
+          <div className="p-4">
+            <AuthGuard>{children}</AuthGuard>
+          </div>
         </div>
       </div>
     </div>
