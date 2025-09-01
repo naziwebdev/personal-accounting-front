@@ -40,7 +40,7 @@ export default function Modal({ onClose, children }: ModalProps) {
       }`}
     >
       <div
-        className={`w-[90%] h-auto p-8 bg-white rounded-lg relative transform transition-transform transition-opacity duration-500 ease-in-out ${
+        className={`w-[90%] h-auto p-4 xs:p-8 bg-white rounded-lg relative transform transition-transform transition-opacity duration-500 ease-in-out ${
           isVisible
             ? "translate-y-0 opacity-100"
             : "-translate-y-[200%] opacity-0"
