@@ -8,5 +8,11 @@ export const addCard = yup.object().shape({
     .required("شماره کارت را وارد کنید")
     .matches(/^\d{16}$/, "شماره کارت باید ۱۶ رقم باشد"),
 
-  balance: yup.number().optional(),
+  balance: yup
+    .number()
+    .transform((value, originalValue) =>
+      originalValue === "" || isNaN(value) ? undefined : value
+    )
+    .nullable()
+    .notRequired(),
 });
