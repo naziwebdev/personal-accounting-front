@@ -3,7 +3,7 @@ import React from "react";
 import { IconAdd } from "@/components/icons/IconAdd";
 import Modal from "@/components/modules/Modal";
 import { useState } from "react";
-import { IconCreditCard } from "@/components/icons/IconCreditCard";
+
 
 export default function AddCardBtn() {
   const [openCardModal, setOpenCardModal] = useState<boolean>(false);

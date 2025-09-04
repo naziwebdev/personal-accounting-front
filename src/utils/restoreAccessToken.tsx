@@ -9,7 +9,7 @@ export const restoreAccessToken = async () => {
 
     const { data } = await res.json();
 
-    return data;
+    return data ?? null;
   } catch (error) {
     return null;
   }
