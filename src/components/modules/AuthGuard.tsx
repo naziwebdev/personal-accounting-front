@@ -15,7 +15,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   }, [accessToken, loading]);
 
   if (loading) {
-    return <div className="text-center py-10">در حال بررسی اعتبار...</div>;
+    return null
   }
 
   if (!accessToken) return null;

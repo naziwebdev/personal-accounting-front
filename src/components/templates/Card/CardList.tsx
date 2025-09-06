@@ -2,47 +2,32 @@
 
 import React from "react";
 import BankCard from "@/components/modules/BankCard";
-import { useAuth } from "@/context/AuthContext";
-import { useEffect, useState } from "react";
-import { restoreAccessToken } from "@/utils/restoreAccessToken";
 import { cardStyles } from "@/config/cardStyles";
-import { Card } from "@/types/card";
+import { useCards } from "@/hooks/useCards";
+import { useEffect } from "react";
+import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
 
 export default function CardList() {
-  const { accessToken, setAccessToken } = useAuth();
-  const [cards, setCards] = useState<Card[]>([]);
-
-  const fetchCards = async (token: string) => {
-    const res = await fetch("http://localhost:4002/api/v1/cards", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
-    });
-
-    if (res.status === 401) {
-      const newToken = await restoreAccessToken();
-      if (newToken) {
-        setAccessToken(newToken);
-        return fetchCards(newToken);
-      }
-    }
-
-    const result = await res.json();
-    return result.data as Card[];
-  };
+  const { data: cards, isLoading, isError } = useCards();
+  const { accessToken, loading } = useAuth();
 
   useEffect(() => {
-    if (!accessToken) return;
+    const toastId = "cards-loading";
 
-    const loadCards = async () => {
-      const data = await fetchCards(accessToken);
-      setCards(data);
-    };
-    loadCards();
-  }, [accessToken]);
+    if (isLoading) {
+      toast.loading("در حال دریافت اطلاعات کارت‌ها...", { id: toastId });
+    } else {
+      toast.dismiss(toastId);
+    }
 
+    if (isError) {
+      toast.error("خطا در دریافت کارت‌ها");
+    }
+  }, [isLoading, isError]);
+
+  if (loading || isLoading) return null;
+  if (isError || !cards) return null;
 
   return (
     <div className="flex justify-center items-center flex-wrap gap-5">

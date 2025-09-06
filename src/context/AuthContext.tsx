@@ -24,6 +24,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     init();
   }, []);
 
+
+
   return (
     <AuthContext.Provider value={{ accessToken, setAccessToken, loading }}>
       {children}

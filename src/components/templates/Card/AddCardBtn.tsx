@@ -8,9 +8,10 @@ import { useForm } from "react-hook-form";
 import { addCard } from "@/validations/card";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
-import { date } from "yup";
 import { restoreAccessToken } from "@/utils/restoreAccessToken";
 import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toEnglishDigits } from "@/utils/normalizeDigits";
 
 type AddCardFormData = {
   bankName: string;
@@ -20,6 +21,7 @@ type AddCardFormData = {
 
 export default function AddCardBtn() {
   const { accessToken, setAccessToken } = useAuth();
+  const queryClient = useQueryClient();
 
   const router = useRouter();
 
@@ -41,62 +43,49 @@ export default function AddCardBtn() {
     setOpenCardModal(false);
   };
 
-  const addCardHandle = async (data: AddCardFormData) => {
-    const makeRequest = async (token: string, data: AddCardFormData) => {
-      const finalData = {
-        ...data,
-        balance: data.balance ?? 0,
+  const mutation = useMutation({
+    mutationFn: async (data: AddCardFormData) => {
+      const finalData = { ...data, balance: data.balance ?? 0 };
+      const makeRequest = async (token: string) => {
+        return await fetch("http://localhost:4002/api/v1/cards", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+          body: JSON.stringify(finalData),
+        });
       };
 
-      const res = await fetch("http://localhost:4002/api/v1/cards", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
-        body: JSON.stringify(finalData),
-      });
-
-      return res;
-    };
-
-    try {
-      let res = await makeRequest(accessToken!, data);
+      let res = await makeRequest(accessToken!);
       let result = await res.json();
-
-      if (result.statusCode === 201) {
-        toast.success("کارت با موفقیت افزوده شد");
-        reset();
-        cardModalHandle();
-     
-        return;
-      }
 
       if (result.statusCode === 401) {
         const newToken = await restoreAccessToken();
-        if (newToken) {
-          setAccessToken(newToken);
-          res = await makeRequest(newToken, data);
-          result = await res.json();
-          if (result.statusCode === 201) {
-            toast.success("کارت با موفقیت افزوده شد");
-            cardModalHandle();
-            reset();
-          
-          } else {
-            toast.error("خطایی رخ داد دوباره تلاش کنید");
-          }
-        } else {
-          router.push("/auth");
-        }
-      } else {
-        toast.error("خطایی رخ داد دوباره تلاش کنید");
+        if (!newToken) throw new Error("Unauthorized");
+        setAccessToken(newToken);
+        res = await makeRequest(newToken);
+        result = await res.json();
       }
-    } catch (error) {
-      toast.error("ارتباط با سرور برقرار نشد");
-      console.error("Send OTP error:", error);
-    }
+
+      if (result.statusCode !== 201) throw new Error("Failed to add card");
+
+      return result.data;
+    },
+    onSuccess: () => {
+      toast.success("کارت با موفقیت افزوده شد");
+      queryClient.invalidateQueries({ queryKey: ["cards"] });
+      reset();
+      cardModalHandle();
+    },
+    onError: () => {
+      toast.error("خطا در افزودن کارت");
+    },
+  });
+
+  const addCardHandle = async (data: AddCardFormData) => {
+    mutation.mutate(data);
   };
 
   return (
@@ -131,7 +120,11 @@ export default function AddCardBtn() {
               </div>
               <div className="w-full">
                 <input
-                  {...register("cardNumber")}
+                  {...register("cardNumber", {
+                    onChange: (e) => {
+                      e.target.value = toEnglishDigits(e.target.value);
+                    },
+                  })}
                   type="text"
                   className="w-full bg-[var(--color-secondary)] p-3 placeholder:text-white rounded-xl text-white outline-0"
                   placeholder="شماره کارت ۱۶ رقمی را وارد کنید"
@@ -142,7 +135,11 @@ export default function AddCardBtn() {
               </div>
               <div className="w-full">
                 <input
-                  {...register("balance")}
+                  {...register("balance", {
+                    onChange: (e) => {
+                      e.target.value = toEnglishDigits(e.target.value);
+                    },
+                  })}
                   type="text"
                   className="w-full bg-[var(--color-theme)] p-3 placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
                   placeholder="موجودی کارت را وارد کنید ( اختیاری )"
