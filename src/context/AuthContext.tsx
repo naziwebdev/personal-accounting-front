@@ -5,7 +5,7 @@ import { restoreAccessToken } from "@/utils/restoreAccessToken";
 
 type AuthContextType = {
   accessToken: string | null;
-  setAccessToken: (token: string) => void;
+  setAccessToken: (token: string | null) => void;
   loading: boolean;
 };
 

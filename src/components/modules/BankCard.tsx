@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { IconDelete } from "../icons/IconDelete";
 import { IconEdit } from "../icons/IconEdit";
+import { Card } from "@/types/card";
+import { formatCardNumber } from "@/utils/formatCardNumber";
 
 type BgcardPropsType = {
   bgCard: string;
@@ -8,11 +10,17 @@ type BgcardPropsType = {
   fillTwo: string;
 };
 
+type BankCardProps = BgcardPropsType & Card;
+
 export default function BankCard({
   bgCard,
   fillOne,
   fillTwo,
-}: BgcardPropsType) {
+  id,
+  bankName,
+  cardNumber,
+  balance,
+}: BankCardProps) {
   return (
     <div
       className={`relative overflow-hidden flex flex-col justify-between w-full h-[180px] xs:w-[350px] xs:h-[200px] rounded-[40px] ${bgCard} text-white p-6 shadow-xl`}
@@ -46,18 +54,18 @@ export default function BankCard({
           height={35}
           className="w-9 h-6  xs:w-12 xs:h-9"
         />
-        <p className="text-shadow-lg text-base xs:text-[18px]">بانک سامان</p>
+        <p className="text-shadow-lg text-base xs:text-[18px]">{bankName}</p>
       </div>
 
       <div className="text-base xs:text-xl whitespace-nowrap text-center tracking-widest text-shadow-lg z-10">
-        ۶۲۱۹ - ۸۶۱۹ - ۷۷۹۵ - ۹۸۷۶
+        {formatCardNumber(cardNumber)}
       </div>
 
       <div className="flex items-center justify-between z-10">
         <div>
           <p className="mb-2 text-shadow-lg text-xs xs:text-sm">موجودی</p>
           <span className="text-shadow-lg text-sm xs:text-base">
-            ۱۲۰۰۰۰ تومان
+            {balance.toLocaleString("fa-IR")} تومان
           </span>
         </div>
         <div className="flex flex-col gap-y-0.5">
