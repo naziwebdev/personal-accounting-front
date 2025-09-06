@@ -69,6 +69,7 @@ export default function AddCardBtn() {
         toast.success("کارت با موفقیت افزوده شد");
         reset();
         cardModalHandle();
+     
         return;
       }
 
@@ -82,6 +83,7 @@ export default function AddCardBtn() {
             toast.success("کارت با موفقیت افزوده شد");
             cardModalHandle();
             reset();
+          
           } else {
             toast.error("خطایی رخ داد دوباره تلاش کنید");
           }

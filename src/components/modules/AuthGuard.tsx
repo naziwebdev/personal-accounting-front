@@ -9,12 +9,16 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
-    if (!accessToken && !loading) {
+    if (!loading && !accessToken) {
       router.replace("/auth");
     }
   }, [accessToken, loading]);
 
-  if (loading && !accessToken) return null;
+  if (loading) {
+    return <div className="text-center py-10">در حال بررسی اعتبار...</div>;
+  }
+
+  if (!accessToken) return null;
 
   return <>{children}</>;
 }

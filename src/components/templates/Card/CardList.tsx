@@ -26,9 +26,6 @@ export default function CardList() {
       if (newToken) {
         setAccessToken(newToken);
         return fetchCards(newToken);
-      } else {
-        setAccessToken(null);
-        return [];
       }
     }
 
@@ -46,7 +43,6 @@ export default function CardList() {
     loadCards();
   }, [accessToken]);
 
-  console.log(cards);
 
   return (
     <div className="flex justify-center items-center flex-wrap gap-5">
