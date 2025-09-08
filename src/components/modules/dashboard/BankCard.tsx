@@ -3,6 +3,8 @@ import { IconDelete } from "../../icons/IconDelete";
 import { IconEdit } from "../../icons/IconEdit";
 import { Card } from "@/types/card";
 import { formatCardNumber } from "@/utils/formatCardNumber";
+import Modal from "./Modal";
+import { useState } from "react";
 
 type BgcardPropsType = {
   bgCard: string;
@@ -21,6 +23,12 @@ export default function BankCard({
   cardNumber,
   balance,
 }: BankCardProps) {
+  const [openEditCardModal, setOpenEditCardModal] = useState<boolean>(false);
+
+  const editCardModalHandle = () => {
+    setOpenEditCardModal(false);
+  };
+
   return (
     <div
       className={`relative overflow-hidden flex flex-col justify-between w-full h-[180px] xs:w-[350px] xs:h-[200px] rounded-[40px] ${bgCard} text-white p-6 shadow-xl`}
@@ -72,11 +80,75 @@ export default function BankCard({
           <button className="cursor-pointer">
             <IconDelete color="#fff" size="w-5 h-5 xs:w-6 xs:h-6" />
           </button>
-          <button className="cursor-pointer">
+          <button
+            onClick={() => setOpenEditCardModal(true)}
+            className="cursor-pointer"
+          >
             <IconEdit color="#fff" size="w-5 h-5 xs:w-6 xs:h-6" />
           </button>
         </div>
       </div>
+      {openEditCardModal ? (
+        <Modal onClose={editCardModalHandle}>
+          <>
+            <h2 className="w-1/2 md:w-1/5 mx-auto text-center pb-2 mb-12 text-lg xs:text-2xl font-bold border-b-4 border-[var(--color-primary)] rounded-xl text-nowrap">
+              ویرایش کارت
+            </h2>
+            <form
+              // onSubmit={handleSubmit(addCardHandle)}
+              className="px-0 md:px-32 flex items-center justify-center flex-wrap gap-y-5 text-xs xs:text-base"
+            >
+              <div className="w-full">
+                <input
+                  // {...register("bankName")}
+                  type="text"
+                  className="w-full bg-[var(--color-theme)] p-3 placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
+                  placeholder="نام بانک را وارد کنید (اختیاری)"
+                />
+                <span className="text-right pt-1.5  text-sm  text-red-600">
+                  {/* {errors.bankName && errors.bankName.message} */}
+                </span>
+              </div>
+              <div className="w-full">
+                <input
+                  // {...register("cardNumber", {
+                  //   onChange: (e) => {
+                  //     e.target.value = toEnglishDigits(e.target.value);
+                  //   },
+                  // })}
+                  type="text"
+                  className="w-full bg-[var(--color-theme)] p-3 placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
+                  placeholder="شماره کارت ۱۶ رقمی را وارد کنید (اختیاری)"
+                />
+                <span className="text-right pt-1.5 text-sm  text-red-600">
+                  {/* {errors.cardNumber && errors.cardNumber.message} */}
+                </span>
+              </div>
+              <div className="w-full">
+                <input
+                  // {...register("balance", {
+                  //   onChange: (e) => {
+                  //     e.target.value = toEnglishDigits(e.target.value);
+                  //   },
+                  // })}
+                  type="text"
+                  className="w-full bg-[var(--color-theme)] p-3 placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
+                  placeholder="موجودی کارت را وارد کنید ( اختیاری )"
+                />
+                <span className="text-right pt-1.5  text-sm  text-red-600">
+                  {/* {errors.balance && errors.balance.message} */}
+                </span>
+              </div>
+              <button
+                type="submit"
+                className="mt-7 w-1/2 md:w-1/4 h-10 xs:h-12 flex justify-center items-center text-white rounded-xl bg-[var(--color-primary)] text-base  xs:text-lg cursor-pointer"
+              >
+                تایید
+              </button>
+            </form>
+          </>
+        </Modal>
+      ) : null}
     </div>
   );
 }
