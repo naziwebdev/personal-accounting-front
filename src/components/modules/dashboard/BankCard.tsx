@@ -43,6 +43,7 @@ export default function BankCard({
 
   const queryClient = useQueryClient();
 
+  // edit card logic
   const {
     register,
     handleSubmit,
@@ -60,7 +61,7 @@ export default function BankCard({
     setOpenEditCardModal(false);
   };
 
-  const mutation = useMutation({
+  const editMutation = useMutation({
     mutationFn: async (data: editCardFormData) => {
       const makeRequest = async (token: string) => {
         return await fetch(`http://localhost:4002/api/v1/cards/${id}`, {
@@ -76,7 +77,6 @@ export default function BankCard({
 
       let res = await makeRequest(accessToken!);
       let result = await res.json();
-      console.log(result);
 
       if (result.statusCode === 401) {
         const newToken = await restoreAccessToken();
@@ -107,7 +107,59 @@ export default function BankCard({
       buttons: ["خیر", "بله"],
     }).then((value) => {
       if (value) {
-        mutation.mutate(data);
+        editMutation.mutate(data);
+      }
+    });
+  };
+
+  //edit card logic
+
+  // delete card logic
+
+  const removeMutation = useMutation({
+    mutationFn: async () => {
+      const makeRequest = async (token: string) => {
+        return await fetch(`http://localhost:4002/api/v1/cards/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+        });
+      };
+
+      let res = await makeRequest(accessToken!);
+      let result = await res.json();
+
+      if (result.statusCode === 401) {
+        const newToken = await restoreAccessToken();
+        if (!newToken) throw new Error("Unauthorized");
+        setAccessToken(newToken);
+        res = await makeRequest(newToken);
+        result = await res.json();
+      }
+      if (result.statusCode !== 200) throw new Error("Failed to add card");
+
+      return result.data;
+    },
+    onSuccess: () => {
+      toast.success("کارت با موفقیت حذف شد");
+      queryClient.invalidateQueries({ queryKey: ["cards"] });
+    },
+    onError: () => {
+      toast.error("خطا در حذف کارت");
+    },
+  });
+
+  const deleteCardHandle = () => {
+    swal({
+      title: "آیا از حذف کارت اطمینان دارید ؟",
+      icon: "warning",
+      buttons: ["خیر", "بله"],
+    }).then((value) => {
+      if (value) {
+        removeMutation.mutate();
       }
     });
   };
@@ -160,7 +212,7 @@ export default function BankCard({
           </span>
         </div>
         <div className="flex flex-col gap-y-0.5">
-          <button className="cursor-pointer">
+          <button onClick={deleteCardHandle} className="cursor-pointer">
             <IconDelete color="#fff" size="w-5 h-5 xs:w-6 xs:h-6" />
           </button>
           <button
