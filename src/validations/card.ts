@@ -16,3 +16,23 @@ export const addCard = yup.object().shape({
     .nullable()
     .notRequired(),
 });
+
+export const editCard = yup.object().shape({
+  bankName: yup.string().optional(),
+
+  cardNumber: yup
+    .string()
+    .nullable()
+    .notRequired()
+    .when("$cardNumber", (value, schema) =>
+      value ? schema.matches(/^\d{16}$/, "شماره کارت باید ۱۶ رقم باشد") : schema
+    ),
+
+  balance: yup
+    .number()
+    .transform((value, originalValue) =>
+      originalValue === "" || isNaN(value) ? undefined : value
+    )
+    .nullable()
+    .notRequired(),
+});
