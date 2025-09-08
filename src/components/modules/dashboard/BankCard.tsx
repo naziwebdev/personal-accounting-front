@@ -5,11 +5,26 @@ import { Card } from "@/types/card";
 import { formatCardNumber } from "@/utils/formatCardNumber";
 import Modal from "./Modal";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { editCard } from "@/validations/card";
+import { toEnglishDigits } from "@/utils/normalizeDigits";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@/context/AuthContext";
+import { restoreAccessToken } from "@/utils/restoreAccessToken";
+import { toast } from "sonner";
+import swal from "sweetalert";
 
 type BgcardPropsType = {
   bgCard: string;
   fillOne: string;
   fillTwo: string;
+};
+
+type editCardFormData = {
+  bankName?: string | null;
+  cardNumber?: string | null;
+  balance?: number | null;
 };
 
 type BankCardProps = BgcardPropsType & Card;
@@ -24,9 +39,77 @@ export default function BankCard({
   balance,
 }: BankCardProps) {
   const [openEditCardModal, setOpenEditCardModal] = useState<boolean>(false);
+  const { accessToken, setAccessToken } = useAuth();
+
+  const queryClient = useQueryClient();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      bankName,
+      cardNumber,
+      balance,
+    },
+    resolver: yupResolver(editCard),
+  });
 
   const editCardModalHandle = () => {
     setOpenEditCardModal(false);
+  };
+
+  const mutation = useMutation({
+    mutationFn: async (data: editCardFormData) => {
+      const makeRequest = async (token: string) => {
+        return await fetch(`http://localhost:4002/api/v1/cards/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+          body: JSON.stringify({ ...data }),
+        });
+      };
+
+      let res = await makeRequest(accessToken!);
+      let result = await res.json();
+      console.log(result);
+
+      if (result.statusCode === 401) {
+        const newToken = await restoreAccessToken();
+        if (!newToken) throw new Error("Unauthorized");
+        setAccessToken(newToken);
+        res = await makeRequest(newToken);
+        result = await res.json();
+      }
+      if (result.statusCode !== 200) throw new Error("Failed to add card");
+
+      return result.data;
+    },
+    onSuccess: () => {
+      toast.success("کارت با موفقیت ویرایش شد");
+      queryClient.invalidateQueries({ queryKey: ["cards"] });
+      editCardModalHandle();
+    },
+    onError: () => {
+      toast.error("خطا در ویرایش کارت");
+      editCardModalHandle();
+    },
+  });
+
+  const editCardHandle = async (data: editCardFormData) => {
+    swal({
+      title: "آیا از ویرایش کارت اطمینان دارید ؟",
+      icon: "warning",
+      buttons: ["خیر", "بله"],
+    }).then((value) => {
+      if (value) {
+        mutation.mutate(data);
+      }
+    });
   };
 
   return (
@@ -95,48 +178,48 @@ export default function BankCard({
               ویرایش کارت
             </h2>
             <form
-              // onSubmit={handleSubmit(addCardHandle)}
+              onSubmit={handleSubmit(editCardHandle)}
               className="px-0 md:px-32 flex items-center justify-center flex-wrap gap-y-5 text-xs xs:text-base"
             >
               <div className="w-full">
                 <input
-                  // {...register("bankName")}
+                  {...register("bankName")}
                   type="text"
                   className="w-full bg-[var(--color-theme)] p-3 placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
                   placeholder="نام بانک را وارد کنید (اختیاری)"
                 />
                 <span className="text-right pt-1.5  text-sm  text-red-600">
-                  {/* {errors.bankName && errors.bankName.message} */}
+                  {errors.bankName && errors.bankName.message}
                 </span>
               </div>
               <div className="w-full">
                 <input
-                  // {...register("cardNumber", {
-                  //   onChange: (e) => {
-                  //     e.target.value = toEnglishDigits(e.target.value);
-                  //   },
-                  // })}
+                  {...register("cardNumber", {
+                    onChange: (e) => {
+                      e.target.value = toEnglishDigits(e.target.value);
+                    },
+                  })}
                   type="text"
                   className="w-full bg-[var(--color-theme)] p-3 placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
                   placeholder="شماره کارت ۱۶ رقمی را وارد کنید (اختیاری)"
                 />
                 <span className="text-right pt-1.5 text-sm  text-red-600">
-                  {/* {errors.cardNumber && errors.cardNumber.message} */}
+                  {errors.cardNumber && errors.cardNumber.message}
                 </span>
               </div>
               <div className="w-full">
                 <input
-                  // {...register("balance", {
-                  //   onChange: (e) => {
-                  //     e.target.value = toEnglishDigits(e.target.value);
-                  //   },
-                  // })}
+                  {...register("balance", {
+                    onChange: (e) => {
+                      e.target.value = toEnglishDigits(e.target.value);
+                    },
+                  })}
                   type="text"
                   className="w-full bg-[var(--color-theme)] p-3 placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
                   placeholder="موجودی کارت را وارد کنید ( اختیاری )"
                 />
                 <span className="text-right pt-1.5  text-sm  text-red-600">
-                  {/* {errors.balance && errors.balance.message} */}
+                  {errors.balance && errors.balance.message}
                 </span>
               </div>
               <button

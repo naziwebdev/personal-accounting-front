@@ -9,7 +9,6 @@ import { addCard } from "@/validations/card";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { restoreAccessToken } from "@/utils/restoreAccessToken";
-import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toEnglishDigits } from "@/utils/normalizeDigits";
 
@@ -22,8 +21,6 @@ type AddCardFormData = {
 export default function AddCardBtn() {
   const { accessToken, setAccessToken } = useAuth();
   const queryClient = useQueryClient();
-
-  const router = useRouter();
 
   const [openCardModal, setOpenCardModal] = useState<boolean>(false);
   const {

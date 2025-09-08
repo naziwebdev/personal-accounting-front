@@ -24,9 +24,10 @@ export const editCard = yup.object().shape({
     .string()
     .nullable()
     .notRequired()
-    .when("$cardNumber", (value, schema) =>
-      value ? schema.matches(/^\d{16}$/, "شماره کارت باید ۱۶ رقم باشد") : schema
-    ),
+    .matches(/^\d{16}$/, {
+      message: "شماره کارت باید ۱۶ رقم باشد",
+      excludeEmptyString: true,
+    }),
 
   balance: yup
     .number()
