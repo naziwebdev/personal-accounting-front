@@ -1,5 +1,7 @@
-import MainLayout from "./main-layout";
+import React from 'react'
 
-export default function Home() {
-  return <MainLayout>home</MainLayout>;
+export default function Landing() {
+  return (
+    <div>landing</div>
+  )
 }

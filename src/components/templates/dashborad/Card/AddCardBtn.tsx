@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { IconAdd } from "@/components/icons/IconAdd";
-import Modal from "@/components/modules/Modal";
+import Modal from "@/components/modules/dashboard/Modal";
 import { useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";

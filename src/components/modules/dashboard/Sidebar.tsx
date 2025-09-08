@@ -17,14 +17,14 @@ import Link from "next/link";
 export default function Sidebar() {
   return (
     <div className="w-[60px] md:w-[80px] h-full flex flex-col items-center gap-y-3 rounded-4xl overflow-hidden py-4 z-20">
-      <Link href={"/"}>
+      <Link href={"/dashboard"}>
         <IconHome
           size="w-10 h-10"
           colorBg="fill-[var(--color-primary)]"
           colorIcon="#000000"
         />
       </Link>
-      <Link href={"/cards"}>
+      <Link href={"/dashboard/cards"}>
         <IconCreditCard
           size="w-10 h-10"
           colorBg="fill-[var(--color-primary)]"
@@ -32,14 +32,14 @@ export default function Sidebar() {
         />
       </Link>
 
-      <Link href={"/check"}>
+      <Link href={"/dashboard/checks"}>
         <IconCheck
           size="w-10 h-10"
           colorBg="fill-[var(--color-primary)]"
           colorIcon="#000000"
         />
       </Link>
-      <Link href={"/watchlist"}>
+      <Link href={"/dashboard/watchlist"}>
         <IconWatchlist
           size="w-10 h-10"
           colorBg="fill-[var(--color-primary)]"
@@ -47,56 +47,56 @@ export default function Sidebar() {
         />
       </Link>
 
-      <Link href={"/reminder"}>
+      <Link href={"/dashboard/reminder"}>
         <InconReminder
           size="w-10 h-10"
           colorBg="fill-[var(--color-primary)]"
           colorIcon="#000000"
         />
       </Link>
-      <Link href={"/income"}>
+      <Link href={"/dashboard/incomes"}>
         <IconIncome
           size="w-10 h-10"
           colorBg="fill-[var(--color-primary)]"
           colorIcon="#000000"
         />
       </Link>
-      <Link href={"/report"}>
+      <Link href={"/dashboard/reports"}>
         <IconReport
           size="w-10 h-10"
           colorBg="fill-[var(--color-primary)]"
           colorIcon="#000000"
         />
       </Link>
-      <Link href={"/category"}>
+      <Link href={"/dashboard/categories"}>
         <IconCategory
           size="w-10 h-10"
           colorBg="fill-[var(--color-primary)]"
           colorIcon="#000000"
         />
       </Link>
-      <Link href={"/note"}>
+      <Link href={"/dashboard/notes"}>
         <IconNote
           size="w-10 h-10"
           colorBg="fill-[var(--color-primary)]"
           colorIcon="#000000"
         />
       </Link>
-      <Link href={"/expense"}>
+      <Link href={"/dashboard/expenses"}>
         <IconExpense
           size="w-10 h-10"
           colorBg="fill-[var(--color-primary)]"
           colorIcon="#000000"
         />
       </Link>
-      <Link href={"/loan"}>
+      <Link href={"/dashboard/loans"}>
         <IconLoan
           size="w-10 h-10"
           colorBg="fill-[var(--color-primary)]"
           colorIcon="#000000"
         />
       </Link>
-      <Link href={"/dept-receivable"}>
+      <Link href={"/dashboard/depts-receivables"}>
         <IconDept
           size="w-11 h-11"
           colorBg="fill-[var(--color-primary)]"

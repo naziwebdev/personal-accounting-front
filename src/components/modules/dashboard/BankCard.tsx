@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { IconDelete } from "../icons/IconDelete";
-import { IconEdit } from "../icons/IconEdit";
+import { IconDelete } from "../../icons/IconDelete";
+import { IconEdit } from "../../icons/IconEdit";
 import { Card } from "@/types/card";
 import { formatCardNumber } from "@/utils/formatCardNumber";
 

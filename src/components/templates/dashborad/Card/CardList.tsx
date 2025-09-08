@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import BankCard from "@/components/modules/BankCard";
+import BankCard from "@/components/modules/dashboard/BankCard";
 import { cardStyles } from "@/config/cardStyles";
 import { useCards } from "@/hooks/useCards";
 import { useEffect } from "react";

@@ -1,7 +1,7 @@
 import React from "react";
-import { IconLogout } from "../icons/IconLogout";
+import { IconLogout } from "../../icons/IconLogout";
 import Image from "next/image";
-import { IconNotification } from "../icons/IconNotification";
+import { IconNotification } from "../../icons/IconNotification";
 
 export default function Header() {
   return (
