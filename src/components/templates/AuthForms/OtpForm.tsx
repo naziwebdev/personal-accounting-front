@@ -105,7 +105,7 @@ export default function OtpForm({ setStep, phone }: OtpFormProps) {
       if (result.statusCode === 200 || result.statusCode === 201) {
         toast.success("با موفقیت وارد شدید");
         setAccessToken(result.data.accessToken);
-        router.push("/");
+        router.push("/dashboard");
       } else if (result.statusCode === 400 || result.statusCode === 404) {
         toast.error("کد وارد شده صحیح نیست");
       } else {

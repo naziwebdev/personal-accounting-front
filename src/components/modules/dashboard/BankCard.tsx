@@ -226,7 +226,7 @@ export default function BankCard({
       {openEditCardModal ? (
         <Modal onClose={editCardModalHandle}>
           <>
-            <h2 className="w-1/2 md:w-1/5 mx-auto text-center pb-2 mb-12 text-lg xs:text-2xl font-bold border-b-4 border-[var(--color-primary)] rounded-xl text-nowrap">
+            <h2 className="w-1/2 md:w-1/5 mx-auto text-center pb-2 mb-12 text-lg xs:text-2xl font-bold  rounded-xl text-nowrap">
               ویرایش کارت
             </h2>
             <form

@@ -7,6 +7,7 @@ import { useCards } from "@/hooks/useCards";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
+import EmptyState from "@/components/modules/dashboard/EmptyState";
 
 export default function CardList() {
   const { data: cards, isLoading, isError } = useCards();
@@ -45,7 +46,7 @@ export default function CardList() {
           );
         })}
 
-      {cards.length === 0 && <>codes...</>}
+      {cards.length === 0 && <EmptyState title=" هنوز کارتی اضافه نکردی" />}
     </div>
   );
 }
