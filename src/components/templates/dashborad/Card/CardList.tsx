@@ -31,18 +31,21 @@ export default function CardList() {
 
   return (
     <div className="flex justify-center items-center flex-wrap gap-5">
-      {cards.map((card, index) => {
-        const style = cardStyles[index];
-        return (
-          <BankCard
-            key={card.id}
-            bgCard={style.bgCard}
-            fillOne={style.fillOne}
-            fillTwo={style.fillTwo}
-            {...card}
-          />
-        );
-      })}
+      {cards.length !== 0 &&
+        cards.map((card, index) => {
+          const style = cardStyles[index];
+          return (
+            <BankCard
+              key={card.id}
+              bgCard={style.bgCard}
+              fillOne={style.fillOne}
+              fillTwo={style.fillTwo}
+              {...card}
+            />
+          );
+        })}
+
+      {cards.length === 0 && <>codes...</>}
     </div>
   );
 }
