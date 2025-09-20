@@ -1,6 +1,6 @@
 export const IconLogout = () => (
   <svg
-    fill="oklch(21% 0.034 264.665)"
+    fill="#fff"
     viewBox="0 0 30 30"
     version="1.1"
     xmlns="http://www.w3.org/2000/svg"

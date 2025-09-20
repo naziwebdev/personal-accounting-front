@@ -1,9 +1,9 @@
-export const IconNotification = () => {
+export const IconNotification = ({ color }: { color: string }) => {
   return (
     <div className="relative">
       <svg
-        fill="oklch(21% 0.034 264.665)"
-        className="h-[26px] cursor-pointer"
+        fill={color}
+        className="h-[26px] xs:h-[28px] cursor-pointer"
         version="1.1"
         id="Capa_1"
         xmlns="http://www.w3.org/2000/svg"
@@ -34,7 +34,7 @@ export const IconNotification = () => {
           </g>{" "}
         </g>
       </svg>
-      <span className="w-4 h-4 flex justify-center items-center text-sm absolute z-30 -top-1.5 -right-2 bg-[var(--color-primary)] rounded-full">
+      <span className="w-4 h-4 flex justify-center items-center text-xs text-white absolute z-30 -top-1.5 -right-2 bg-[var(--color-primary)] rounded-full">
         2
       </span>
     </div>

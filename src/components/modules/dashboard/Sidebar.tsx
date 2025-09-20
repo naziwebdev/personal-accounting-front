@@ -17,7 +17,7 @@ import Tooltip from "./Tooltip";
 
 export default function Sidebar() {
   return (
-    <div className="w-[40px] sm:w-[60px] md:w-[80px] h-full flex flex-col items-center gap-y-3 rounded-4xl py-4 z-50">
+    <div className="w-[45px] sm:w-[60px] md:w-[80px] h-full flex flex-col items-center gap-y-3 rounded-4xl py-4 z-50">
       <Tooltip content="خانه">
         <Link href={"/dashboard"}>
           <IconHome
