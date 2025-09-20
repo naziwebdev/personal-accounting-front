@@ -166,7 +166,7 @@ export default function BankCard({
 
   return (
     <div
-      className={`relative overflow-hidden flex flex-col justify-between w-full h-[180px] xs:w-[350px] xs:h-[200px] rounded-[40px] ${bgCard} text-white p-6 shadow-xl`}
+      className={`relative overflow-hidden flex flex-col justify-between w-full h-[170px] xs:w-[350px] xs:h-[200px] rounded-[40px] ${bgCard} text-white p-6 shadow-xl`}
     >
       {/* Decorative SVG Background */}
       <div className="absolute -bottom-16 xs:-bottom-14 left-0 w-full h-full z-0 pointer-events-none">
