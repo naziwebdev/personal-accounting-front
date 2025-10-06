@@ -69,22 +69,6 @@ export default function Header() {
   };
 
   return (
-    // <div className="relative flex justify-end sm:justify-between items-center gap-4 p-4 ">
-    //   <div className="flex items-center order-2 justify-between gap-x-10 xs:gap-x-16 py-1 px-10 z-20  bg-white/90  rounded-4xl shadow-xl w-full xs:w-auto h-auto">
-    //     <div className="flex items-center gap-x-2">
-    //       <IconNotification />
-    //       <button onClick={logoutHandler}>
-    //         <IconLogout />
-    //       </button>
-    //     </div>
-
-    //     <Image src="/images/logo.png" width={45} height={30} alt="logo" />
-    //   </div>
-    //   <div className="absolute top-5 left-5 w-64 h-12 rounded-full bg-violet-400 opacity-40 blur-3xl z-10" />
-    //   <h1 className="font-titr  hidden sm:block  text-3xl font-bold [text-shadow:_0_0_1px_#a78bfa,_0_5px_4px_#f1aac2]">
-    //     پنل حسابداری دایموند
-    //   </h1>
-    // </div>
     <div className="flex justify-between items-center gap-0 xs:gap-4 p-4 ">
       <div className="flex items-center gap-x-3">
         <h1 className="font-titr  hidden sm:block text-3xl font-bold [text-shadow:_0_0_0px_#000,_0_5px_5px_#fff]">
@@ -104,7 +88,7 @@ export default function Header() {
             onClick={() => setIsVisibleProfile(!isVisibleProfile)}
             className="cursor-pointer border-6 border-black border-double rounded-full"
           >
-            <IconProfile color="#f1aac2" />
+            <IconProfile color="#e19ab3" />
           </button>
           <div
             className={`absolute w-[200px] py-2 px-4 -bottom-[125px] z-20 left-0 bg-white rounded-lg shadow-2xl transition-all duration-300 ease-in-out
@@ -115,8 +99,8 @@ export default function Header() {
       }
     `}
           >
-            <ul className="divide-y divide-zinc-200 font-black text-sm">
-              <li className="flex justify-between items-center gap-x-2 py-3">
+            <ul className="font-black text-sm">
+              <li className="flex justify-between items-center gap-x-2 py-3 border-b-2 border-dashed border-zinc-600">
                 <p className="text-zinc-800">کاربر</p>
                 <p className="text-[var(--color-secondary)]">{data?.phone}</p>
               </li>

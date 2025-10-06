@@ -31,7 +31,7 @@ export default function CardList() {
   if (isError || !cards) return null;
 
   return (
-    <div className="flex justify-center items-center flex-wrap gap-5">
+    <div className="flex justify-center items-center flex-wrap gap-6">
       {cards.length !== 0 &&
         cards.map((card, index) => {
           const style = cardStyles[index];
