@@ -14,7 +14,7 @@ export default function MainLayout({
         <div className="absolute top-72 right-0 w-44 h-72 rounded-full bg-violet-400 opacity-50 blur-3xl z-10" />
         <div className="flex-1 z-20">
           <Header />
-          <div className="p-4">
+          <div className="p-4 pb-8">
             <AuthGuard>{children}</AuthGuard>
           </div>
         </div>
