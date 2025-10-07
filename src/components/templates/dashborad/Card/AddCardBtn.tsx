@@ -11,6 +11,9 @@ import { useAuth } from "@/context/AuthContext";
 import { restoreAccessToken } from "@/utils/restoreAccessToken";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toEnglishDigits } from "@/utils/normalizeDigits";
+import { IconBank } from "@/components/icons/IconBank";
+import { IconBankCard } from "@/components/icons/IconBankCard";
+import { IconCoin } from "@/components/icons/IconCoin";
 
 type AddCardFormData = {
   bankName: string;
@@ -105,42 +108,63 @@ export default function AddCardBtn() {
               className="px-0 md:px-32 flex items-center justify-center flex-wrap gap-y-5 text-xs xs:text-base"
             >
               <div className="w-full">
-                <input
-                  {...register("bankName")}
-                  type="text"
-                  className="w-full bg-[var(--color-secondary)] p-3 placeholder:text-white rounded-xl text-white outline-0"
-                  placeholder="نام بانک را وارد کنید"
-                />
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-secondary)]">
+                    <IconBank size="w-5 h-5 xs:w-6 xs:h-6" color="#ffffff" />
+                  </div>
+                  <input
+                    {...register("bankName")}
+                    type="text"
+                    className="w-full bg-[var(--color-secondary)] p-3 placeholder:text-white rounded-xl text-white outline-0"
+                    placeholder="نام بانک را وارد کنید"
+                  />
+                </div>
+
                 <span className="text-right pt-1.5  text-sm  text-red-600">
                   {errors.bankName && errors.bankName.message}
                 </span>
               </div>
               <div className="w-full">
-                <input
-                  {...register("cardNumber", {
-                    onChange: (e) => {
-                      e.target.value = toEnglishDigits(e.target.value);
-                    },
-                  })}
-                  type="text"
-                  className="w-full bg-[var(--color-secondary)] p-3 placeholder:text-white rounded-xl text-white outline-0"
-                  placeholder="شماره کارت ۱۶ رقمی را وارد کنید"
-                />
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-secondary)]">
+                    <IconBankCard
+                      size="w-6 h-6 xs:w-7 xs:h-7"
+                      color="#ffffff"
+                    />
+                  </div>
+                  <input
+                    {...register("cardNumber", {
+                      onChange: (e) => {
+                        e.target.value = toEnglishDigits(e.target.value);
+                      },
+                    })}
+                    type="text"
+                    className="w-full bg-[var(--color-secondary)] p-3 placeholder:text-white rounded-xl text-white outline-0"
+                    placeholder="شماره کارت ۱۶ رقمی را وارد کنید"
+                  />
+                </div>
+
                 <span className="text-right pt-1.5 text-sm  text-red-600">
                   {errors.cardNumber && errors.cardNumber.message}
                 </span>
               </div>
               <div className="w-full">
-                <input
-                  {...register("balance", {
-                    onChange: (e) => {
-                      e.target.value = toEnglishDigits(e.target.value);
-                    },
-                  })}
-                  type="text"
-                  className="w-full bg-[var(--color-theme)] p-3 placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
-                  placeholder="موجودی کارت را وارد کنید ( اختیاری )"
-                />
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-theme)]">
+                    <IconCoin size="w-6 h-6 xs:w-7 xs:h-7" color="#52525B" />
+                  </div>
+                  <input
+                    {...register("balance", {
+                      onChange: (e) => {
+                        e.target.value = toEnglishDigits(e.target.value);
+                      },
+                    })}
+                    type="text"
+                    className="w-full bg-[var(--color-theme)] p-3 placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
+                    placeholder="موجودی کارت را وارد کنید ( اختیاری )"
+                  />
+                </div>
+
                 <span className="text-right pt-1.5  text-sm  text-red-600">
                   {errors.balance && errors.balance.message}
                 </span>
