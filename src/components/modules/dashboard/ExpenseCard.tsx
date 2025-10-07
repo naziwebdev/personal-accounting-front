@@ -1,19 +1,19 @@
 "use client";
 
 import React, { useState } from "react";
-import { IconCardIncom } from "@/components/icons/IconCardIncome";
-import { IconDownDirection } from "@/components/icons/IconDownDirection";
+import { IconCardExpense } from "@/components/icons/IconCardExpense";
+import { IconUpDirection } from "@/components/icons/IconUpDirection";
 import { IconActionDot } from "@/components/icons/IconActiondot";
 import { IconDelete } from "@/components/icons/IconDelete";
 import { IconEdit } from "@/components/icons/IconEdit";
 
-export default function TransactionCard() {
+export default function ExpenseCard() {
   const [isShowAction, setIsShowAction] = useState<boolean>(false);
   return (
     <div className="relative w-full xs:w-[350px] lg:w-[400px] bg-white rounded-3xl  p-3 xs:p-4 shadow-lg">
-      <div className="absolute left-0 top-0 w-1/3 xs:w-1/4 p-1 rounded-tl-2xl rounded-br-2xl flex justify-center items-center gap-1 bg-green-100 text-sm xs:text-base font-bold ">
-        <IconDownDirection size="w-6 h-5" color="#3db810" />
-        <p className="text-[#3db810]">واریز</p>
+      <div className="absolute left-0 top-0 w-1/3 xs:w-1/4 p-1 rounded-tl-2xl rounded-br-2xl flex justify-center items-center gap-1 bg-red-100/80 text-sm xs:text-base font-bold ">
+        <IconUpDirection size="w-6 h-5" color="#cc0e50" />
+        <p className="text-[#cc0e50]">برداشت</p>
       </div>
       <div className="absolute top-9 xs:top-12 left-4 flex gap-1">
         <button
@@ -36,7 +36,7 @@ export default function TransactionCard() {
         </div>
       </div>
       <div className="flex gap-2 items-center">
-        <IconCardIncom size="xs:w-12 xs:h-12 w-9 h-9" color="#8c66e5" />
+        <IconCardExpense size="xs:w-12 xs:h-12 w-9 h-9" color="#8c66e5" />
         <p className="font-black text-gray-800">بلو بانک </p>
       </div>
       <div className="flex justify-between items-center pt-2 xs:pt-4">

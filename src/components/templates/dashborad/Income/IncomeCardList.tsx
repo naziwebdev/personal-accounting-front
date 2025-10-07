@@ -1,15 +1,15 @@
 import React from "react";
-import TransactionCard from "@/components/modules/dashboard/TransactionCard";
+import IncomeCard from "@/components/modules/dashboard/IncomeCard";
 
 export default function IncomeCardList() {
   return (
     <div className="flex justify-center items-center flex-wrap gap-6">
-        <TransactionCard />
-        <TransactionCard />
-        <TransactionCard />
-        <TransactionCard />
-        <TransactionCard />
-        <TransactionCard />
+       <IncomeCard/>
+       <IncomeCard/>
+       <IncomeCard/>
+       <IncomeCard/>
+       <IncomeCard/>
+       <IncomeCard/>
     </div>
   );
 }

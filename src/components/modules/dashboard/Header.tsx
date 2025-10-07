@@ -71,10 +71,10 @@ export default function Header() {
   return (
     <div className="flex justify-between items-center gap-0 xs:gap-4 p-4 ">
       <div className="flex items-center gap-x-3">
-        <h1 className="font-titr  hidden sm:block text-3xl font-bold [text-shadow:_0_0_0px_#000,_0_5px_5px_#fff]">
+        <h1 className="font-titr  hidden sm:block text-3xl font-bold ">
           پنل حسابداری دایموند
         </h1>
-        <h1 className="block sm:hidden text-xl xs:text-2xl font-titr font-bold [text-shadow:_0_0_0px_#000,_0_5px_5px_#fff]">
+        <h1 className="block sm:hidden text-xl xs:text-2xl font-titr font-bold">
           دایموند
         </h1>
         <Image src="/images/logo.png" width={45} height={30} alt="logo" />
