@@ -25,6 +25,22 @@
   background-color: #000 !important;
 }
 
+.rmdp-container {
+  width:100%;
+}
+
+.custom-input {
+  width: 100%;
+  background-color: var(--color-secondary);
+  padding: 12px;
+  border-radius: 12px;
+  outline: none;
+  color: #fff;
+}
+
+.custom-input::placeholder {
+  color: #fff;
+}
 /* sweetalert */
 
 @theme inline {
@@ -38,7 +54,7 @@
     /* --color-primary: #f1aac2; */
     /* --color-primary:#CD98C0; */
     /* --color-primary:#D4A6C8; */
-    --color-primary:#e19ab3;
+    --color-primary: #e19ab3;
     /* --color-primary: #f4c1d8; */
 
     /* --color-secondary: #e0bbf4; */
@@ -47,7 +63,7 @@
     /* --color-secondary: #9373f3; */
     /* --color-secondary: #9d51ef; */
     --color-secondary: #8c66e5;
-   
+
     /* --color-secondary: #C4B5FD; */
 
     --color-theme: #e4e2f1;
