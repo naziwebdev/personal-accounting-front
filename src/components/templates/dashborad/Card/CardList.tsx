@@ -11,7 +11,7 @@ import EmptyState from "@/components/modules/dashboard/EmptyState";
 
 export default function CardList() {
   const { data: cards, isLoading, isError } = useCards();
-  const { accessToken, loading } = useAuth();
+  const { loading } = useAuth();
 
   useEffect(() => {
     const toastId = "cards-loading";
