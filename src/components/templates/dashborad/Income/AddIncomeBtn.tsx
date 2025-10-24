@@ -11,11 +11,66 @@ import persian_fa from "react-date-object/locales/persian_fa";
 import "react-multi-date-picker/styles/colors/purple.css";
 import { IconCalender } from "@/components/icons/IconCalender";
 import { IconDescription } from "@/components/icons/IconDescription";
+import { useForm, Controller } from "react-hook-form";
+import { addIncome } from "@/validations/income";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
+import { restoreAccessToken } from "@/utils/restoreAccessToken";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toEnglishDigits } from "@/utils/normalizeDigits";
+import { IconCategory } from "@/components/icons/IconCategory";
+import { IconBankCard } from "@/components/icons/IconBankCard";
+
+type addIncomFormData = {
+  title: string;
+  price: number;
+  date: Date;
+  categoryID: number;
+  bankCardID: number;
+  description?: string | null;
+};
 
 export default function AddIncomeBtn() {
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const { accessToken, setAccessToken } = useAuth();
+  const queryClient = useQueryClient();
+  const {
+    register,
+    reset,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      title: "",
+      categoryID: 1,
+      bankCardID: 1,
+      date: new Date(),
+      description: "",
+    },
+    resolver: yupResolver(addIncome),
+  });
 
   const modalToggleHandle = () => setOpenModal(false);
+
+  const mutation = useMutation({
+    mutationFn: async (data: addIncomFormData) => {
+      const finalData = { ...data, balance: data.price ?? 0 };
+      const makeRequest = async (token: string) => {
+        return await fetch("http://localhost:4002/api/v1/incomes", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(finalData),
+        });
+      };
+    },
+  });
+
+  const addIncomeHandle = async (data: addIncomFormData) => {};
 
   return (
     <>
@@ -29,50 +84,138 @@ export default function AddIncomeBtn() {
       {openModal ? (
         <Modal onClose={modalToggleHandle}>
           <>
-            <h2 className="w-1/2 md:w-1/5 mx-auto text-center pb-2 mb-12 text-lg xs:text-2xl font-bold  rounded-xl text-nowrap">
+            <h2 className="w-1/2 md:w-1/5 mx-auto text-center pb-2 mb-6 lg:mb-12 text-lg xs:text-2xl font-bold  rounded-xl text-nowrap">
               افزودن درامد
             </h2>
             <form
-              // onSubmit={handleSubmit(addCardHandle)}
-              className="px-0 md:px-32 flex items-center justify-center flex-wrap gap-y-5 text-xs xs:text-base"
+              onSubmit={handleSubmit(addIncomeHandle)}
+              className="px-4 md:px-20 lg:px-0 flex items-center justify-between lg:justify-evenly flex-wrap gap-y-3  lg:gap-y-8 gap-x-4 lg:gap-x-20 text-xs xs:text-base"
             >
-              <div className="w-full">
+              <div className="w-full lg:max-w-5/12">
                 <div className="flex items-center gap-2">
                   <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-secondary)]">
                     <IconPaper size="w-7 h-7 xs:w-8 xs:h-8" color="#ffffff" />
                   </div>
                   <input
+                    {...register("title")}
                     type="text"
                     className="w-full bg-[var(--color-secondary)] p-3 placeholder:text-white rounded-xl text-white outline-0"
                     placeholder="عنوان درامد را وارد کنید"
                   />
                 </div>
 
-                {/* <span className="text-right pt-1.5  text-sm  text-red-600">
-                  {errors.bankName && errors.bankName.message}
-                </span> */}
+                <span className="text-right pt-1.5  text-sm  text-red-600">
+                  {errors.title && errors.title.message}
+                </span>
               </div>
-              <div className="w-full">
+              <div className="w-full lg:max-w-5/12">
                 <div className="flex items-center gap-2">
                   <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-secondary)]">
                     <IconCoin size="w-7 h-7 xs:w-8 xs:h-8" color="#ffffff" />
                   </div>
                   <input
-                    // {...register("cardNumber", {
-                    //   onChange: (e) => {
-                    //     e.target.value = toEnglishDigits(e.target.value);
-                    //   },
-                    // })}
+                    {...register("price", {
+                      onChange: (e) => {
+                        e.target.value = toEnglishDigits(e.target.value);
+                      },
+                    })}
                     type="text"
                     className="w-full bg-[var(--color-secondary)] p-3 placeholder:text-white rounded-xl text-white outline-0"
                     placeholder="مبلغ درامد را وارد کنید"
                   />
                 </div>
-                {/* <span className="text-right pt-1.5 text-sm  text-red-600">
-                  {errors.cardNumber && errors.cardNumber.message}
-                </span> */}
+                <span className="text-right pt-1.5 text-sm  text-red-600">
+                  {errors.price && errors.price.message}
+                </span>
               </div>
-              <div className="w-full">
+              <div className="w-full lg:max-w-5/12">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-secondary)]">
+                    <IconCategory
+                      size="w-7 h-7 xs:w-8 xs:h-8"
+                      colorBg="#ffffff"
+                      colorIcon="#8c66e5"
+                    />
+                  </div>
+                  <Controller
+                    name="categoryID"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <select
+                        {...field}
+                        id="category"
+                        className="w-full bg-[var(--color-secondary)] p-3 placeholder:text-white rounded-xl text-white outline-0"
+                      >
+                        <option
+                          value={"-1"}
+                          className="bg-primary-p text-white"
+                        >
+                          دسته بندی را انتخاب کنید
+                        </option>
+                        {/* {categories.map((category) => (
+                          <>
+                            <option
+                              key={category._id}
+                              value={category._id}
+                              className="bg-primary-p text-white"
+                            >
+                              {category.title}
+                            </option>
+                          </>
+                        ))} */}
+                      </select>
+                    )}
+                  />
+                </div>
+                <span className="text-right pt-1.5 text-sm  text-red-600">
+                  {errors.price && errors.price.message}
+                </span>
+              </div>
+              <div className="w-full lg:max-w-5/12">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-theme)]">
+                    <IconBankCard
+                      size="w-7 h-7 xs:w-8 xs:h-8"
+                      color="#52525B"
+                    />
+                  </div>
+                  <Controller
+                    name="bankCardID"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <select
+                        {...field}
+                        id="category"
+                        className="w-full bg-[var(--color-theme)] p-3 resize-none placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
+                      >
+                        <option
+                          value={"-1"}
+                          className="bg-primary-p text-white"
+                        >
+                          واریز شده به کارت (اختیاری)
+                        </option>
+                        {/* {categories.map((category) => (
+                          <>
+                            <option
+                              key={category._id}
+                              value={category._id}
+                              className="bg-primary-p text-white"
+                            >
+                              {category.title}
+                            </option>
+                          </>
+                        ))} */}
+                      </select>
+                    )}
+                  />
+                </div>
+                <span className="text-right pt-1.5 text-sm  text-red-600">
+                  {errors.price && errors.price.message}
+                </span>
+              </div>
+              <div className="w-full lg:max-w-5/12">
                 <div className="flex items-center gap-2">
                   <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-secondary)]">
                     <IconCalender
@@ -80,23 +223,33 @@ export default function AddIncomeBtn() {
                       color="#ffffff"
                     />
                   </div>
-                  <DatePicker
-                    inputClass="custom-input"
-                    className="purple w-full"
-                    placeholder="برای انتخاب تاریخ ضربه بزنید"
-                    // value={value || ""}
-                    // onChange={(date) => {
-                    //   onChange(date);
-                    // }}
-                    locale={persian_fa}
-                    calendar={persian}
+                  <Controller
+                    defaultValue={new Date()}
+                    control={control}
+                    name="date"
+                    rules={{ required: true }} //optional
+                    render={({ field: { onChange, value } }) => (
+                      <>
+                        <DatePicker
+                          inputClass="custom-input"
+                          className="purple w-full"
+                          placeholder="برای انتخاب تاریخ ضربه بزنید"
+                          value={value || ""}
+                          onChange={(date) => {
+                            onChange(date);
+                          }}
+                          locale={persian_fa}
+                          calendar={persian}
+                        />
+                      </>
+                    )}
                   />
                 </div>
-                {/* <span className="text-right pt-1.5  text-sm  text-red-600">
-                  {errors.balance && errors.balance.message}
-                </span> */}
+                <span className="text-right pt-1.5  text-sm  text-red-600">
+                  {errors.date && errors.date.message}
+                </span>
               </div>
-              <div className="w-full">
+              <div className="w-full lg:max-w-5/12">
                 <div className="flex items-center gap-2">
                   <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-theme)]">
                     <IconDescription
@@ -105,17 +258,23 @@ export default function AddIncomeBtn() {
                     />
                   </div>
                   <textarea
+                    {...register("description")}
                     className="w-full bg-[var(--color-theme)] p-3 resize-none placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
                     placeholder="توضیحات را وارد کنید (اختیاری)"
                   ></textarea>
                 </div>
+                <span className="text-right pt-1.5  text-sm  text-red-600">
+                  {errors.description && errors.description.message}
+                </span>
               </div>
-              <button
-                type="submit"
-                className="mt-7 w-1/2 md:w-1/4 h-10 xs:h-12 flex justify-center items-center text-white rounded-xl bg-[var(--color-primary)] text-base  xs:text-lg cursor-pointer"
-              >
-                تایید
-              </button>
+              <div className="w-full flex justify-center">
+                <button
+                  type="submit"
+                  className="mt-3 lg:mt-7 w-1/3 lg:w-1/5 h-10 xs:h-12 flex justify-center items-center text-white rounded-xl bg-[var(--color-primary)] text-base  xs:text-lg cursor-pointer"
+                >
+                  تایید
+                </button>
+              </div>
             </form>
           </>
         </Modal>

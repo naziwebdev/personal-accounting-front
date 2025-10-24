@@ -12,6 +12,9 @@ export const addIncome = yup.object().shape({
     )
     .required("مبلغ درامد را وارد کنید"),
 
+  categoryID: yup.number().integer().required("دسته بندی را مشخص کنید"),
+  bankCardID: yup.number().integer().required("کارت را مشخص کنید"),
+
   date: yup.date().required("تاریخ درامد را مشخص کنید"),
   description: yup.string().notRequired(),
 });
