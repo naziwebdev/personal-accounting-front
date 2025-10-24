@@ -12,7 +12,7 @@ export default function Pagination() {
             <IconRightArrow size="w-8 h-8 sm:w-9 sm:h-9" color="#ffffff" />
           </Link>
         </li>
-        <li className="w-10 h-8 sm:w-12 sm:h-9 bg-white border-[4px] border-[var(--color-secondary)] border-double flex justify-center items-center text-[var(--color-secondary)] rounded-xl cursor-pointer shadow-lg">
+        <li className="w-10 h-8 sm:w-12 sm:h-9 bg-white border-[3.5px] border-[var(--color-primary)] flex justify-center items-center rounded-xl cursor-pointer shadow-lg">
           <Link href={"/dashboard/incomes/1"} className="font-bold">
             ۱
           </Link>

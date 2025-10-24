@@ -9,7 +9,6 @@ import { IconEdit } from "@/components/icons/IconEdit";
 import { Income } from "@/types/income";
 import { toPersianDigits } from "@/utils/normalizeDigits";
 
-
 ///pagination need
 
 export default function IncomeCard(Prop: Income) {
@@ -32,10 +31,10 @@ export default function IncomeCard(Prop: Income) {
         </button>
 
         <div className={`${isShowAction ? "flex" : "hidden"}`}>
-          <button>
+          <button className="cursor-pointer">
             <IconEdit size="w-6 h-6 font-bold" color="#e19ab3" />
           </button>
-          <button>
+          <button className="cursor-pointer">
             <IconDelete size="w-6 h-6 font-bold" color="#e19ab3" />
           </button>
         </div>
