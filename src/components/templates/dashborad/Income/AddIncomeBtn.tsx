@@ -23,6 +23,8 @@ import { IconCategory } from "@/components/icons/IconCategory";
 import { IconBankCard } from "@/components/icons/IconBankCard";
 import { IconDownArrow } from "@/components/icons/IconDownAroow";
 import { useCategoriesByType } from "@/hooks/useCategories";
+import { useCards } from "@/hooks/useCards";
+import { toPersianDigits } from "@/utils/normalizeDigits";
 
 type addIncomFormData = {
   title: string;
@@ -41,7 +43,7 @@ export default function AddIncomeBtn() {
     isLoading,
   } = useCategoriesByType("income");
 
-  console.log(categories);
+  const { data: cards } = useCards();
 
   const { accessToken, setAccessToken } = useAuth();
   const queryClient = useQueryClient();
@@ -217,17 +219,21 @@ export default function AddIncomeBtn() {
                           >
                             واریز شده به کارت (اختیاری)
                           </option>
-                          {/* {categories.map((category) => (
-                          <>
-                            <option
-                              key={category._id}
-                              value={category._id}
-                              className="bg-primary-p text-white"
-                            >
-                              {category.title}
-                            </option>
-                          </>
-                        ))} */}
+                          {cards?.length !== 0 &&
+                            cards?.map((card) => (
+                              <>
+                                <option
+                                  key={card?.id}
+                                  value={card?.id}
+                                  className="bg-[var(--color-primary)] text-white"
+                                >
+                                  {card?.bankName} -{" "}
+                                  {toPersianDigits(card?.cardNumber)
+                                    .match(/.{1,4}/g)
+                                    ?.join("-")}
+                                </option>
+                              </>
+                            ))}
                         </select>
                         <span className="absolute left-3 top-1/2 z-10 transform -translate-y-1/2 pointer-events-none">
                           <IconDownArrow
