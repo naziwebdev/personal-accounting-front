@@ -21,6 +21,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toEnglishDigits } from "@/utils/normalizeDigits";
 import { IconCategory } from "@/components/icons/IconCategory";
 import { IconBankCard } from "@/components/icons/IconBankCard";
+import { IconDownArrow } from "@/components/icons/IconDownAroow";
+import { useCategoriesByType } from "@/hooks/useCategories";
 
 type addIncomFormData = {
   title: string;
@@ -33,8 +35,17 @@ type addIncomFormData = {
 
 export default function AddIncomeBtn() {
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const {
+    data: categories,
+    isError,
+    isLoading,
+  } = useCategoriesByType("income");
+
+  console.log(categories);
+
   const { accessToken, setAccessToken } = useAuth();
   const queryClient = useQueryClient();
+
   const {
     register,
     reset,
@@ -142,29 +153,38 @@ export default function AddIncomeBtn() {
                     control={control}
                     rules={{ required: true }}
                     render={({ field }) => (
-                      <select
-                        {...field}
-                        id="category"
-                        className="w-full bg-[var(--color-secondary)] p-3 placeholder:text-white rounded-xl text-white outline-0"
-                      >
-                        <option
-                          value={"-1"}
-                          className="bg-primary-p text-white"
+                      <div className="relative w-full">
+                        <select
+                          {...field}
+                          id="category"
+                          className="appearance-none w-full bg-[var(--color-secondary)] p-3 placeholder:text-white rounded-xl text-white outline-0"
                         >
-                          دسته بندی را انتخاب کنید
-                        </option>
-                        {/* {categories.map((category) => (
-                          <>
-                            <option
-                              key={category._id}
-                              value={category._id}
-                              className="bg-primary-p text-white"
-                            >
-                              {category.title}
-                            </option>
-                          </>
-                        ))} */}
-                      </select>
+                          <option
+                            value={"-1"}
+                            className="bg-primary-p text-white"
+                          >
+                            دسته بندی را انتخاب کنید
+                          </option>
+                          {categories?.length !== 0 &&
+                            categories?.map((category) => (
+                              <>
+                                <option
+                                  key={category?.id}
+                                  value={category?.id}
+                                  className="bg-[var(--color-primary)] text-white"
+                                >
+                                  {category.title}
+                                </option>
+                              </>
+                            ))}
+                        </select>
+                        <span className="absolute left-3 top-1/2 z-10 transform -translate-y-1/2 pointer-events-none">
+                          <IconDownArrow
+                            size="w-3 h-3 xs:w-4 xs:h-4"
+                            color="#ffffff"
+                          />
+                        </span>
+                      </div>
                     )}
                   />
                 </div>
@@ -185,18 +205,19 @@ export default function AddIncomeBtn() {
                     control={control}
                     rules={{ required: true }}
                     render={({ field }) => (
-                      <select
-                        {...field}
-                        id="category"
-                        className="w-full bg-[var(--color-theme)] p-3 resize-none placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
-                      >
-                        <option
-                          value={"-1"}
-                          className="bg-primary-p text-white"
+                      <div className="relative w-full">
+                        <select
+                          {...field}
+                          id="bankCardID"
+                          className="appearance-none w-full p-3 bg-[var(--color-theme)] placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
                         >
-                          واریز شده به کارت (اختیاری)
-                        </option>
-                        {/* {categories.map((category) => (
+                          <option
+                            value={"-1"}
+                            className="bg-primary-p text-white"
+                          >
+                            واریز شده به کارت (اختیاری)
+                          </option>
+                          {/* {categories.map((category) => (
                           <>
                             <option
                               key={category._id}
@@ -207,7 +228,14 @@ export default function AddIncomeBtn() {
                             </option>
                           </>
                         ))} */}
-                      </select>
+                        </select>
+                        <span className="absolute left-3 top-1/2 z-10 transform -translate-y-1/2 pointer-events-none">
+                          <IconDownArrow
+                            size="w-3 h-3 xs:w-4 xs:h-4"
+                            color="#52525B"
+                          />
+                        </span>
+                      </div>
                     )}
                   />
                 </div>
