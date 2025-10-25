@@ -16,7 +16,7 @@ import { useGetMe } from "@/hooks/useGetMe";
 export default function Header() {
   const { accessToken, setAccessToken } = useAuth();
   const { data } = useGetMe();
-  console.log(data);
+
   const router = useRouter();
   const [isVisibleProfile, setIsVisibleProfile] = useState<boolean>(false);
 

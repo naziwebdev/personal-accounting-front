@@ -41,7 +41,7 @@ export default function IncomeCard(Prop: Income) {
       </div>
       <div className="flex gap-2 items-center">
         <IconCardIncom size="xs:w-12 xs:h-12 w-9 h-9" color="#8c66e5" />
-        <p className="font-black text-gray-800">{Prop.bankCard?.bankName}</p>
+        <p className="font-black text-gray-800">{Prop.bankCard?.bankName ? Prop.bankCard?.bankName : 'پیش فرض' }</p>
       </div>
       <div className="flex justify-between items-center pt-2 xs:pt-4">
         <div className="text-center">

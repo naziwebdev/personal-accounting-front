@@ -12,9 +12,21 @@ export const addIncome = yup.object().shape({
     )
     .required("مبلغ درامد را وارد کنید"),
 
-  categoryID: yup.number().integer().required("دسته بندی را مشخص کنید"),
-  bankCardID: yup.number().integer().required("کارت را مشخص کنید"),
+  categoryID: yup
+    .number()
+    .integer()
+    .required("دسته بندی را مشخص کنید")
+    .test("not-default", "دسته بندی را مشخص کنید", (value) => value !== -1),
+  bankCardID: yup.number().integer().notRequired(),
 
-  date: yup.date().required("تاریخ درامد را مشخص کنید"),
+  date: yup
+    .string()
+    .transform((value) =>
+      value?.replace(/[۰-۹]/g, (d: string) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))
+    )
+    .required("تاریخ درآمد را وارد کنید")
+    .matches(/^\d{4}\/\d{2}\/\d{2}$/, "فرمت تاریخ باید مثل 1404/08/03 باشد")
+
+    .required("تاریخ درآمد را وارد کنید"),
   description: yup.string().notRequired(),
 });

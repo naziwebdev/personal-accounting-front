@@ -5,7 +5,7 @@ import { IconAdd } from "@/components/icons/IconAdd";
 import Modal from "@/components/modules/dashboard/Modal";
 import { IconPaper } from "@/components/icons/IconPaper";
 import { IconCoin } from "@/components/icons/IconCoin";
-import DatePicker from "react-multi-date-picker";
+import DatePicker, { DateObject } from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import "react-multi-date-picker/styles/colors/purple.css";
@@ -29,9 +29,9 @@ import { toPersianDigits } from "@/utils/normalizeDigits";
 type addIncomFormData = {
   title: string;
   price: number;
-  date: Date;
+  date: string;
   categoryID: number;
-  bankCardID: number;
+  bankCardID?: number | null;
   description?: string | null;
 };
 
@@ -52,14 +52,15 @@ export default function AddIncomeBtn() {
     register,
     reset,
     control,
+    setValue,
     handleSubmit,
     formState: { errors },
   } = useForm({
     defaultValues: {
       title: "",
-      categoryID: 1,
-      bankCardID: 1,
-      date: new Date(),
+      categoryID: -1,
+      bankCardID: -1,
+      date: "",
       description: "",
     },
     resolver: yupResolver(addIncome),
@@ -69,7 +70,23 @@ export default function AddIncomeBtn() {
 
   const mutation = useMutation({
     mutationFn: async (data: addIncomFormData) => {
-      const finalData = { ...data, balance: data.price ?? 0 };
+      console.log(data.date);
+      // Convert Persian date string (e.g. "1404/08/03") to a valid Gregorian Date object
+      // Required because backend expects ISO-formatted Gregorian dates, not Jalali strings
+      const persianDate = new DateObject({
+        date: data.date,
+        format: "YYYY/MM/DD",
+        calendar: persian,
+      });
+      const gregorianDate = persianDate.convert("gregorian" as any).toDate();
+
+      const finalData = {
+        ...data,
+        price: data.price ?? 0,
+        bankCard_id: data.bankCardID === -1 ? null : data.bankCardID,
+        category_id: data.categoryID,
+        date: gregorianDate.toISOString(),
+      };
       const makeRequest = async (token: string) => {
         return await fetch("http://localhost:4002/api/v1/incomes", {
           method: "POST",
@@ -80,10 +97,36 @@ export default function AddIncomeBtn() {
           body: JSON.stringify(finalData),
         });
       };
+
+      let res = await makeRequest(accessToken!);
+      console.log(res);
+      let result = await res.json();
+
+      if (result.statusCode === 401) {
+        const newToken = await restoreAccessToken();
+        if (!newToken) throw new Error("Unauthorized");
+        setAccessToken(newToken);
+        res = await makeRequest(newToken);
+        result = await res.json();
+      }
+      if (result.statusCode !== 201) throw new Error("Failed to add income");
+
+      return result.data;
+    },
+    onSuccess: () => {
+      toast.success("درامد با موفقیت افزوده شد");
+      queryClient.invalidateQueries({ queryKey: ["incomes"] });
+      reset();
+      modalToggleHandle();
+    },
+    onError: () => {
+      toast.error("خطا در افزودن درامد");
     },
   });
 
-  const addIncomeHandle = async (data: addIncomFormData) => {};
+  const addIncomeHandle = async (data: addIncomFormData) => {
+    mutation.mutate(data);
+  };
 
   return (
     <>
@@ -169,15 +212,13 @@ export default function AddIncomeBtn() {
                           </option>
                           {categories?.length !== 0 &&
                             categories?.map((category) => (
-                              <>
-                                <option
-                                  key={category?.id}
-                                  value={category?.id}
-                                  className="bg-[var(--color-primary)] text-white"
-                                >
-                                  {category.title}
-                                </option>
-                              </>
+                              <option
+                                key={category?.id}
+                                value={category?.id}
+                                className="bg-[var(--color-primary)] text-white"
+                              >
+                                {category.title}
+                              </option>
                             ))}
                         </select>
                         <span className="absolute left-3 top-1/2 z-10 transform -translate-y-1/2 pointer-events-none">
@@ -191,7 +232,7 @@ export default function AddIncomeBtn() {
                   />
                 </div>
                 <span className="text-right pt-1.5 text-sm  text-red-600">
-                  {errors.price && errors.price.message}
+                  {errors.categoryID && errors.categoryID.message}
                 </span>
               </div>
               <div className="w-full lg:max-w-5/12">
@@ -210,6 +251,7 @@ export default function AddIncomeBtn() {
                       <div className="relative w-full">
                         <select
                           {...field}
+                          value={field.value ?? "-1"}
                           id="bankCardID"
                           className="appearance-none w-full p-3 bg-[var(--color-theme)] placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
                         >
@@ -221,18 +263,16 @@ export default function AddIncomeBtn() {
                           </option>
                           {cards?.length !== 0 &&
                             cards?.map((card) => (
-                              <>
-                                <option
-                                  key={card?.id}
-                                  value={card?.id}
-                                  className="bg-[var(--color-primary)] text-white"
-                                >
-                                  {card?.bankName} -{" "}
-                                  {toPersianDigits(card?.cardNumber)
-                                    .match(/.{1,4}/g)
-                                    ?.join("-")}
-                                </option>
-                              </>
+                              <option
+                                key={card?.id}
+                                value={card?.id}
+                                className="bg-[var(--color-primary)] text-white"
+                              >
+                                {card?.bankName} -{" "}
+                                {toPersianDigits(card?.cardNumber)
+                                  .match(/.{1,4}/g)
+                                  ?.join("-")}
+                              </option>
                             ))}
                         </select>
                         <span className="absolute left-3 top-1/2 z-10 transform -translate-y-1/2 pointer-events-none">
@@ -246,7 +286,7 @@ export default function AddIncomeBtn() {
                   />
                 </div>
                 <span className="text-right pt-1.5 text-sm  text-red-600">
-                  {errors.price && errors.price.message}
+                  {errors.bankCardID && errors.bankCardID.message}
                 </span>
               </div>
               <div className="w-full lg:max-w-5/12">
@@ -258,7 +298,6 @@ export default function AddIncomeBtn() {
                     />
                   </div>
                   <Controller
-                    defaultValue={new Date()}
                     control={control}
                     name="date"
                     rules={{ required: true }} //optional
@@ -267,10 +306,21 @@ export default function AddIncomeBtn() {
                         <DatePicker
                           inputClass="custom-input"
                           className="purple w-full"
+                          format="YYYY/MM/DD"
+                          value={
+                            value
+                              ? new DateObject({
+                                  date: value,
+                                  format: "YYYY/MM/DD",
+                                  calendar: persian,
+                                })
+                              : ""
+                          }
                           placeholder="برای انتخاب تاریخ ضربه بزنید"
-                          value={value || ""}
-                          onChange={(date) => {
-                            onChange(date);
+                          onChange={(dateObject) => {
+                            const formatted =
+                              dateObject?.format?.("YYYY/MM/DD");
+                            onChange(formatted ?? "");
                           }}
                           locale={persian_fa}
                           calendar={persian}
