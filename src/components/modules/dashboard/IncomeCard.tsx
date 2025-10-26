@@ -9,9 +9,9 @@ import { IconEdit } from "@/components/icons/IconEdit";
 import { Income } from "@/types/income";
 import { toPersianDigits } from "@/utils/normalizeDigits";
 
-///pagination need
 
 export default function IncomeCard(Prop: Income) {
+
   const [isShowAction, setIsShowAction] = useState<boolean>(false);
   return (
     <div className="relative w-full xs:w-[350px] lg:w-[400px] bg-white rounded-3xl  p-3 xs:p-4 shadow-lg">

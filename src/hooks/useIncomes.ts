@@ -1,11 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
 import { restoreAccessToken } from "@/utils/restoreAccessToken";
-import { Income } from "@/types/income";
+import { IncomeArrayType } from "@/types/income";
 
-const fetchIncomes = async (token: string): Promise<Income[]> => {
+const fetchIncomes = async (
+  token: string,
+  page: number = 1,
+  limit: number = 6
+): Promise<IncomeArrayType> => {
+  console.log(page, "back");
   const res = await fetch(
-    `http://localhost:4002/api/v1/incomes?page=1&limit=10`,
+    `http://localhost:4002/api/v1/incomes?page=${page}&limit=${limit}`,
     {
       method: "GET",
       headers: {
@@ -36,12 +41,12 @@ const fetchIncomes = async (token: string): Promise<Income[]> => {
   return result.data;
 };
 
-export const useIncomes = () => {
+export const useIncomes = (page: number, limit: number) => {
   const { accessToken } = useAuth();
 
-  return useQuery<Income[], Error>({
-    queryKey: ["incomes"],
-    queryFn: () => fetchIncomes(accessToken!),
+  return useQuery<IncomeArrayType, Error>({
+    queryKey: ["incomes", page, limit],
+    queryFn: () => fetchIncomes(accessToken!, page, limit),
     enabled: !!accessToken,
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 30,

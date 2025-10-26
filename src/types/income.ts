@@ -27,3 +27,10 @@ export type Income = {
     balance?: number;
   };
 };
+
+export type IncomeArrayType = {
+  items: Income[];
+  limit: number;
+  page: number;
+  totalCount: number;
+};

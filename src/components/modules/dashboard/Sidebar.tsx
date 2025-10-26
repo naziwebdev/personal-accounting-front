@@ -64,7 +64,7 @@ export default function Sidebar() {
         </Link>
       </Tooltip>
       <Tooltip content="درامد">
-        <Link href={"/dashboard/incomes"}>
+        <Link href={"/dashboard/incomes?page=1"}>
           <IconIncome
             size="w-9 h-9 xs:w-10 xs:h-10"
             colorBg="fill-[var(--color-primary)]"
@@ -100,7 +100,7 @@ export default function Sidebar() {
         </Link>
       </Tooltip>
       <Tooltip content="مخارج">
-        <Link href={"/dashboard/expenses"}>
+        <Link href={"/dashboard/expenses?page=1"}>
           <IconExpense
             size="w-9 h-9 xs:w-10 xs:h-10"
             colorBg="fill-[var(--color-primary)]"
