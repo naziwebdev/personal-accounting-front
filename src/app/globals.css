@@ -26,7 +26,7 @@
 }
 
 .rmdp-container {
-  width:100%;
+  width: 100%;
 }
 
 .custom-input {
@@ -79,6 +79,7 @@
     font-family: var(--font-vazir);
     overflow-x: hidden;
   }
+
 
   * ::-webkit-scrollbar {
     scrollbar-color: var(--color-primary);

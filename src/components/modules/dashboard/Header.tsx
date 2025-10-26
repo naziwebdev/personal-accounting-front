@@ -69,7 +69,7 @@ export default function Header() {
   };
 
   return (
-    <div className="flex justify-between items-center gap-0 xs:gap-4 p-4 overflow-hidden">
+    <div className="flex justify-between items-center gap-0 xs:gap-4 p-4">
       <div className="flex items-center gap-x-3">
         <h1 className="font-titr  hidden sm:block text-3xl font-bold ">
           پنل حسابداری دایموند
