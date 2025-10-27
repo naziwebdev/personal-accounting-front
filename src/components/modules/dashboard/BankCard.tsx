@@ -212,7 +212,7 @@ export default function BankCard({
         <div>
           <p className="mb-2 text-shadow-lg text-xs xs:text-sm">موجودی</p>
           <span className="text-shadow-lg text-sm xs:text-base">
-            {balance.toLocaleString("fa-IR")} تومان
+            {balance?.toLocaleString("fa-IR")} تومان
           </span>
         </div>
         <div className="flex flex-col gap-y-0.5">

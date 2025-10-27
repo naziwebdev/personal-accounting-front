@@ -14,13 +14,13 @@ export default function IncomeCardList() {
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page") ?? "1");
   const limit = Number(searchParams.get("limit") ?? "6");
-  console.log(page)
+
 
   const { data: incomes, isLoading, isError } = useIncomes(page, limit);
   const [incomesShowPage, setIncomesShowPage] = useState<Income[]>([]);
   const { loading } = useAuth();
 
-  console.log(incomes);
+  
 
   useEffect(() => {
     const toastId = "incomes-loading";

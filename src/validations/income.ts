@@ -30,3 +30,28 @@ export const addIncome = yup.object().shape({
     .required("تاریخ درآمد را وارد کنید"),
   description: yup.string().notRequired(),
 });
+
+export const editIncome = yup.object().shape({
+  title: yup.string().notRequired().min(2, "عنوان حداقل ۲ کارکتر باید باشد"),
+  price: yup
+    .number()
+    .transform((value, originalValue) =>
+      originalValue === "" || isNaN(value) ? undefined : value
+    )
+    .notRequired(),
+
+  categoryID: yup
+    .number()
+    .integer()
+    .test("not-default", "دسته بندی را مشخص کنید", (value) => value !== -1)
+    .notRequired(),
+  bankCardID: yup.number().integer().notRequired(),
+
+  date: yup
+    .string()
+    .transform((value) =>
+      value?.replace(/[۰-۹]/g, (d: string) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))
+    )
+    .notRequired(),
+  description: yup.string().notRequired(),
+});

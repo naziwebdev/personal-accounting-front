@@ -70,7 +70,7 @@ export default function AddIncomeBtn() {
 
   const mutation = useMutation({
     mutationFn: async (data: addIncomFormData) => {
-      console.log(data.date);
+   
       // Convert Persian date string (e.g. "1404/08/03") to a valid Gregorian Date object
       // Required because backend expects ISO-formatted Gregorian dates, not Jalali strings
       const persianDate = new DateObject({
@@ -99,7 +99,7 @@ export default function AddIncomeBtn() {
       };
 
       let res = await makeRequest(accessToken!);
-      console.log(res);
+
       let result = await res.json();
 
       if (result.statusCode === 401) {
