@@ -47,6 +47,7 @@ export default function IncomeCard(Prop: Income) {
   const queryClient = useQueryClient();
   const { accessToken, setAccessToken } = useAuth();
 
+  ///// edit logic ////
   const {
     data: categories,
     isError,
@@ -139,6 +140,56 @@ export default function IncomeCard(Prop: Income) {
     });
   };
 
+  //////// delete logic ///////
+
+  const removeMutation = useMutation({
+    mutationFn: async () => {
+      const makeRequest = async (token: string) => {
+        return await fetch(`http://localhost:4002/api/v1/incomes/${Prop.id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+        });
+      };
+
+      let res = await makeRequest(accessToken!);
+      let result = await res.json();
+
+      if (result.statusCode === 401) {
+        const newToken = await restoreAccessToken();
+        if (!newToken) throw new Error("Unauthorized");
+        setAccessToken(newToken);
+        res = await makeRequest(newToken);
+        result = await res.json();
+      }
+      if (result.statusCode !== 200) throw new Error("Failed to remove income");
+
+      return result.data;
+    },
+    onSuccess: () => {
+      toast.success("درامد با موفقیت حذف شد");
+      queryClient.invalidateQueries({ queryKey: ["incomes"] });
+    },
+    onError: () => {
+      toast.error("خطا در حذف درامد");
+    },
+  });
+
+  const deleteIncomeHandle = () => {
+    swal({
+      title: "آیا از حذف اطمینان دارید ؟",
+      icon: "warning",
+      buttons: ["خیر", "بله"],
+    }).then((value) => {
+      if (value) {
+        removeMutation.mutate();
+      }
+    });
+  };
+
   return (
     <div className="relative w-full xs:w-[350px] lg:w-[400px] bg-white rounded-3xl  p-3 xs:p-4 shadow-lg">
       <div className="absolute left-0 top-0 w-1/3 xs:w-1/4 p-1 rounded-tl-2xl rounded-br-2xl flex justify-center items-center gap-1 bg-green-100 text-sm xs:text-base font-bold ">
@@ -163,7 +214,7 @@ export default function IncomeCard(Prop: Income) {
           >
             <IconEdit size="w-6 h-6 font-bold" color="#e19ab3" />
           </button>
-          <button className="cursor-pointer">
+          <button onClick={deleteIncomeHandle} className="cursor-pointer">
             <IconDelete size="w-6 h-6 font-bold" color="#e19ab3" />
           </button>
         </div>
