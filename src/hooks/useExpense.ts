@@ -23,7 +23,7 @@ const fetchExpenses = async (
     const newToken = await restoreAccessToken();
     if (!newToken) throw new Error("Unauthorized");
     const retryRes = await fetch(
-      `http://localhost:4002/api/v1/expenses?page=1&limit=10`,
+      `http://localhost:4002/api/v1/expenses?page=${page}&limit=${limit}`,
       {
         method: "GET",
         headers: {

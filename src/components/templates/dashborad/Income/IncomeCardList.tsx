@@ -20,6 +20,7 @@ export default function IncomeCardList() {
   const [incomesShowPage, setIncomesShowPage] = useState<Income[]>([]);
   const { loading } = useAuth();
 
+  console.log(incomes)
   
 
   useEffect(() => {

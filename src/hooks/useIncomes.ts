@@ -8,7 +8,6 @@ const fetchIncomes = async (
   page: number = 1,
   limit: number = 6
 ): Promise<IncomeArrayType> => {
- 
   const res = await fetch(
     `http://localhost:4002/api/v1/incomes?page=${page}&limit=${limit}`,
     {
@@ -24,7 +23,7 @@ const fetchIncomes = async (
     const newToken = await restoreAccessToken();
     if (!newToken) throw new Error("Unauthorized");
     const retryRes = await fetch(
-      `http://localhost:4002/api/v1/incomes?page=1&limit=10`,
+      `http://localhost:4002/api/v1/incomes?page=${page}&limit=${limit}`,
       {
         method: "GET",
         headers: {
