@@ -1,16 +1,15 @@
-import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
+import { ExpenseArrayType } from "@/types/expense";
 import { restoreAccessToken } from "@/utils/restoreAccessToken";
-import { IncomeArrayType } from "@/types/income";
+import { useQuery } from "@tanstack/react-query";
 
-const fetchIncomes = async (
-  token: string,
+const fetchExpenses = async (
   page: number = 1,
-  limit: number = 6
-): Promise<IncomeArrayType> => {
- 
+  limit: number = 6,
+  token: string
+): Promise<ExpenseArrayType> => {
   const res = await fetch(
-    `http://localhost:4002/api/v1/incomes?page=${page}&limit=${limit}`,
+    `http://localhost:4002/api/v1/expenses?page=${page}&limit=${limit}`,
     {
       method: "GET",
       headers: {
@@ -24,7 +23,7 @@ const fetchIncomes = async (
     const newToken = await restoreAccessToken();
     if (!newToken) throw new Error("Unauthorized");
     const retryRes = await fetch(
-      `http://localhost:4002/api/v1/incomes?page=1&limit=10`,
+      `http://localhost:4002/api/v1/expenses?page=1&limit=10`,
       {
         method: "GET",
         headers: {
@@ -41,12 +40,12 @@ const fetchIncomes = async (
   return result.data;
 };
 
-export const useIncomes = (page: number, limit: number) => {
+export const useExpense = (page: number, limit: number) => {
   const { accessToken } = useAuth();
 
-  return useQuery<IncomeArrayType, Error>({
-    queryKey: ["incomes", page, limit],
-    queryFn: () => fetchIncomes(accessToken!, page, limit),
+  return useQuery<ExpenseArrayType, Error>({
+    queryKey: ["expenses", page, limit],
+    queryFn: () => fetchExpenses(page, limit, accessToken!),
     enabled: !!accessToken,
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 30,
