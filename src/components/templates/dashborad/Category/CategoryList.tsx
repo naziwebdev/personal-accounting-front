@@ -4,6 +4,7 @@ import React from "react";
 import { ICONS } from "../../../../config/categoryIcons";
 import { IconIncome } from "@/components/icons/category/IconIncome";
 import { IconExpense } from "@/components/icons/category/IconExpense";
+import CategoryCard from "./CategoryCard";
 
 export default function CategoryList() {
   const iconList = Object.entries(ICONS);

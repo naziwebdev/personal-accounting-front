@@ -3,7 +3,7 @@ import { useAuth } from "@/context/AuthContext";
 import { restoreAccessToken } from "@/utils/restoreAccessToken";
 import { IncomeArrayType } from "@/types/income";
 
-const fetchIncomes = async (
+export const fetchIncomes = async (
   token: string,
   page: number = 1,
   limit: number = 6

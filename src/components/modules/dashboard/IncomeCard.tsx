@@ -29,6 +29,7 @@ import swal from "sweetalert";
 import { restoreAccessToken } from "@/utils/restoreAccessToken";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type editIncomeFormData = {
   title?: string | null;
@@ -40,6 +41,7 @@ type editIncomeFormData = {
 };
 
 export default function IncomeCard(Prop: Income) {
+  const router = useRouter();
   const [isShowAction, setIsShowAction] = useState<boolean>(false);
   const [openEditModal, setOpenEditModal] = useState<boolean>(false);
 
@@ -169,8 +171,14 @@ export default function IncomeCard(Prop: Income) {
 
       return result.data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success("درامد با موفقیت حذف شد");
+
+      const totalCount = data.totalCount;
+      const lastPage = Math.ceil(totalCount / 6); // 6 = your pagination limit
+
+      router.push(`/dashboard/incomes?page=${lastPage}`);
+
       queryClient.invalidateQueries({ queryKey: ["incomes"] });
     },
     onError: () => {

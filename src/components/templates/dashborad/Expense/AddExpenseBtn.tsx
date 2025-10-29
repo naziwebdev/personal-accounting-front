@@ -23,6 +23,7 @@ import { toEnglishDigits, toPersianDigits } from "@/utils/normalizeDigits";
 import { IconCategory } from "@/components/icons/IconCategory";
 import { IconDownArrow } from "@/components/icons/IconDownAroow";
 import { IconBankCard } from "@/components/icons/IconBankCard";
+import { useRouter } from "next/navigation";
 
 type addExpenseFormData = {
   title: string;
@@ -34,6 +35,7 @@ type addExpenseFormData = {
 };
 
 export default function AddExpenseBtn() {
+  const router = useRouter();
   const [openModal, setOpenModal] = useState<boolean>(false);
 
   const {
@@ -109,9 +111,16 @@ export default function AddExpenseBtn() {
 
       return result.data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success("هزینه با موفقیت افزوده شد");
+
+      const totalCount = data.totalCount;
+      const lastPage = Math.ceil(totalCount / 6);
+
+      router.push(`/dashboard/expenses?page=${lastPage}`);
+
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
+
       reset();
       modalToggleHandle();
     },

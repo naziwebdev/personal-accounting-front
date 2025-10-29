@@ -25,6 +25,7 @@ import { IconDownArrow } from "@/components/icons/IconDownAroow";
 import { useCategoriesByType } from "@/hooks/useCategories";
 import { useCards } from "@/hooks/useCards";
 import { toPersianDigits } from "@/utils/normalizeDigits";
+import { useRouter } from "next/navigation";
 
 type addIncomFormData = {
   title: string;
@@ -36,6 +37,8 @@ type addIncomFormData = {
 };
 
 export default function AddIncomeBtn() {
+  const router = useRouter();
+
   const [openModal, setOpenModal] = useState<boolean>(false);
   const {
     data: categories,
@@ -70,7 +73,6 @@ export default function AddIncomeBtn() {
 
   const mutation = useMutation({
     mutationFn: async (data: addIncomFormData) => {
-   
       // Convert Persian date string (e.g. "1404/08/03") to a valid Gregorian Date object
       // Required because backend expects ISO-formatted Gregorian dates, not Jalali strings
       const persianDate = new DateObject({
@@ -113,12 +115,20 @@ export default function AddIncomeBtn() {
 
       return result.data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success("درامد با موفقیت افزوده شد");
+
+      const totalCount = data.totalCount;
+      const lastPage = Math.ceil(totalCount / 6);
+
+      router.push(`/dashboard/incomes?page=${lastPage}`);
+
       queryClient.invalidateQueries({ queryKey: ["incomes"] });
+
       reset();
       modalToggleHandle();
     },
+
     onError: () => {
       toast.error("خطا در افزودن درامد");
     },

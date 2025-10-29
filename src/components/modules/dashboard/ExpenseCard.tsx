@@ -28,6 +28,7 @@ import { IconDownArrow } from "@/components/icons/IconDownAroow";
 import { IconBankCard } from "@/components/icons/IconBankCard";
 import { IconCalender } from "@/components/icons/IconCalender";
 import { IconDescription } from "@/components/icons/IconDescription";
+import { useRouter } from "next/navigation";
 
 type editExpenseFormData = {
   title?: string | null;
@@ -39,6 +40,7 @@ type editExpenseFormData = {
 };
 
 export default function ExpenseCard(Prop: Expense) {
+  const router = useRouter();
   const [isShowAction, setIsShowAction] = useState<boolean>(false);
   const [openEditModal, setOpenEditModal] = useState<boolean>(false);
 
@@ -169,8 +171,14 @@ export default function ExpenseCard(Prop: Expense) {
 
       return result.data;
     },
-    onSuccess: () => {
-      toast.success(" هزینه با موفقیت حذف شد ");
+    onSuccess: (data) => {
+      toast.success("هزینه با موفقیت حذف شد");
+
+      const totalCount = data.totalCount;
+      const lastPage = Math.ceil(totalCount / 6); // 6 = your pagination limit
+
+      router.push(`/dashboard/expenses?page=${lastPage}`);
+
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
     },
     onError: () => {

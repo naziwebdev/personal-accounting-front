@@ -19,7 +19,6 @@ export default function IncomeCardList() {
   const [incomesShowPage, setIncomesShowPage] = useState<Income[]>([]);
   const { loading } = useAuth();
 
-
   useEffect(() => {
     const toastId = "incomes-loading";
 
