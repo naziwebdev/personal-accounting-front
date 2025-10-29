@@ -35,18 +35,21 @@ export default function IncomeCardList() {
 
   if (loading || isLoading) return null;
   if (isError || !incomes) return null;
+
+  const totalPages = Math.ceil(incomes.totalCount / limit);
+
   return (
     <>
       <div className="flex justify-center items-center flex-wrap gap-6">
-        {incomesShowPage.length !== 0 &&
-          incomesShowPage.map((income, index) => {
-            return <IncomeCard key={income.id} {...income} />;
-          })}
-        {incomesShowPage.length === 0 && (
-          <EmptyState title=" هنوز درامدی اضافه نکردی" />
-        )}
+        {totalPages > 1
+          ? incomesShowPage.map((income, index) => {
+              return <IncomeCard key={income.id} {...income} />;
+            })
+          : incomes.items.map((income, index) => {
+              return <IncomeCard key={income.id} {...income} />;
+            })}
       </div>
-      {incomes.totalCount !== 0 && (
+      {totalPages > 1 && (
         <Pagination
           itemes={incomes.items}
           itemsLimit={6}

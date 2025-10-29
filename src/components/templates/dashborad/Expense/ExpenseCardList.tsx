@@ -19,7 +19,6 @@ export default function ExpenseCardList() {
 
   const { data: expenses, isError, isLoading } = useExpense(page, limit);
 
-
   const { loading } = useAuth();
 
   useEffect(() => {
@@ -39,9 +38,11 @@ export default function ExpenseCardList() {
   if (loading || isLoading) return null;
   if (isError || !expenses) return null;
 
+  const totalPages = Math.ceil(expenses.totalCount / limit);
+
   return (
     <>
-      <div className="flex justify-center items-center flex-wrap gap-6">
+      {/* <div className="flex justify-center items-center flex-wrap gap-6">
         {expensesShowPage.length !== 0 &&
           expensesShowPage.map((expense, index) => {
             return <ExpenseCard key={expense.id} {...expense} />;
@@ -51,6 +52,24 @@ export default function ExpenseCardList() {
         )}
       </div>
       {expenses.totalCount !== 0 && (
+        <Pagination
+          itemes={expenses.items}
+          itemsLimit={6}
+          totalItems={expenses.totalCount}
+          pathname="/expenses"
+          setShowItems={setExpensesShowPage}
+        />
+      )} */}
+      <div className="flex justify-center items-center flex-wrap gap-6">
+        {totalPages > 1
+          ? expensesShowPage.map((expense, index) => {
+              return <ExpenseCard key={expense.id} {...expense} />;
+            })
+          : expenses.items.map((expense, index) => {
+              return <ExpenseCard key={expense.id} {...expense} />;
+            })}
+      </div>
+      {totalPages > 1 && (
         <Pagination
           itemes={expenses.items}
           itemsLimit={6}
