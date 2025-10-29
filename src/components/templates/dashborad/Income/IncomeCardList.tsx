@@ -15,13 +15,10 @@ export default function IncomeCardList() {
   const page = Number(searchParams.get("page") ?? "1");
   const limit = Number(searchParams.get("limit") ?? "6");
 
-
   const { data: incomes, isLoading, isError } = useIncomes(page, limit);
   const [incomesShowPage, setIncomesShowPage] = useState<Income[]>([]);
   const { loading } = useAuth();
 
-  console.log(incomes)
-  
 
   useEffect(() => {
     const toastId = "incomes-loading";
@@ -50,13 +47,15 @@ export default function IncomeCardList() {
           <EmptyState title=" هنوز درامدی اضافه نکردی" />
         )}
       </div>
-      <Pagination
-        itemes={incomes.items}
-        itemsLimit={6}
-        totalItems={incomes.totalCount}
-        pathname="/incomes"
-        setShowItems={setIncomesShowPage}
-      />
+      {incomes.totalCount !== 0 && (
+        <Pagination
+          itemes={incomes.items}
+          itemsLimit={6}
+          totalItems={incomes.totalCount}
+          pathname="/incomes"
+          setShowItems={setIncomesShowPage}
+        />
+      )}
     </>
   );
 }

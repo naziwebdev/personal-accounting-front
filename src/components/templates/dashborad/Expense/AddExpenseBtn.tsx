@@ -111,7 +111,7 @@ export default function AddExpenseBtn() {
     },
     onSuccess: () => {
       toast.success("هزینه با موفقیت افزوده شد");
-      queryClient.invalidateQueries({ queryKey: ["incomes"] });
+      queryClient.invalidateQueries({ queryKey: ["expenses"] });
       reset();
       modalToggleHandle();
     },

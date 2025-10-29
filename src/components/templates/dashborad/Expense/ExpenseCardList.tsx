@@ -19,7 +19,6 @@ export default function ExpenseCardList() {
 
   const { data: expenses, isError, isLoading } = useExpense(page, limit);
 
-  console.log(expenses);
 
   const { loading } = useAuth();
 
@@ -51,13 +50,15 @@ export default function ExpenseCardList() {
           <EmptyState title=" هنوز هزینه ای اضافه نکردی" />
         )}
       </div>
-      <Pagination
-        itemes={expenses.items}
-        itemsLimit={6}
-        totalItems={expenses.totalCount}
-        pathname="/expenses"
-        setShowItems={setExpensesShowPage}
-      />
+      {expenses.totalCount !== 0 && (
+        <Pagination
+          itemes={expenses.items}
+          itemsLimit={6}
+          totalItems={expenses.totalCount}
+          pathname="/expenses"
+          setShowItems={setExpensesShowPage}
+        />
+      )}
     </>
   );
 }
