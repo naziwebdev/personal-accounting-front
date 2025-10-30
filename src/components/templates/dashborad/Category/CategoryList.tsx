@@ -10,7 +10,7 @@ export default function CategoryList() {
   const iconList = Object.entries(ICONS);
   return (
     <div className="flex justify-between px-32">
-      <section className="">
+      <section className="w-1/3">
         <div className="flex items-center gap-4">
           <div className="flex justify-center items-center w-20 h-20 rounded-full bg-[var(--color-secondary)] shadow-lg shadow-zinc-500/40 ">
             <IconIncome size="w-14 h-14" color="#fff" />
@@ -19,8 +19,34 @@ export default function CategoryList() {
             دسته بندی واریز ها
           </h3>
         </div>
+        <div className="w-full mt-10">
+          <CategoryCard
+            color="bg-violet-300"
+            bgIcon="bg-[var(--color-secondary)]"
+          />
+          <CategoryCard
+            color="bg-violet-300"
+            bgIcon="bg-[var(--color-secondary)]"
+          />
+          <CategoryCard
+            color="bg-violet-300"
+            bgIcon="bg-[var(--color-secondary)]"
+          />
+          <CategoryCard
+            color="bg-violet-300"
+            bgIcon="bg-[var(--color-secondary)]"
+          />
+          <CategoryCard
+            color="bg-violet-300"
+            bgIcon="bg-[var(--color-secondary)]"
+          />
+          <CategoryCard
+            color="bg-violet-300"
+            bgIcon="bg-[var(--color-secondary)]"
+          />
+        </div>
       </section>
-      <section className="">
+      <section className="w-1/3">
         <div className="flex items-center gap-4">
           <div className="flex justify-center items-center w-20 h-20 rounded-full bg-[var(--color-primary)] shadow-lg shadow-zinc-500/40">
             <IconExpense size="w-14 h-14" color="#fff" />
@@ -29,16 +55,42 @@ export default function CategoryList() {
             دسته بندی برداشت ها
           </h3>
         </div>
+        <div className="w-full mt-10">
+          <CategoryCard
+            color="bg-[#f3d2dc]"
+            bgIcon="bg-[var(--color-primary)]"
+          />
+          <CategoryCard
+            color="bg-[#f3d2dc]"
+            bgIcon="bg-[var(--color-primary)]"
+          />
+          <CategoryCard
+            color="bg-[#f3d2dc]"
+            bgIcon="bg-[var(--color-primary)]"
+          />
+          <CategoryCard
+            color="bg-[#f3d2dc]"
+            bgIcon="bg-[var(--color-primary)]"
+          />
+          <CategoryCard
+            color="bg-[#f3d2dc]"
+            bgIcon="bg-[var(--color-primary)]"
+          />
+          <CategoryCard
+            color="bg-[#f3d2dc]"
+            bgIcon="bg-[var(--color-primary)]"
+          />
+        </div>
       </section>
     </div>
   );
 }
 
-{
-  /* {iconList.map(([key, { component: Icon, title }]) => (
-        <div key={key} className="flex flex-col items-center gap-2">
-          <Icon size="w-14 h-14" color="#000000" />
-          <span className="text-xs text-gray-600">{title}</span>
-        </div>
-      ))} */
-}
+// {
+//    {iconList.map(([key, { component: Icon, title }]) => (
+//         <div key={key} className="flex flex-col items-center gap-2">
+//           <Icon size="w-14 h-14" color="#000000" />
+//           <span className="text-xs text-gray-600">{title}</span>
+//         </div>
+//       ))}
+// }

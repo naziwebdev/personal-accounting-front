@@ -48,6 +48,9 @@ export default function IncomeCardList() {
           : incomes.items.map((income, index) => {
               return <IncomeCard key={income.id} {...income} />;
             })}
+        {incomes.totalCount === 0 && (
+          <EmptyState title="هنوز درامدی اضافه نکردی" />
+        )}
       </div>
       {totalPages > 1 && (
         <Pagination

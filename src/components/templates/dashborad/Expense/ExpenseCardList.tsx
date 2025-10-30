@@ -68,6 +68,9 @@ export default function ExpenseCardList() {
           : expenses.items.map((expense, index) => {
               return <ExpenseCard key={expense.id} {...expense} />;
             })}
+        {expenses.totalCount === 0 && (
+          <EmptyState title="هنوز هزینه ای اضافه نکردی" />
+        )}
       </div>
       {totalPages > 1 && (
         <Pagination
