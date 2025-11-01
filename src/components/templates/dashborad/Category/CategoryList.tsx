@@ -1,18 +1,20 @@
 "use client";
 
 import React, { useState } from "react";
-import { ICONS } from "../../../../config/categoryIcons";
 import { IconIncome } from "@/components/icons/category/IconIncome";
 import { IconExpense } from "@/components/icons/category/IconExpense";
 import CategoryCard from "./CategoryCard";
+import { useCategoriesByType } from "@/hooks/useCategories";
 
 type CategoryType = "income" | "expense";
 
 export default function CategoryList() {
-  // const iconList = Object.entries(ICONS);
 
   const [showCategoryTypeInSmSize, setShowCategoryTypeInSmSize] =
     useState<CategoryType>("income");
+
+  const { data: incomeCategories } = useCategoriesByType("income");
+  const { data: expenseCategories } = useCategoriesByType("expense");
 
   return (
     <div className="flex flex-wrap sm:flex-nowrap gap-y-10 justify-center sm:justify-between  xl:px-32">
@@ -40,7 +42,7 @@ export default function CategoryList() {
       </div>
       <section
         className={`w-full xl:w-1/3 ${
-          showCategoryTypeInSmSize === "expense" && "hidden"
+          showCategoryTypeInSmSize === "expense" && "hidden sm:flex"
         }`}
       >
         <div className="flex items-center gap-4">
@@ -52,35 +54,19 @@ export default function CategoryList() {
           </h3>
         </div>
         <div className="w-full mt-10">
-          <CategoryCard
-            color="bg-violet-300"
-            bgIcon="bg-[var(--color-secondary)]"
-          />
-          <CategoryCard
-            color="bg-violet-300"
-            bgIcon="bg-[var(--color-secondary)]"
-          />
-          <CategoryCard
-            color="bg-violet-300"
-            bgIcon="bg-[var(--color-secondary)]"
-          />
-          <CategoryCard
-            color="bg-violet-300"
-            bgIcon="bg-[var(--color-secondary)]"
-          />
-          <CategoryCard
-            color="bg-violet-300"
-            bgIcon="bg-[var(--color-secondary)]"
-          />
-          <CategoryCard
-            color="bg-violet-300"
-            bgIcon="bg-[var(--color-secondary)]"
-          />
+          {incomeCategories?.map((category) => (
+            <CategoryCard
+              key={category.id}
+              {...category}
+              color="bg-violet-300"
+              bgIcon="bg-[var(--color-secondary)]"
+            />
+          ))}
         </div>
       </section>
       <section
         className={`w-full xl:w-1/3 ${
-          showCategoryTypeInSmSize === "income" && "hidden"
+          showCategoryTypeInSmSize === "income" && "hidden sm:block"
         }`}
       >
         <div className="flex items-center gap-4">
@@ -92,30 +78,14 @@ export default function CategoryList() {
           </h3>
         </div>
         <div className="w-full mt-10">
-          <CategoryCard
-            color="bg-[#f3d2dc]"
-            bgIcon="bg-[var(--color-primary)]"
-          />
-          <CategoryCard
-            color="bg-[#f3d2dc]"
-            bgIcon="bg-[var(--color-primary)]"
-          />
-          <CategoryCard
-            color="bg-[#f3d2dc]"
-            bgIcon="bg-[var(--color-primary)]"
-          />
-          <CategoryCard
-            color="bg-[#f3d2dc]"
-            bgIcon="bg-[var(--color-primary)]"
-          />
-          <CategoryCard
-            color="bg-[#f3d2dc]"
-            bgIcon="bg-[var(--color-primary)]"
-          />
-          <CategoryCard
-            color="bg-[#f3d2dc]"
-            bgIcon="bg-[var(--color-primary)]"
-          />
+          {expenseCategories?.map((category) => (
+            <CategoryCard
+              key={category.id}
+              {...category}
+              color="bg-[#f3d2dc]"
+              bgIcon="bg-[var(--color-primary)]"
+            />
+          ))}
         </div>
       </section>
     </div>

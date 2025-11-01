@@ -1,13 +1,32 @@
+"use client";
 import React from "react";
 import { IconActionDot } from "@/components/icons/IconActiondot";
 import { IconDollar } from "@/components/icons/category/IconDollar";
+import { ICONS } from "../../../../config/categoryIcons";
 
 type CategoryCardProps = {
+  id: number;
+  title: string;
+  type: "income" | "expense";
+  icon: string;
   color: string;
   bgIcon: string;
 };
 
-export default function CategoryCard({ color, bgIcon }: CategoryCardProps) {
+export default function CategoryCard({
+  id,
+  title,
+  type,
+  icon,
+  color,
+  bgIcon,
+}: CategoryCardProps) {
+  const isValidIcon = icon in ICONS;
+
+  const IconComponent = isValidIcon
+    ? ICONS[icon as keyof typeof ICONS].component
+    : null;
+
   return (
     <div
       className={`relative mt-4 ms-14 flex gap-x-2 justify-between items-center w-2/3 xl:w-10/12 p-4 ${color} rounded-xl shadow-lg shadow-zinc-400/50`}
@@ -17,10 +36,14 @@ export default function CategoryCard({ color, bgIcon }: CategoryCardProps) {
         <div
           className={`flex justify-center items-center w-14 h-14 md:w-[4.15rem] md:h-[4.15rem] rounded-full  shadow-lg shadow-zinc-500/40 ${bgIcon} border-4 border-white border-dotted `}
         >
-          <IconDollar size="w-6 h-6 md:w-10 md:h-10" color="#fff" />
+          {IconComponent ? (
+            <IconComponent size="w-6 h-6 md:w-10 md:h-10" color="#fff" />
+          ) : (
+            <IconDollar size="w-6 h-6 md:w-10 md:h-10" color="#fff" />
+          )}
         </div>
         <p className="text-base md:text-xl text-shadow-[1px_1px_2px_gray] text-white">
-          هدیه
+          {title}
         </p>
       </div>
       <button className="cursor-pointer">
