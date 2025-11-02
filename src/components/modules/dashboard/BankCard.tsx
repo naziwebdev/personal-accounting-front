@@ -88,7 +88,7 @@ export default function BankCard({
         res = await makeRequest(newToken);
         result = await res.json();
       }
-      if (result.statusCode !== 200) throw new Error("Failed to add card");
+      if (result.statusCode !== 200) throw new Error("Failed to edit card");
 
       return result.data;
     },

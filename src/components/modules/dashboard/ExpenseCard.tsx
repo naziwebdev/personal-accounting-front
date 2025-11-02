@@ -272,13 +272,13 @@ export default function ExpenseCard(Prop: Expense) {
             >
               <div className="w-full lg:max-w-5/12">
                 <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-secondary)]">
-                    <IconPaper size="w-7 h-7 xs:w-8 xs:h-8" color="#ffffff" />
+                  <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-theme)]">
+                    <IconPaper size="w-7 h-7 xs:w-8 xs:h-8" color="#52525b" />
                   </div>
                   <input
                     {...register("title")}
                     type="text"
-                    className="w-full bg-[var(--color-secondary)] p-3 placeholder:text-white rounded-xl text-white outline-0"
+                    className="w-full bg-[var(--color-theme)] p-3 placeholder:text-[#52525b] rounded-xl text-[#52525b] outline-0"
                     placeholder="عنوان هزینه را وارد کنید"
                   />
                 </div>
@@ -289,8 +289,8 @@ export default function ExpenseCard(Prop: Expense) {
               </div>
               <div className="w-full lg:max-w-5/12">
                 <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-secondary)]">
-                    <IconCoin size="w-7 h-7 xs:w-8 xs:h-8" color="#ffffff" />
+                  <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-theme)]">
+                    <IconCoin size="w-7 h-7 xs:w-8 xs:h-8" color="#52525b" />
                   </div>
                   <input
                     {...register("price", {
@@ -299,7 +299,7 @@ export default function ExpenseCard(Prop: Expense) {
                       },
                     })}
                     type="text"
-                    className="w-full bg-[var(--color-secondary)] p-3 placeholder:text-white rounded-xl text-white outline-0"
+                    className="w-full bg-[var(--color-theme)] p-3 placeholder:text-[#52525b] rounded-xl text-[#52525b] outline-0"
                     placeholder="مبلغ هزینه را وارد کنید"
                   />
                 </div>
@@ -309,11 +309,11 @@ export default function ExpenseCard(Prop: Expense) {
               </div>
               <div className="w-full lg:max-w-5/12">
                 <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-secondary)]">
+                  <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-theme)]">
                     <IconCategory
                       size="w-7 h-7 xs:w-8 xs:h-8"
-                      colorBg="#ffffff"
-                      colorIcon="#8c66e5"
+                      colorBg="#52525b"
+                      colorIcon="#e4e2f1"
                     />
                   </div>
                   <Controller
@@ -326,11 +326,11 @@ export default function ExpenseCard(Prop: Expense) {
                           {...field}
                           value={field.value ?? -1}
                           id="category"
-                          className="appearance-none w-full bg-[var(--color-secondary)] p-3 placeholder:text-white rounded-xl text-white outline-0"
+                          className="appearance-none w-full bg-[var(--color-theme)] p-3 placeholder:text-[#52525b] rounded-xl text-[#52525b] outline-0"
                         >
                           <option
                             value={"-1"}
-                            className="bg-primary-p text-white"
+                            className="bg-primary-p text-[#52525b]"
                           >
                             دسته بندی را انتخاب کنید
                           </option>
@@ -348,7 +348,7 @@ export default function ExpenseCard(Prop: Expense) {
                         <span className="absolute left-3 top-1/2 z-10 transform -translate-y-1/2 pointer-events-none">
                           <IconDownArrow
                             size="w-3 h-3 xs:w-4 xs:h-4"
-                            color="#ffffff"
+                            color="#52525b"
                           />
                         </span>
                       </div>
@@ -415,10 +415,10 @@ export default function ExpenseCard(Prop: Expense) {
               </div>
               <div className="w-full lg:max-w-5/12">
                 <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-secondary)]">
+                  <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-theme)]">
                     <IconCalender
                       size="w-6 h-6 xs:w-7 xs:h-7"
-                      color="#ffffff"
+                      color="#52525b"
                     />
                   </div>
                   <Controller
@@ -428,7 +428,7 @@ export default function ExpenseCard(Prop: Expense) {
                     render={({ field: { onChange, value } }) => (
                       <>
                         <DatePicker
-                          inputClass="custom-input"
+                          inputClass="custom-input-edit"
                           className="purple w-full"
                           format="YYYY/MM/DD"
                           value={

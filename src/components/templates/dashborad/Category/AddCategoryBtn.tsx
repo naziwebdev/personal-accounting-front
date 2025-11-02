@@ -210,7 +210,7 @@ export default function AddCategoryBtn() {
                 </div>
 
                 <span className="text-right pt-1.5  text-sm  text-red-600">
-                  {/* {errors.balance && errors.balance.message} */}
+                  {errors.icon && errors.icon.message}
                 </span>
               </div>
 

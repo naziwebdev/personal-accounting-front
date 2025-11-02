@@ -41,6 +41,18 @@
 .custom-input::placeholder {
   color: #fff;
 }
+.custom-input-edit {
+  width: 100%;
+  background-color: var(--color-theme);
+  padding: 12px;
+  border-radius: 12px;
+  outline: none;
+  color: #52525b;
+}
+
+.custom-input-edit::placeholder {
+  color: #52525b;
+}
 /* sweetalert */
 
 @theme inline {
