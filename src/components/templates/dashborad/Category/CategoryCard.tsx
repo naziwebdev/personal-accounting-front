@@ -76,6 +76,7 @@ export default function CategoryCard({
 
   const selectedIcon = watch("icon");
 
+  //edit category logic
   const editMutation = useMutation({
     mutationFn: async (data: editCategoryFormData) => {
       const makeRequest = async (token: string) => {
@@ -127,6 +128,58 @@ export default function CategoryCard({
     });
   };
 
+  ///edit category logic
+
+  //delete category logic
+  const removeMutation = useMutation({
+    mutationFn: async () => {
+      const makeRequest = async (token: string) => {
+        return await fetch(`http://localhost:4002/api/v1/categories/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+        });
+      };
+
+      let res = await makeRequest(accessToken!);
+      let result = await res.json();
+
+      if (result.statusCode === 401) {
+        const newToken = await restoreAccessToken();
+        if (!newToken) throw new Error("Unauthorized");
+        setAccessToken(newToken);
+        res = await makeRequest(newToken);
+        result = await res.json();
+      }
+      if (result.statusCode !== 200)
+        throw new Error("Failed to remove category");
+
+      return result.data;
+    },
+    onSuccess: () => {
+      toast.success("دسته بندی با موفقیت حذف شد");
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+    onError: () => {
+      toast.error("خطا در حذف دسته بندی");
+    },
+  });
+
+  const deleteCategoryHandle = () => {
+    swal({
+      title: "آیا از حذف دسته بندی اطمینان دارید ؟",
+      icon: "warning",
+      buttons: ["خیر", "بله"],
+    }).then((value) => {
+      if (value) {
+        removeMutation.mutate();
+      }
+    });
+  };
+
   return (
     <div
       className={`relative mt-4 ms-14 flex gap-x-2 justify-between items-center w-2/3 xl:w-10/12 p-4 ${color} rounded-xl shadow-lg shadow-zinc-400/50`}
@@ -160,7 +213,7 @@ export default function CategoryCard({
         >
           <IconEdit size="w-6 h-6 font-bold" color="#fff" />
         </button>
-        <button className="cursor-pointer">
+        <button onClick={deleteCategoryHandle} className="cursor-pointer">
           <IconDelete size="w-6 h-6 font-bold" color="#fff" />
         </button>
       </div>
