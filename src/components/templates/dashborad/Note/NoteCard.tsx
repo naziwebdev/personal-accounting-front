@@ -4,6 +4,7 @@ import { IconProfile } from "@/components/icons/IconProfile";
 import { IconActionDot } from "@/components/icons/IconActiondot";
 import { IconDelete } from "@/components/icons/IconDelete";
 import { toPersianDigits } from "@/utils/normalizeDigits";
+import Modal from "@/components/modules/dashboard/Modal";
 
 type NotePropType = {
   color: string;
@@ -23,6 +24,10 @@ export default function NoteCard({
   createdAt,
 }: NotePropType) {
   const [toggleEditBtn, setToggleEditBtn] = useState<boolean>(false);
+  const [isOpenNote, setIsOpenNote] = useState<boolean>(false);
+
+  const closeNoteHanlde = () => setIsOpenNote(false);
+
   return (
     <div
       className={`w-full xs:w-[350px] lg:w-[370px] ${bgColor}  rounded-xl border-b-2 ${border} p-3 shadow-xl`}
@@ -54,6 +59,7 @@ export default function NoteCard({
                 ویرایش
               </button>
               <button
+                onClick={() => setIsOpenNote(!isOpenNote)}
                 className="absolute flex justify-center items-center -right-7 top-16 cursor-pointer rounded-md bg-white px-1.5 py-0.5
             text-sm shadow-sm shadow-zinc-300/50"
               >
@@ -72,6 +78,14 @@ export default function NoteCard({
       <button className="w-full flex items-center justify-end text-xl cursor-pointer font-bold">
         <IconDelete size="w-6 h-6" color={color} />
       </button>
+      {isOpenNote && (
+        <Modal onClose={closeNoteHanlde}>
+          <div className="flex flex-col items-center justify-between gap-10">
+            <h3 className="text-xl font-black">متن یادداشت</h3>
+            <p className="">{description}</p>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }
