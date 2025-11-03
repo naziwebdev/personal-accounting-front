@@ -251,13 +251,15 @@ export default function IncomeCard(Prop: Income) {
         </div>
       </div>
       <div className="w-full flex justify-between bg-pink-50/40 p-2.5 xs:p-4 mt-3 xs:mt-4 border-[1px] border-[var(--color-primary)]/70 rounded-2xl text-sm xs:text-base">
-        <div className="flex gap-1 border-l-[2px] border-[var(--color-primary)]/40 w-1/2">
+        <div className="flex gap-1 border-l-[2px] border-[var(--color-primary)]/40 w-2/5">
           <p className="text-gray-500">عنوان : </p>
-          <p className="text-gray-800 font-bold">{Prop.title}</p>
+          <p className="text-gray-800 font-bold text-center">{Prop.title}</p>
         </div>
         <div className="flex gap-1 ps-3 xs:ps-0">
           <p className="text-gray-500 whitespace-nowrap">دسته بندی : </p>
-          <p className="text-gray-800 font-bold">{Prop.category.title}</p>
+          <p className="text-gray-800 font-bold text-center">
+            {Prop.category.title}
+          </p>
         </div>
       </div>
       {openEditModal ? (
