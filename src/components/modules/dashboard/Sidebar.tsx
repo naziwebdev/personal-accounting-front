@@ -91,7 +91,7 @@ export default function Sidebar() {
         </Link>
       </Tooltip>
       <Tooltip content="یادداشت">
-        <Link href={"/dashboard/notes"}>
+        <Link href={"/dashboard/notes?page=1"}>
           <IconNote
             size="w-9 h-9 xs:w-10 xs:h-10"
             colorBg="fill-[var(--color-primary)]"

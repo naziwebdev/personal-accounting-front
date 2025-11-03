@@ -3,14 +3,25 @@ import React, { useState } from "react";
 import { IconProfile } from "@/components/icons/IconProfile";
 import { IconActionDot } from "@/components/icons/IconActiondot";
 import { IconDelete } from "@/components/icons/IconDelete";
+import { toPersianDigits } from "@/utils/normalizeDigits";
 
 type NotePropType = {
   color: string;
   bgColor: string;
   border: string;
+  title: string;
+  description: string;
+  createdAt: string;
 };
 
-export default function NoteCard({ color, bgColor, border }: NotePropType) {
+export default function NoteCard({
+  color,
+  bgColor,
+  border,
+  title,
+  description,
+  createdAt,
+}: NotePropType) {
   const [toggleEditBtn, setToggleEditBtn] = useState<boolean>(false);
   return (
     <div
@@ -20,10 +31,10 @@ export default function NoteCard({ color, bgColor, border }: NotePropType) {
         <div className="flex items-center gap-x-3 ">
           <IconProfile color={color} />
           <div className="text-sm">
-            <p className="pb-1 font-semibold text-sm xs:text-base">
-              عنوان یااداشت
+            <p className="pb-1 font-semibold text-sm xs:text-base">{title}</p>
+            <p className="text-zinc-500 text-xs xs:text-sm">
+              {toPersianDigits(createdAt.toLocaleString().split(" ")[0])}
             </p>
-            <p className="text-zinc-500 text-xs xs:text-sm">13404/07/07</p>
           </div>
         </div>
         <div className="relative">
@@ -36,26 +47,25 @@ export default function NoteCard({ color, bgColor, border }: NotePropType) {
 
           {toggleEditBtn && (
             <>
-            <button
-              className="absolute flex justify-center items-center -right-7 top-8 cursor-pointer rounded-md bg-white px-2 py-0.5
+              <button
+                className="absolute flex justify-center items-center -right-7 top-8 cursor-pointer rounded-md bg-white px-2 py-0.5
             text-sm shadow-sm shadow-zinc-300/50"
-            >
-              ویرایش
-            </button>
-            <button
-              className="absolute flex justify-center items-center -right-7 top-16 cursor-pointer rounded-md bg-white px-1.5 py-0.5
+              >
+                ویرایش
+              </button>
+              <button
+                className="absolute flex justify-center items-center -right-7 top-16 cursor-pointer rounded-md bg-white px-1.5 py-0.5
             text-sm shadow-sm shadow-zinc-300/50"
-            >
-              مشاهده
-            </button>
+              >
+                مشاهده
+              </button>
             </>
-
           )}
         </div>
       </div>
       <div className="h-16 sm:h-22">
         <p className="truncate text-sm xs:text-[.9rem] pt-4 text-white">
-          متن یادداشت
+          {description}
         </p>
       </div>
 

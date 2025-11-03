@@ -27,7 +27,7 @@ export const fetchIncomes = async (
       {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${newToken}`,
         },
         credentials: "include",
       }

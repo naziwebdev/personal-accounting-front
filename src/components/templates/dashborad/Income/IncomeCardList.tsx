@@ -7,7 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import EmptyState from "@/components/modules/dashboard/EmptyState";
 import { toast } from "sonner";
 import Pagination from "@/components/modules/dashboard/Pagination";
-import { IncomeArrayType, Income } from "@/types/income";
+import { Income } from "@/types/income";
 import { useSearchParams } from "next/navigation";
 
 export default function IncomeCardList() {
