@@ -5,11 +5,17 @@ import { IconActionDot } from "@/components/icons/IconActiondot";
 import { IconDelete } from "@/components/icons/IconDelete";
 import { toPersianDigits } from "@/utils/normalizeDigits";
 import Modal from "@/components/modules/dashboard/Modal";
+import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { restoreAccessToken } from "@/utils/restoreAccessToken";
+import { useRouter } from "next/navigation";
 
 type NotePropType = {
   color: string;
   bgColor: string;
   border: string;
+  id: number;
   title: string;
   description: string;
   createdAt: string;
@@ -19,6 +25,7 @@ export default function NoteCard({
   color,
   bgColor,
   border,
+  id,
   title,
   description,
   createdAt,
@@ -26,7 +33,67 @@ export default function NoteCard({
   const [toggleEditBtn, setToggleEditBtn] = useState<boolean>(false);
   const [isOpenNote, setIsOpenNote] = useState<boolean>(false);
 
+  const queryClient = useQueryClient();
+  const { accessToken, setAccessToken } = useAuth();
+  const router = useRouter();
+
   const closeNoteHanlde = () => setIsOpenNote(false);
+
+  //////// delete logic ///////
+
+  const removeMutation = useMutation({
+    mutationFn: async () => {
+      const makeRequest = async (token: string) => {
+        return await fetch(`http://localhost:4002/api/v1/notes/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+        });
+      };
+
+      let res = await makeRequest(accessToken!);
+      let result = await res.json();
+
+      if (result.statusCode === 401) {
+        const newToken = await restoreAccessToken();
+        if (!newToken) throw new Error("Unauthorized");
+        setAccessToken(newToken);
+        res = await makeRequest(newToken);
+        result = await res.json();
+      }
+      if (result.statusCode !== 200) throw new Error("Failed to remove note");
+
+      return result.data;
+    },
+    onSuccess: (data) => {
+      toast.success("یادداشت با موفقیت حذف شد");
+
+      const totalCount = data.totalCount;
+      const lastPage = Math.ceil(totalCount / 6); // 6 = your pagination limit
+
+      router.push(`/dashboard/notes?page=${lastPage}`);
+
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+    },
+    onError: () => {
+      toast.error("خطا در حذف درامد");
+    },
+  });
+
+  const deleteNoteHandle = () => {
+    swal({
+      title: "آیا از حذف اطمینان دارید ؟",
+      icon: "warning",
+      buttons: ["خیر", "بله"],
+    }).then((value) => {
+      if (value) {
+        removeMutation.mutate();
+      }
+    });
+  };
 
   return (
     <div
@@ -75,7 +142,10 @@ export default function NoteCard({
         </p>
       </div>
 
-      <button className="w-full flex items-center justify-end text-xl cursor-pointer font-bold">
+      <button
+        onClick={deleteNoteHandle}
+        className="w-full flex items-center justify-end text-xl cursor-pointer font-bold"
+      >
         <IconDelete size="w-6 h-6" color={color} />
       </button>
       {isOpenNote && (
