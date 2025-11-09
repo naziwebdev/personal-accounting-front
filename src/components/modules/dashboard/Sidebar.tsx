@@ -118,7 +118,7 @@ export default function Sidebar() {
         </Link>
       </Tooltip>
       <Tooltip content="بدهی/طلب">
-        <Link href={"/dashboard/debts-receivables"}>
+        <Link href={"/dashboard/debts-receivables?page=1"}>
           <IconDept
             size="w-10 h-10 xs:w-11 xs:h-11"
             colorBg="fill-[var(--color-primary)]"

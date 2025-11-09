@@ -1,10 +1,14 @@
 "use client";
+import { DebtReceivable } from "@/types/debt";
+import { toPersianDigits } from "@/utils/normalizeDigits";
 import React, { useState } from "react";
 
-export default function ItemCard() {
-  const [isPaid, setIsPaid] = useState<boolean>(false);
+type StatusType = {
+  status: "pendding" | "paid";
+};
+export default function ItemCard(Prop: DebtReceivable) {
+  const [isPaid, setIsPaid] = useState<boolean>(Prop.status === "paid");
 
-  console.log(isPaid);
   return (
     <div className="relative w-full xs:w-[350px] lg:w-[400px] rounded-3xl  p-3 xs:p-4 shadow-zinc-300/80 shadow-sm">
       {/* bg svg */}
@@ -14,20 +18,26 @@ export default function ItemCard() {
       <div className="absolute inset-0 z-0 bg-white/60 rounded-3xl"></div>
       {/* content */}
       <div className="relative inset-0 z-20 rounded-3xl">
-        <p className="absolute left-1/2 -translate-x-1/2 -top-5 xs:-top-4 xs:-left-7 z-20 bg-[var(--color-secondary)] text-white px-4 py-0.5 rounded-lg text-sm xs:-rotate-[30deg]">
-          طلب
+        <p className="absolute left-1/2 -translate-x-1/2 xs:translate-none -top-5 xs:-top-4 xs:-left-7 z-20 bg-[var(--color-secondary)] text-white px-4 py-0.5 rounded-lg text-sm xs:-rotate-[30deg]">
+          {Prop.type === "receivable" ? "طلب" : "بدهی"}
         </p>
         <div className="w-full flex justify-between">
           <div className="text-center">
             <p className="text-sm sm:text-base">مبلغ</p>
             <p className="text-xl sm:text-2xl font-semibold pt-1.5 text-[var(--color-secondary)]">
-              ۳۰۰۰۰۰
+              {`${Number(Prop.price).toLocaleString("fa-IR")} `}
             </p>
           </div>
           <div className="text-center">
             <p className="text-sm sm:text-base">وضعیت</p>
-            <p className="font-semibold pt-1.5 text-yellow-400 text-sm sm:text-base">
-              در انتظار پرداخت
+            <p
+              className={`font-semibold pt-1.5 ${
+                Prop.status === "pendding"
+                  ? "text-yellow-400"
+                  : "text-green-600"
+              }  text-sm sm:text-base`}
+            >
+              {Prop.status === "pendding" ? "در انتظار پرداخت" : "پرداخت شده"}
             </p>
           </div>
         </div>
@@ -35,13 +45,13 @@ export default function ItemCard() {
           <div className="text-center">
             <p className="text-sm sm:text-base">از/ به شخص:</p>
             <p className="text-base sm:text-lg pt-1.5  text-zinc-500">
-              علی راد
+              {Prop.person}
             </p>
           </div>
           <div className="text-center">
             <p className="text-sm sm:text-base">تاریخ</p>
             <p className="pt-1.5 text-zinc-500 text-sm sm:text-base">
-              ۱۴۰۴/۰۸/۲۲
+              {toPersianDigits(Prop.date.toLocaleString().split(" ")[0])}
             </p>
           </div>
         </div>

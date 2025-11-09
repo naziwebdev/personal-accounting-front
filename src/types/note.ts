@@ -2,14 +2,14 @@ export type Note = {
   id: number;
   title: string;
   description: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt:string;
+  updatedAt: string;
   user: {
     id: number;
     phone: string;
     role: "admin" | "user";
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
   };
 };
 

@@ -1,13 +1,14 @@
 "use client";
 import { IconAdd } from "@/components/icons/IconAdd";
 import { IconDownArrow } from "@/components/icons/IconDownAroow";
-import React, { useState } from "react";
+import React from "react";
+import { TypeFilterItem } from "@/types/debt";
 
-type TypeFilterItem = "debt" | "receivable";
-
-export default function AddItemBtn() {
-  const [showByTypeFilter, setShowByTypeFilter] =
-    useState<TypeFilterItem>("receivable");
+type FilterTypeProp = {
+  setType: React.Dispatch<React.SetStateAction<TypeFilterItem>>;
+  typeItem: TypeFilterItem;
+};
+export default function AddItemBtn({ setType, typeItem }: FilterTypeProp) {
   return (
     <>
       <div className="w-full flex flex-wrap gap-x-4 gap-y-6 mb-10 items-start justify-between">
@@ -50,9 +51,9 @@ export default function AddItemBtn() {
 
           <div className="text-sm xs:text-base w-1/2 flex justify-between items-center bg-white rounded-4xl shadow-sm shadow-zinc-300/50">
             <button
-              onClick={() => setShowByTypeFilter("debt")}
+              onClick={() => setType("debt")}
               className={`cursor-pointer py-1.5 px-4  h-full rounded-full ${
-                showByTypeFilter === "debt"
+                typeItem === "debt"
                   ? "bg-[var(--color-secondary)] text-white xs:px-5"
                   : ""
               }`}
@@ -60,9 +61,9 @@ export default function AddItemBtn() {
               بدهی
             </button>
             <button
-              onClick={() => setShowByTypeFilter("receivable")}
+              onClick={() => setType("receivable")}
               className={` cursor-pointer py-1.5 px-4 h-full rounded-full ${
-                showByTypeFilter === "receivable"
+                typeItem === "receivable"
                   ? "bg-[var(--color-primary)] text-white xs:px-5"
                   : ""
               }`}
