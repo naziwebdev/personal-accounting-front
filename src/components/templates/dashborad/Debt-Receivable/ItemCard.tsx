@@ -14,39 +14,43 @@ export default function ItemCard() {
       <div className="absolute inset-0 z-0 bg-white/60 rounded-3xl"></div>
       {/* content */}
       <div className="relative inset-0 z-20 rounded-3xl">
-        <p className="absolute -top-4 -left-7 z-20 bg-[var(--color-secondary)] text-white px-4 py-0.5 rounded-lg text-sm -rotate-[30deg]">
+        <p className="absolute left-1/2 -translate-x-1/2 -top-5 xs:-top-4 xs:-left-7 z-20 bg-[var(--color-secondary)] text-white px-4 py-0.5 rounded-lg text-sm xs:-rotate-[30deg]">
           طلب
         </p>
         <div className="w-full flex justify-between">
           <div className="text-center">
-            <p className="">مبلغ</p>
-            <p className=" text-2xl font-semibold pt-1.5 text-[var(--color-secondary)]">
+            <p className="text-sm sm:text-base">مبلغ</p>
+            <p className="text-xl sm:text-2xl font-semibold pt-1.5 text-[var(--color-secondary)]">
               ۳۰۰۰۰۰
             </p>
           </div>
           <div className="text-center">
-            <p className="">وضعیت</p>
-            <p className="font-semibold pt-1.5 text-yellow-400">
+            <p className="text-sm sm:text-base">وضعیت</p>
+            <p className="font-semibold pt-1.5 text-yellow-400 text-sm sm:text-base">
               در انتظار پرداخت
             </p>
           </div>
         </div>
-        <div className="w-full flex justify-between mt-4">
+        <div className="w-full flex justify-between mt-2.5 sm:mt-4">
           <div className="text-center">
-            <p className="">از/ به شخص:</p>
-            <p className="text-lg pt-1.5  text-zinc-500">علی راد</p>
+            <p className="text-sm sm:text-base">از/ به شخص:</p>
+            <p className="text-base sm:text-lg pt-1.5  text-zinc-500">
+              علی راد
+            </p>
           </div>
           <div className="text-center">
-            <p className="">تاریخ</p>
-            <p className="pt-1.5 text-zinc-500">۱۴۰۴/۰۸/۲۲</p>
+            <p className="text-sm sm:text-base">تاریخ</p>
+            <p className="pt-1.5 text-zinc-500 text-sm sm:text-base">
+              ۱۴۰۴/۰۸/۲۲
+            </p>
           </div>
         </div>
-        <div className="flex justify-center items-center gap-x-4 mt-4">
-          <span className=" text-zinc-500 font-semibold text-[.9rem]">
+        <div className="flex justify-center items-center gap-x-2 sm:gap-x-4 mt-2.5 sm:mt-4">
+          <span className="whitespace-nowrap text-zinc-500 font-semibold text-xs sm:text-[.9rem]">
             پرداخت نشده
           </span>
           <div
-            className={`flex w-[75px] border-[3px]  ${
+            className={`flex w-16 sm:w-[75px] border-[3px]  ${
               isPaid
                 ? "border-[var(--color-secondary)] justify-end"
                 : "border-zinc-500 justify-start"
@@ -60,7 +64,7 @@ export default function ItemCard() {
             ></button>
           </div>
 
-          <span className="text-[var(--color-secondary)] font-semibold text-[.9rem]">
+          <span className="whitespace-nowrap text-[var(--color-secondary)] font-semibold text-xs sm:text-[.9rem]">
             پرداخت شده
           </span>
         </div>
