@@ -67,6 +67,7 @@
     /* --color-primary:#CD98C0; */
     /* --color-primary:#D4A6C8; */
     --color-primary: #e19ab3;
+
     /* --color-primary: #f4c1d8; */
 
     /* --color-secondary: #e0bbf4; */
@@ -120,6 +121,13 @@
 
   .font-titr {
     font-family: var(--font-titr);
+  }
+
+  .svgBg {
+    background-image: url("/images/cyrcle-svg-8.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
   }
 
   .shape::before {
