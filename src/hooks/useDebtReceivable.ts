@@ -8,32 +8,34 @@ export const fetchDebtReceivable = async (
   token: string,
   page: number = 1,
   limit: number = 6,
-  type: "receivable" | "debt" = "receivable"
+  type?: "receivable" | "debt",
+  status?: null | "pendding" | "paid"
 ): Promise<DebtReceivableArrayType> => {
-  const res = await fetch(
-    `http://localhost:4002/api/v1/receivables-debts/type?type=${type}&page=${page}&limit=${limit}`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
-    }
-  );
+  const baseUrl = "http://localhost:4002/api/v1/receivables-debts";
+  const url = status
+    ? `${baseUrl}/status?type=${type}&status=${status}&page=${page}&limit=${limit}`
+    : `${baseUrl}/type?type=${type}&page=${page}&limit=${limit}`;
+
+  const res = await fetch(url, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    credentials: "include",
+  });
 
   if (res.status === 401) {
     const newToken = await restoreAccessToken();
     if (!newToken) throw new Error("Unauthorized");
-    const retryRes = await fetch(
-      `http://localhost:4002/api/v1/receivables-debts/type?type=${type}&page=${page}&limit=${limit}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${newToken}`,
-        },
-        credentials: "include",
-      }
-    );
+
+    const retryRes = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${newToken}`,
+      },
+      credentials: "include",
+    });
+
     const result = await retryRes.json();
     return result.data;
   }
@@ -45,13 +47,14 @@ export const fetchDebtReceivable = async (
 export const useDebtReceivable = (
   page: number,
   limit: number,
-  type: "receivable" | "debt"
+  type: "receivable" | "debt",
+  status?: null | "pendding" | "paid"
 ) => {
   const { accessToken } = useAuth();
 
   return useQuery<DebtReceivableArrayType, Error>({
-    queryKey: ["debts", page, limit, type],
-    queryFn: () => fetchDebtReceivable(accessToken!, page, limit, type),
+    queryKey: ["debts", page, limit, type, status],
+    queryFn: () => fetchDebtReceivable(accessToken!, page, limit, type, status),
     enabled: !!accessToken,
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 30,

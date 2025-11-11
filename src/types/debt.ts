@@ -17,5 +17,6 @@ export type DebtReceivableArrayType = {
   totalCount: number;
 };
 
-
 export type TypeFilterItem = "debt" | "receivable";
+
+export type StatusFilterItem = null | "pendding" | "paid";

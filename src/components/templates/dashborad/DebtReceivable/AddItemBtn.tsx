@@ -2,13 +2,20 @@
 import { IconAdd } from "@/components/icons/IconAdd";
 import { IconDownArrow } from "@/components/icons/IconDownAroow";
 import React from "react";
-import { TypeFilterItem } from "@/types/debt";
+import { StatusFilterItem, TypeFilterItem } from "@/types/debt";
 
-type FilterTypeProp = {
+type FilterProp = {
   setType: React.Dispatch<React.SetStateAction<TypeFilterItem>>;
   typeItem: TypeFilterItem;
+  setStatus: React.Dispatch<React.SetStateAction<StatusFilterItem>>;
+  statusItem: StatusFilterItem;
 };
-export default function AddItemBtn({ setType, typeItem }: FilterTypeProp) {
+export default function AddItemBtn({
+  setType,
+  typeItem,
+  setStatus,
+  statusItem,
+}: FilterProp) {
   return (
     <>
       <div className="w-full flex flex-wrap gap-x-4 gap-y-6 mb-10 items-start justify-between">
@@ -22,6 +29,14 @@ export default function AddItemBtn({ setType, typeItem }: FilterTypeProp) {
           </p>
           <div className="relative flex gap-x-2 lg:gap-x-4 items-center">
             <select
+              value={statusItem ?? "all"}
+              onChange={(e) =>
+                setStatus(
+                  e.target.value === "all"
+                    ? null
+                    : (e.target.value as StatusFilterItem)
+                )
+              }
               id="bankCardID"
               className="text-sm xs:text-base w-24 xs:w-28 appearance-none shadow-sm shadow-zinc-300/50 bg-white py-1.5 px-4 placeholder:text-black rounded-lg text-black outline-0"
             >

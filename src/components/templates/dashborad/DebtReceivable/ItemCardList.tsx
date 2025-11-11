@@ -10,9 +10,10 @@ import Pagination from "@/components/modules/dashboard/Pagination";
 
 type ItemCardProp = {
   typeItem: "debt" | "receivable";
+  statusItem: null | "pendding" | "paid";
 };
 
-export default function ItemCardList({ typeItem }: ItemCardProp) {
+export default function ItemCardList({ typeItem, statusItem }: ItemCardProp) {
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page") ?? "1");
   const limit = Number(searchParams.get("limit") ?? "6");
@@ -21,7 +22,7 @@ export default function ItemCardList({ typeItem }: ItemCardProp) {
     data: debtsReceivables,
     isLoading,
     isError,
-  } = useDebtReceivable(page, limit, typeItem);
+  } = useDebtReceivable(page, limit, typeItem, statusItem);
   const [notesShowPage, setNotesShowPage] = useState<DebtReceivable[]>([]);
   const { loading } = useAuth();
 
@@ -64,6 +65,9 @@ export default function ItemCardList({ typeItem }: ItemCardProp) {
             })}
         {debtsReceivables.totalCount === 0 && (
           <EmptyState title="هنوز بدهی / طلبی اضافه نکردی" />
+        )}
+        {debtsReceivables.items.length === 0 && (
+          <EmptyState title=" بدهی / طلبی  با این مشخصات یافت نشد" />
         )}
       </div>
       {totalPages > 1 && (
