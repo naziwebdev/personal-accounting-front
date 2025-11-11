@@ -67,7 +67,7 @@ export default function ItemCardList({ typeItem, statusItem }: ItemCardProp) {
           <EmptyState title="هنوز بدهی / طلبی اضافه نکردی" />
         )}
         {debtsReceivables.items.length === 0 && (
-          <EmptyState title=" بدهی / طلبی  با این مشخصات یافت نشد" />
+          <EmptyState title=" بدهی / طلبی  با این نوع یافت نشد" />
         )}
       </div>
       {totalPages > 1 && (

@@ -42,24 +42,6 @@ export default function ExpenseCardList() {
 
   return (
     <>
-      {/* <div className="flex justify-center items-center flex-wrap gap-6">
-        {expensesShowPage.length !== 0 &&
-          expensesShowPage.map((expense, index) => {
-            return <ExpenseCard key={expense.id} {...expense} />;
-          })}
-        {expensesShowPage.length === 0 && (
-          <EmptyState title=" هنوز هزینه ای اضافه نکردی" />
-        )}
-      </div>
-      {expenses.totalCount !== 0 && (
-        <Pagination
-          itemes={expenses.items}
-          itemsLimit={6}
-          totalItems={expenses.totalCount}
-          pathname="/expenses"
-          setShowItems={setExpensesShowPage}
-        />
-      )} */}
       <div className="flex justify-center items-center flex-wrap gap-6">
         {totalPages > 1
           ? expensesShowPage.map((expense, index) => {

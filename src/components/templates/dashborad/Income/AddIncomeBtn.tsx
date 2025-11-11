@@ -324,7 +324,7 @@ export default function AddIncomeBtn() {
                                   format: "YYYY/MM/DD",
                                   calendar: persian,
                                 })
-                              : ""
+                              : undefined
                           }
                           placeholder="برای انتخاب تاریخ ضربه بزنید"
                           onChange={(dateObject) => {
@@ -364,7 +364,7 @@ export default function AddIncomeBtn() {
               <div className="w-full flex justify-center">
                 <button
                   type="submit"
-                  className="mt-3 lg:mt-7 w-1/3 lg:w-1/5 h-10 xs:h-12 flex justify-center items-center text-white rounded-xl bg-[var(--color-primary)] text-base  xs:text-lg cursor-pointer"
+                  className="mt-3 lg:mt-7 w-1/3 lg:w-1/6 h-10 xs:h-12 flex justify-center items-center text-white rounded-xl bg-[var(--color-primary)] text-base  xs:text-lg cursor-pointer"
                 >
                   تایید
                 </button>

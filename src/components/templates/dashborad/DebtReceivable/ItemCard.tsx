@@ -14,7 +14,7 @@ export default function ItemCard(Prop: DebtReceivable) {
       <div className=" svgBg absolute inset-0 w-full h-full -z-10 bg-white  rounded-3xl"></div>
       {/* blur */}
 
-      <div className="absolute inset-0 z-0 bg-white/60 rounded-3xl"></div>
+      <div className="absolute inset-0 z-0 bg-white/70 rounded-3xl"></div>
       {/* content */}
       <div className="relative inset-0 z-20 rounded-3xl">
         <p className="absolute left-1/2 -translate-x-1/2 xs:translate-none -top-5 xs:-top-4 xs:-left-7 z-20 bg-[var(--color-secondary)] text-white px-4 py-0.5 rounded-lg text-sm xs:-rotate-[30deg]">
@@ -43,7 +43,7 @@ export default function ItemCard(Prop: DebtReceivable) {
         <div className="w-full flex justify-between mt-2.5 sm:mt-4">
           <div className="text-center">
             <p className="text-sm sm:text-base">از/ به شخص:</p>
-            <p className="text-base sm:text-lg pt-1.5  text-zinc-500">
+            <p className="text-sm sm:text-base pt-1.5  text-zinc-500">
               {Prop.person}
             </p>
           </div>

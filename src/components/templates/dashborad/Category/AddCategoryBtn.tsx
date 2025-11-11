@@ -42,7 +42,7 @@ export default function AddCategoryBtn() {
   } = useForm({
     defaultValues: {
       title: "",
-      type: "income",
+      type:undefined,
       icon: "",
     },
     resolver: yupResolver(addCategory),
@@ -216,7 +216,7 @@ export default function AddCategoryBtn() {
 
               <button
                 type="submit"
-                className="mt-7 w-1/3 sm:w-1/5 h-10 xs:h-12 flex justify-center items-center text-white rounded-xl bg-[var(--color-primary)] text-base  xs:text-lg cursor-pointer"
+                className="mt-7 w-1/3 sm:w-1/6 h-10 xs:h-12 flex justify-center items-center text-white rounded-xl bg-[var(--color-primary)] text-base  xs:text-lg cursor-pointer"
               >
                 تایید
               </button>
