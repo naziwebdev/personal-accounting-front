@@ -2,10 +2,9 @@
 import { DebtReceivable } from "@/types/debt";
 import { toPersianDigits } from "@/utils/normalizeDigits";
 import React, { useState } from "react";
+import { IconDelete } from "@/components/icons/IconDelete";
+import { IconEdit } from "@/components/icons/IconEdit";
 
-type StatusType = {
-  status: "pendding" | "paid";
-};
 export default function ItemCard(Prop: DebtReceivable) {
   const [isPaid, setIsPaid] = useState<boolean>(Prop.status === "paid");
 
@@ -55,28 +54,40 @@ export default function ItemCard(Prop: DebtReceivable) {
             </p>
           </div>
         </div>
-        <div className="flex justify-center items-center gap-x-2 sm:gap-x-4 mt-2.5 sm:mt-4">
-          <span className="whitespace-nowrap text-zinc-500 font-semibold text-xs sm:text-[.9rem]">
-            پرداخت نشده
-          </span>
-          <div
-            className={`flex w-16 sm:w-[75px] border-[3px]  ${
-              isPaid
-                ? "border-[var(--color-secondary)] justify-end"
-                : "border-zinc-500 justify-start"
-            } rounded-2xl p-0.5`}
-          >
-            <button
-              onClick={() => setIsPaid(!isPaid)}
-              className={`w-6 h-6 cursor-pointer rounded-full  ${
-                isPaid ? "bg-[var(--color-secondary)]" : "bg-zinc-500"
-              }`}
-            ></button>
-          </div>
 
-          <span className="whitespace-nowrap text-[var(--color-secondary)] font-semibold text-xs sm:text-[.9rem]">
-            پرداخت شده
-          </span>
+        <div className="flex justify-between items-center   mt-2.5 sm:mt-4">
+          <div className="flex  items-center gap-x-2.5">
+            <div
+              className={`flex w-16 sm:w-[75px] border-[3px]  ${
+                isPaid
+                  ? "border-[var(--color-secondary)] justify-end"
+                  : "border-zinc-500 justify-start"
+              } rounded-2xl p-0.5`}
+            >
+              <button
+                onClick={() => setIsPaid(!isPaid)}
+                className={`w-6 h-6 cursor-pointer rounded-full  ${
+                  isPaid ? "bg-[var(--color-secondary)]" : "bg-zinc-500"
+                }`}
+              ></button>
+            </div>
+
+            <span
+              className={`whitespace-nowrap ${
+                isPaid ? "text-[var(--color-secondary)]" : "text-zinc-500"
+              } font-semibold text-xs sm:text-[.9rem]`}
+            >
+              {!isPaid ? "پرداخت نشده" : "پرداخت شده"}
+            </span>
+          </div>
+          <div className="flex items-center gap-x-1.5">
+            <button className="cursor-pointer">
+              <IconDelete size="w-6 h-6" color="#8c66e5" />
+            </button>
+            <button className="cursor-pointer">
+              <IconEdit size="w-6 h-6" color="#8c66e5" />
+            </button>
+          </div>
         </div>
       </div>
     </div>
