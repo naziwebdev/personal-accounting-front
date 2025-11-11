@@ -47,7 +47,6 @@ export const editDebtReceivable = yup.object().shape({
     .transform((value) =>
       value?.replace(/[۰-۹]/g, (d: string) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))
     )
-    .matches(/^\d{4}\/\d{2}\/\d{2}$/, "فرمت تاریخ باید مثل 1404/08/03 باشد")
     .notRequired(),
   description: yup.string().notRequired(),
 });
