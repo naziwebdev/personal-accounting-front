@@ -32,8 +32,12 @@ type editItemFormData = {
   description?: string | null;
 };
 
+type StatusType = "pendding" | "paid";
+
 export default function ItemCard(Prop: DebtReceivable) {
   const [isPaid, setIsPaid] = useState<boolean>(Prop.status === "paid");
+
+  const [status, setStatus] = useState<StatusType>(Prop.status);
 
   const router = useRouter();
   const [openEditModal, setOpenEditModal] = useState<boolean>(false);
@@ -128,6 +132,58 @@ export default function ItemCard(Prop: DebtReceivable) {
       if (value) {
         editMutation.mutate(data);
       }
+    });
+  };
+
+  /////// update status //////
+
+  const updateStatusMutation = useMutation({
+    mutationFn: async (newStatus: "pendding" | "paid") => {
+      const makeRequest = async (token: string) => {
+        return await fetch(
+          `http://localhost:4002/api/v1/receivables-debts/${Prop.id}/status`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            credentials: "include",
+            body: JSON.stringify({ status: newStatus }),
+          }
+        );
+      };
+
+      let res = await makeRequest(accessToken!);
+      let result = await res.json();
+
+      if (result.statusCode === 401) {
+        const newToken = await restoreAccessToken();
+        if (!newToken) throw new Error("Unauthorized");
+        setAccessToken(newToken);
+        res = await makeRequest(newToken);
+        result = await res.json();
+      }
+
+      if (result.statusCode !== 200) throw new Error("Failed to update status");
+
+      return result.data;
+    },
+
+    onSuccess: () => {
+      toast.success("وضعیت با موفقیت به‌روزرسانی شد");
+      queryClient.invalidateQueries({ queryKey: ["debts"] });
+    },
+
+    onError: () => {
+      toast.error("خطا در به‌روزرسانی وضعیت");
+    },
+  });
+
+  const handleToggleStatus = () => {
+    const newStatus = isPaid ? "pendding" : "paid";
+    updateStatusMutation.mutate(newStatus, {
+      onSuccess: () => setIsPaid(!isPaid),
     });
   };
 
@@ -249,7 +305,7 @@ export default function ItemCard(Prop: DebtReceivable) {
               } rounded-2xl p-0.5`}
             >
               <button
-                onClick={() => setIsPaid(!isPaid)}
+                onClick={handleToggleStatus}
                 className={`w-6 h-6 cursor-pointer rounded-full  ${
                   isPaid ? "bg-[var(--color-secondary)]" : "bg-zinc-500"
                 }`}
