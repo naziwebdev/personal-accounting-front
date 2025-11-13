@@ -37,7 +37,7 @@ export default function Sidebar() {
         </Link>
       </Tooltip>
       <Tooltip content="چک">
-        <Link href={"/dashboard/checks"}>
+        <Link href={"/dashboard/checks?page=1"}>
           <IconCheck
             size="w-9 h-9 xs:w-10 xs:h-10"
             colorBg="fill-[var(--color-primary)]"

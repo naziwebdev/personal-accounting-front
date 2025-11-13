@@ -3,12 +3,11 @@ import { IconBank } from "@/components/icons/IconBank";
 import { IconDelete } from "@/components/icons/IconDelete";
 import { IconEdit } from "@/components/icons/IconEdit";
 import React, { useState } from "react";
-import { StatusFilterCheck } from "@/types/check";
+import { Check, StatusFilterCheck } from "@/types/check";
 import { IconActionDot } from "@/components/icons/IconActiondot";
+import { toPersianDigits } from "@/utils/normalizeDigits";
 
-export default function CheckCard() {
-  const [isPaid, setIsPaid] = useState<boolean>(false);
-  const [status, setStatus] = useState<StatusFilterCheck>("pendding");
+export default function CheckCard(Prop: Check) {
   const [isShowAction, setIsShowAction] = useState<boolean>(false);
 
   return (
@@ -21,26 +20,25 @@ export default function CheckCard() {
       {/* content */}
       <div className="relative inset-0 z-20 rounded-3xl">
         <p className="absolute -top-6 -left-9 z-20 bg-[var(--color-secondary)] text-white px-2 xs:px-3 py-0.5 rounded-lg text-sm -rotate-[30deg]">
-          {/* {Prop.type === "receivable" ? "طلب" : "بدهی"} */}
-          پرداختی
+          {Prop.type === "pay" ? "پرداختی" : "دریافتی"}
         </p>
         <div className="flex justify-between">
           <div className="text-center">
             <p className="text-sm sm:text-base">تاریخ</p>
             <p className="pt-1.5 text-zinc-500 text-sm sm:text-base">
-              ۱۴۰۴/۱۲/۰۷
+              {toPersianDigits(Prop.due_date.toLocaleString().split(" ")[0])}
             </p>
           </div>
           <div className="flex flex-col items-center gap-2.5">
             <IconBank size="w-7 h-7 xs:w-8 xs:h-8" color="#8c66e5" />
-            <p className="text-sm xs:text-base font-titr text-center text-[var(--color-secondary)]">
-              بانک ملت
+            <p className="text-sm xs:text-base  font-titr  text-center text-[var(--color-secondary)]">
+              بانک <span className="font-sans font-black">{Prop.bank}</span>
             </p>
           </div>
           <div className="text-center">
             <p className="text-sm sm:text-base">شماره سریال</p>
             <p className="pt-1.5 text-zinc-500 text-sm sm:text-base">
-              ۱۲۴۶۸۶۵۳
+              {Prop.serial.length !== 0 ? toPersianDigits(Prop.serial) : "-"}
             </p>
           </div>
         </div>
@@ -48,7 +46,7 @@ export default function CheckCard() {
           <div className="flex flex-col xs:flex-row items-center justify-center gap-2">
             <p className="text-sm sm:text-base">مبلغ</p>
             <p className="text-xl sm:text-2xl font-semibold text-[var(--color-secondary)]">
-              ۴۰۰۰۰۰۰۰۰{" "}
+              {`${Number(Prop.price).toLocaleString("fa-IR")} `}
               <span className="text-zinc-500 text-xs sm:text-base font-normal">
                 ریال
               </span>
@@ -56,7 +54,9 @@ export default function CheckCard() {
           </div>
           <div className="flex flex-col xs:flex-row items-center justify-center gap-2">
             <p className="text-sm sm:text-base text-center">در وجه</p>
-            <p className=" text-zinc-500 text-sm sm:text-base">سارا رضایی</p>
+            <p className=" text-zinc-500 text-sm sm:text-base">
+              {Prop.payable}
+            </p>
           </div>
         </div>
 
@@ -67,7 +67,7 @@ export default function CheckCard() {
                 type="radio"
                 name="status"
                 value="pendding"
-                defaultChecked
+                defaultChecked={Prop.status === "pendding"}
                 className="peer absolute left-0 top-1/2 -translate-y-1/2 h-4 w-4 opacity-0"
               />
               <span className="relative h-4 w-4 rounded-full border border-gray-400 peer-checked:border-yellow-400 peer-checked:border-4 transition-all">
@@ -81,6 +81,7 @@ export default function CheckCard() {
                 type="radio"
                 name="status"
                 value="paid"
+                defaultChecked={Prop.status === "paid"}
                 className="peer absolute left-0 top-1/2 -translate-y-1/2 h-4 w-4 opacity-0"
               />
               <span className="relative h-4 w-4 rounded-full border border-gray-400 peer-checked:border-green-500 peer-checked:border-4 transition-all">
@@ -94,6 +95,7 @@ export default function CheckCard() {
                 type="radio"
                 name="status"
                 value="returned"
+                defaultChecked={Prop.status === "returned"}
                 className="peer absolute left-0 top-1/2 -translate-y-1/2 h-4 w-4 opacity-0"
               />
               <span className="relative h-4 w-4 rounded-full border border-gray-400 peer-checked:border-red-500 peer-checked:border-4 transition-all">
@@ -106,16 +108,23 @@ export default function CheckCard() {
             <div
               className={`w-auto flex justify-center items-center p-2 rounded-lg text-white text-xs xs:text-sm whitespace-nowrap
             ${
-              status === "pendding"
+              Prop.status === "pendding"
                 ? "bg-yellow-400"
-                : status === "paid"
+                : Prop.status === "paid"
                 ? "bg-green-600"
-                : status === "returned"
+                : Prop.status === "returned"
                 ? "bg-red-600"
                 : ""
             }`}
             >
-              وضعیت : پرداخت شده
+              وضعیت :{" "}
+              {Prop.status === "pendding"
+                ? "در انتظار"
+                : Prop.status === "paid"
+                ? "پرداخت شده"
+                : Prop.status === "returned"
+                ? "برگشتی"
+                : ""}
             </div>
             <div className="flex items-center gap-x-1.5">
               <button

@@ -22,7 +22,7 @@ export default function page() {
           setStatus={setShowByStatusFilter}
           statusItem={showByStatusFilter}
         />
-        <CheckCardList />
+        <CheckCardList typeItem={showByTypeFilter} statusItem={showByStatusFilter} />
       </div>
     </MainLayout>
   );

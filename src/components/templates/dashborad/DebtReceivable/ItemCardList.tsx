@@ -23,7 +23,7 @@ export default function ItemCardList({ typeItem, statusItem }: ItemCardProp) {
     isLoading,
     isError,
   } = useDebtReceivable(page, limit, typeItem, statusItem);
-  const [notesShowPage, setNotesShowPage] = useState<DebtReceivable[]>([]);
+  const [itemsShowPage, setItemsShowPage] = useState<DebtReceivable[]>([]);
   const { loading } = useAuth();
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export default function ItemCardList({ typeItem, statusItem }: ItemCardProp) {
     <>
       <div className="flex justify-center items-center flex-wrap gap-6">
         {totalPages > 1
-          ? notesShowPage.map((item, index) => {
+          ? itemsShowPage.map((item, index) => {
               return index % 2 === 0 ? (
                 <ItemCard key={item.id} {...item} />
               ) : (
@@ -76,7 +76,7 @@ export default function ItemCardList({ typeItem, statusItem }: ItemCardProp) {
           itemsLimit={6}
           totalItems={debtsReceivables.totalCount}
           pathname="/debts-receivables"
-          setShowItems={setNotesShowPage}
+          setShowItems={setItemsShowPage}
         />
       )}
     </>
