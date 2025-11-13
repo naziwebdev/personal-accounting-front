@@ -295,7 +295,7 @@ export default function ItemCard(Prop: DebtReceivable) {
           </div>
         </div>
 
-        <div className="flex justify-between items-center   mt-2.5 sm:mt-4">
+        <div className="flex justify-between items-center mt-2.5 sm:mt-4">
           <div className="flex  items-center gap-x-2.5">
             <div
               className={`flex w-16 sm:w-[75px] border-[3px]  ${

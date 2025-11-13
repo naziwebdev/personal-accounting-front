@@ -114,6 +114,7 @@
   }
 }
 
+
 @layer utilities {
   .font-vazir {
     font-family: var(--font-vazir);
@@ -141,6 +142,7 @@
     border-radius: 100%;
     background-color: #000;
   }
+
 
   .bg-card-1 {
     background-image: linear-gradient(135deg, #dcdcdc 0%, #a78ddb 100%);
