@@ -34,3 +34,4 @@ export type ExpenseArrayType = {
   page: number;
   totalCount: number;
 };
+

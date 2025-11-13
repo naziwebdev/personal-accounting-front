@@ -165,18 +165,18 @@ export default function AddItemBtn({
             >
               <option
                 value={"all"}
-                className="bg-[var(--color-primary)] text-white"
+                className="bg-[var(--color-primary)] text-white cursor-pointer"
               >
                 همه
               </option>
               <option
-                className="bg-[var(--color-primary)] text-white"
+                className="bg-[var(--color-primary)] text-white cursor-pointer"
                 value={"pendding"}
               >
                 در انتظار پرداخت
               </option>
               <option
-                className="bg-[var(--color-primary)] text-white"
+                className="bg-[var(--color-primary)] text-white cursor-pointer"
                 value={"paid"}
               >
                 پرداخت شده
