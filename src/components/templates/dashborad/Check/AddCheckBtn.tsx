@@ -437,7 +437,7 @@ export default function AddCheckBtn({
                 </div>
 
                 <span className="text-right pt-1.5  text-sm  text-red-600">
-                  {errors.payable && errors.payable.message}
+                  {errors.serial && errors.serial.message}
                 </span>
               </div>
               <div className="w-full lg:max-w-5/12">

@@ -37,8 +37,6 @@ type StatusType = "pendding" | "paid";
 export default function ItemCard(Prop: DebtReceivable) {
   const [isPaid, setIsPaid] = useState<boolean>(Prop.status === "paid");
 
-  const [status, setStatus] = useState<StatusType>(Prop.status);
-
   const router = useRouter();
   const [openEditModal, setOpenEditModal] = useState<boolean>(false);
 
