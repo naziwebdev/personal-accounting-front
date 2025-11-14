@@ -32,7 +32,7 @@ export default function CheckCard(Prop: Check) {
           <div className="flex flex-col items-center gap-2.5">
             <IconBank size="w-7 h-7 xs:w-8 xs:h-8" color="#8c66e5" />
             <p className="text-sm xs:text-base  font-titr  text-center text-[var(--color-secondary)]">
-              بانک <span className="font-sans font-black">{Prop.bank}</span>
+              بانک <span className="font-black">{Prop.bank}</span>
             </p>
           </div>
           <div className="text-center">
