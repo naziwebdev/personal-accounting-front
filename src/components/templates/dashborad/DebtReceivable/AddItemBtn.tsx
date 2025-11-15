@@ -147,7 +147,7 @@ export default function AddItemBtn({
           <IconAdd size="w-6 h-6 lg:w-7 lg:h-7" color="#ffffff" />
         </button>
         <div className="flex gap-x-2 lg:gap-x-4 items-center">
-          <p className="whitespace-nowrap font-semibold text-[.95rem] hidden sm:flex">
+          <p className="whitespace-nowrap text-zinc-600 font-semibold text-[.95rem] hidden sm:flex">
             فیلتر بر اساس :{" "}
           </p>
           <div className="relative flex gap-x-2 lg:gap-x-4 items-center">

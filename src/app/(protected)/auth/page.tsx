@@ -19,7 +19,7 @@ export default function page() {
       <div className="absolute inset-0 z-10 flex justify-center items-center">
         <div className=" w-[80%] sm:w-1/2 lg:w-1/3 p-5 sm:p-10 backdrop-blur-xs bg-white/10  rounded-3xl border-[1.7px] border-white/30 shadow-2xl">
           <Image
-            src="/images/logo.png"
+            src="/images/logo-2.png"
             alt="Logo"
             width={70}
             height={140}

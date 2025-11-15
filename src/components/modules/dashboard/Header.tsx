@@ -12,6 +12,9 @@ import { useRouter } from "next/navigation";
 import swal from "sweetalert";
 import { IconProfile } from "@/components/icons/IconProfile";
 import { useGetMe } from "@/hooks/useGetMe";
+import Logo from '@/images/logo-1.svg';
+
+
 
 export default function Header() {
   const { accessToken, setAccessToken } = useAuth();
@@ -70,14 +73,14 @@ export default function Header() {
 
   return (
     <div className="flex justify-between items-center gap-0 xs:gap-4 p-4">
-      <div className="flex items-center gap-x-3">
+      <div className="flex items-center gap-x-0 xs:gap-x-2">
         <h1 className="font-titr  hidden sm:block text-3xl font-bold ">
           پنل حسابداری دایموند
         </h1>
-        <h1 className="block sm:hidden text-xl xs:text-2xl font-titr font-bold">
+        <h1 className="block sm:hidden text-2xl font-titr font-bold">
           دایموند
         </h1>
-        <Image src="/images/logo.png" width={45} height={30} alt="logo" />
+        <Image src="/images/logo-2.png" width={50} height={30} alt="logo" />
       </div>
       <div className="flex items-center gap-x-4">
         <div className="cursor-pointer">
@@ -86,7 +89,7 @@ export default function Header() {
         <div className="relative">
           <button
             onClick={() => setIsVisibleProfile(!isVisibleProfile)}
-            className="cursor-pointer border-6 border-black border-double rounded-full"
+            className="cursor-pointer border-6 border-double  border-black  rounded-full"
           >
             <IconProfile color="#e19ab3" />
           </button>
