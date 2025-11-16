@@ -1,11 +1,12 @@
-export const IconTarget = () => {
+import { IconWithoutBgPropsType } from "@/types/icon";
+
+export const IconTarget = ({size , color}:IconWithoutBgPropsType) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       xmlSpace="preserve"
       id="Layer_1"
-      width="150"
-      height="150"
+      className={size}
       fill="#000"
       version="1.1"
       viewBox="-51.2 -51.2 614.4 614.4"
