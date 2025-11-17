@@ -15,7 +15,7 @@ type WatchlistProp = {
 export default function WatchlistList({ statusItem }: WatchlistProp) {
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page") ?? "1");
-  const limit = Number(searchParams.get("limit") ?? "4");
+  const limit = Number(searchParams.get("limit") ?? "6");
 
   const {
     data: watchlists,
