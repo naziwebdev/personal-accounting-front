@@ -32,7 +32,6 @@ type editItemFormData = {
   description?: string | null;
 };
 
-type StatusType = "pendding" | "paid";
 
 export default function ItemCard(Prop: DebtReceivable) {
   const [isPaid, setIsPaid] = useState<boolean>(Prop.status === "paid");

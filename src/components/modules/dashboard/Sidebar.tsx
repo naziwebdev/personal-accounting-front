@@ -46,7 +46,7 @@ export default function Sidebar() {
         </Link>
       </Tooltip>
       <Tooltip content="واچ لیست">
-        <Link href={"/dashboard/watchlist"}>
+        <Link href={"/dashboard/watchlist?page=1"}>
           <IconWatchlist
             size="w-9 h-9 xs:w-10 xs:h-10"
             colorBg="fill-[var(--color-primary)]"

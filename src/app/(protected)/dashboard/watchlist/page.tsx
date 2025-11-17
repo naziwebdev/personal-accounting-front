@@ -15,7 +15,7 @@ export default function page() {
           statusItem={showByStatusFilter}
           setStatusItem={setShowByStatusFilter}
         />
-        <WatchlistList />
+        <WatchlistList statusItem={showByStatusFilter} />
       </div>
     </MainLayout>
   );
