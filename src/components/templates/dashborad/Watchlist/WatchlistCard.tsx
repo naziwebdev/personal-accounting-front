@@ -8,12 +8,228 @@ import Link from "next/link";
 import { IconDelete } from "@/components/icons/IconDelete";
 import { IconEdit } from "@/components/icons/IconEdit";
 import { IconActionDot } from "@/components/icons/IconActiondot";
+import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@/context/AuthContext";
+import { Controller, useForm } from "react-hook-form";
+import { editWatchlist } from "@/validations/watchlist";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { restoreAccessToken } from "@/utils/restoreAccessToken";
+import { toast } from "sonner";
+import Modal from "@/components/modules/dashboard/Modal";
+import { IconDescription } from "@/components/icons/IconDescription";
+import { IconCalender } from "@/components/icons/IconCalender";
+import { IconDownArrow } from "@/components/icons/IconDownAroow";
+import { IconCoin } from "@/components/icons/IconCoin";
+import { toEnglishDigits } from "@/utils/normalizeDigits";
+
+type editWatchlistFormData = {
+  title?: string | null;
+  waitingPeriod?: "day" | "week" | "month" | "year" | null;
+  currentBudget?: number | null;
+};
 
 export default function WatchlistCard(Prop: Watchlist) {
   const [isPendding, setIsPendding] = useState<boolean>(
     Prop.status === "pendding"
   );
   const [isShowAction, setIsShowAction] = useState<boolean>(false);
+
+  const router = useRouter();
+  const [openEditModal, setOpenEditModal] = useState<boolean>(false);
+
+  const queryClient = useQueryClient();
+  const { accessToken, setAccessToken } = useAuth();
+
+  ///// edit logic ////
+
+  const {
+    register,
+    reset,
+    control,
+    setValue,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      title: Prop.title,
+      currentBudget: Prop.currentBudget,
+      waitingPeriod: Prop.waitingPeriod,
+    },
+    resolver: yupResolver(editWatchlist),
+  });
+
+  const editModalHandle = () => setOpenEditModal(false);
+
+  const editMutation = useMutation({
+    mutationFn: async (data: editWatchlistFormData) => {
+      const makeRequest = async (token: string) => {
+        const finalData = { ...data, currentBudget: data.currentBudget ?? 0 };
+        return await fetch(
+          `http://localhost:4002/api/v1/watchlists/${Prop.id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            credentials: "include",
+            body: JSON.stringify(finalData),
+          }
+        );
+      };
+      let res = await makeRequest(accessToken!);
+
+      let result = await res.json();
+
+      if (result.statusCode === 401) {
+        const newToken = await restoreAccessToken();
+        if (!newToken) throw new Error("Unauthorized");
+        setAccessToken(newToken);
+        res = await makeRequest(newToken);
+        result = await res.json();
+      }
+      if (result.statusCode !== 200)
+        throw new Error("Failed to edit watchlist");
+
+      return result.data;
+    },
+
+    onSuccess: () => {
+      toast.success(" با موفقیت ویرایش شد");
+      queryClient.invalidateQueries({ queryKey: ["watchlists"] });
+      editModalHandle();
+    },
+    onError: () => {
+      toast.error("خطا در ویرایش ");
+      editModalHandle();
+    },
+  });
+
+  const editItemHandle = async (data: editWatchlistFormData) => {
+    swal({
+      title: "آیا از ویرایش اطمینان دارید ؟",
+      icon: "warning",
+      buttons: ["خیر", "بله"],
+    }).then((value) => {
+      if (value) {
+        editMutation.mutate(data);
+      }
+    });
+  };
+
+  /////// update status //////
+
+  const updateStatusMutation = useMutation({
+    mutationFn: async (newStatus: "pendding" | "purchased") => {
+      const makeRequest = async (token: string) => {
+        return await fetch(
+          `http://localhost:4002/api/v1/watchlists/${Prop.id}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            credentials: "include",
+            body: JSON.stringify({ status: newStatus }),
+          }
+        );
+      };
+
+      let res = await makeRequest(accessToken!);
+      let result = await res.json();
+
+      if (result.statusCode === 401) {
+        const newToken = await restoreAccessToken();
+        if (!newToken) throw new Error("Unauthorized");
+        setAccessToken(newToken);
+        res = await makeRequest(newToken);
+        result = await res.json();
+      }
+
+      if (result.statusCode !== 200) throw new Error("Failed to update status");
+
+      return result.data;
+    },
+
+    onSuccess: () => {
+      toast.success("وضعیت با موفقیت به‌روزرسانی شد");
+      queryClient.invalidateQueries({ queryKey: ["watchlists"] });
+    },
+
+    onError: () => {
+      toast.error("خطا در به‌روزرسانی وضعیت");
+    },
+  });
+
+  const handleToggleStatus = () => {
+    const newStatus = isPendding ? "pendding" : "purchased";
+    updateStatusMutation.mutate(newStatus, {
+      onSuccess: () => setIsPendding(!isPendding),
+    });
+  };
+
+  //////// delete logic ///////
+
+  const removeMutation = useMutation({
+    mutationFn: async () => {
+      const makeRequest = async (token: string) => {
+        return await fetch(
+          `http://localhost:4002/api/v1/watchlists/${Prop.id}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            credentials: "include",
+          }
+        );
+      };
+
+      let res = await makeRequest(accessToken!);
+      let result = await res.json();
+
+      if (result.statusCode === 401) {
+        const newToken = await restoreAccessToken();
+        if (!newToken) throw new Error("Unauthorized");
+        setAccessToken(newToken);
+        res = await makeRequest(newToken);
+        result = await res.json();
+      }
+      if (result.statusCode !== 200)
+        throw new Error("Failed to remove watchlist");
+
+      return result.data;
+    },
+    onSuccess: (data) => {
+      toast.success(" با موفقیت حذف شد");
+
+      const totalCount = data.totalCount;
+
+      const lastPage = Math.ceil(totalCount / 6); // 6 = your pagination limit
+
+      router.push(`/dashboard/watchlist?page=${lastPage}`);
+
+      queryClient.invalidateQueries({ queryKey: ["watchlists"] });
+    },
+    onError: (data) => {
+      toast.error("خطا در حذف ");
+    },
+  });
+
+  const deleteItemHandle = () => {
+    swal({
+      title: "آیا از حذف اطمینان دارید ؟",
+      icon: "warning",
+      buttons: ["خیر", "بله"],
+    }).then((value) => {
+      if (value) {
+        removeMutation.mutate();
+      }
+    });
+  };
 
   return (
     <div className="relative w-full xs:w-[350px] lg:w-[400px] rounded-3xl  p-3 xs:p-4 shadow-zinc-400 shadow-lg">
@@ -33,7 +249,10 @@ export default function WatchlistCard(Prop: Watchlist) {
         </p>
         <div className="flex flex-col gap-3 xs:gap-3.5">
           <div className="flex items-center justify-center gap-4 xs:gap-6">
-            <IconTarget size="w-[100px] h-[100px] xs:w-[120px] xs:h-[120px]" color="" />
+            <IconTarget
+              size="w-[100px] h-[100px] xs:w-[120px] xs:h-[120px]"
+              color=""
+            />
             <div className="w-1/2 text-center">
               <p className="text-[var(--color-primary)] [text-shadow:_1px_1px_3px_rgba(0,0,0,0.7)] text-base xs:text-lg font-bold ">
                 عنوان
@@ -103,6 +322,7 @@ export default function WatchlistCard(Prop: Watchlist) {
                 } rounded-2xl p-0.5`}
               >
                 <button
+                  onClick={handleToggleStatus}
                   className={`w-6 h-6 cursor-pointer rounded-full  ${
                     isPendding ? "bg-yellow-300" : "bg-[var(--color-primary)]"
                   }`}
@@ -118,10 +338,13 @@ export default function WatchlistCard(Prop: Watchlist) {
                 />
               </button>
               <div className={`${isShowAction ? "flex" : "hidden"}`}>
-                <button className="cursor-pointer">
+                <button onClick={deleteItemHandle} className="cursor-pointer">
                   <IconDelete size="w-6 h-6" color="#e4e2f1" />
                 </button>
-                <button className="cursor-pointer">
+                <button
+                  onClick={() => setOpenEditModal(true)}
+                  className="cursor-pointer"
+                >
                   <IconEdit size="w-6 h-6" color="#e4e2f1" />
                 </button>
               </div>
@@ -129,6 +352,130 @@ export default function WatchlistCard(Prop: Watchlist) {
           </div>
         </div>
       </div>
+      {openEditModal && (
+        <Modal onClose={editModalHandle}>
+          <>
+            <h2 className="w-1/2 md:w-1/5 mx-auto text-center pb-2 mb-12 text-lg xs:text-2xl font-bold  rounded-xl text-nowrap">
+              ویرایش واچ لیست
+            </h2>
+            <form
+              onSubmit={handleSubmit(editItemHandle)}
+              className="px-0 md:px-32 flex items-center justify-center flex-wrap gap-y-5 text-xs xs:text-base"
+            >
+              <div className="w-full">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-theme)]">
+                    <IconDescription
+                      size="w-5 h-5 xs:w-6 xs:h-6"
+                      color="#52525B"
+                    />
+                  </div>
+                  <input
+                    {...register("title")}
+                    type="text"
+                    className="w-full bg-[var(--color-theme)] p-3 placeholder:text-[#52525B] rounded-xl text-[#52525B] outline-0"
+                    placeholder="نام را وارد کنید"
+                  />
+                </div>
+
+                <span className="text-right pt-1.5  text-sm  text-red-600">
+                  {errors.title && errors.title.message}
+                </span>
+              </div>
+              <div className="w-full">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-theme)]">
+                    <IconCalender
+                      size="w-6 h-6 xs:w-7 xs:h-7"
+                      color="#52525B"
+                    />
+                  </div>
+                  <Controller
+                    name="waitingPeriod"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <div className="relative w-full">
+                        <select
+                          {...field}
+                          value={field.value ?? "-1"}
+                          id="waitingPeriod"
+                          className="appearance-none w-full bg-[var(--color-theme)] p-3 placeholder:text-[#52525B] rounded-xl text-[#52525B] outline-0"
+                        >
+                          <option value={"-1"} className=" text-white">
+                            تارگت زمانی را مشخص کنید
+                          </option>
+                          <option
+                            className="bg-[var(--color-primary)] text-white"
+                            value={"day"}
+                          >
+                            یک روز
+                          </option>
+                          <option
+                            className="bg-[var(--color-primary)] text-white"
+                            value={"week"}
+                          >
+                            یک هفته
+                          </option>
+                          <option
+                            className="bg-[var(--color-primary)] text-white"
+                            value={"month"}
+                          >
+                            یک ماه
+                          </option>
+                          <option
+                            className="bg-[var(--color-primary)] text-white"
+                            value={"year"}
+                          >
+                            یک سال
+                          </option>
+                        </select>
+                        <span className="absolute left-3 top-1/2 z-10 transform -translate-y-1/2 pointer-events-none">
+                          <IconDownArrow
+                            size="w-3 h-3 xs:w-4 xs:h-4"
+                            color="#fff"
+                          />
+                        </span>
+                      </div>
+                    )}
+                  />
+                </div>
+
+                <span className="text-right pt-1.5 text-sm  text-red-600">
+                  {errors.waitingPeriod && errors.waitingPeriod.message}
+                </span>
+              </div>
+              <div className="w-full">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-theme)]">
+                    <IconCoin size="w-6 h-6 xs:w-7 xs:h-7" color="#52525B" />
+                  </div>
+                  <input
+                    {...register("currentBudget", {
+                      onChange: (e) => {
+                        e.target.value = toEnglishDigits(e.target.value);
+                      },
+                    })}
+                    type="text"
+                    className="w-full bg-[var(--color-theme)] p-3 placeholder:text-[#52525B] rounded-xl text-[#52525B] outline-0"
+                    placeholder="بودجه فعلی خود را وارد کنید"
+                  />
+                </div>
+
+                <span className="text-right pt-1.5  text-sm  text-red-600">
+                  {errors.currentBudget && errors.currentBudget.message}
+                </span>
+              </div>
+              <button
+                type="submit"
+                className="mt-7 w-1/2 md:w-1/6 h-10 xs:h-12 flex justify-center items-center text-white rounded-xl bg-[var(--color-primary)] text-base  xs:text-lg cursor-pointer"
+              >
+                تایید
+              </button>
+            </form>
+          </>
+        </Modal>
+      )}
     </div>
   );
 }
