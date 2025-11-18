@@ -264,7 +264,7 @@ export default function CheckCard(Prop: Check) {
         <div className="flex justify-between">
           <div className="text-center">
             <p className="text-sm sm:text-base">تاریخ</p>
-            <p className="pt-1.5 text-zinc-500 text-sm sm:text-base">
+            <p className="pt-1.5 text-zinc-600 text-sm sm:text-base">
               {toPersianDigits(Prop.due_date.toLocaleString().split(" ")[0])}
             </p>
           </div>
@@ -276,7 +276,7 @@ export default function CheckCard(Prop: Check) {
           </div>
           <div className="text-center">
             <p className="text-sm sm:text-base">شماره سریال</p>
-            <p className="pt-1.5 text-zinc-500 text-sm sm:text-base">
+            <p className="pt-1.5 text-zinc-600 text-sm sm:text-base">
               {Prop.serial.length !== 0 ? toPersianDigits(Prop.serial) : "-"}
             </p>
           </div>
@@ -286,14 +286,14 @@ export default function CheckCard(Prop: Check) {
             <p className="text-sm sm:text-base">مبلغ</p>
             <p className="text-xl sm:text-2xl font-semibold text-[var(--color-secondary)]">
               {`${Number(Prop.price).toLocaleString("fa-IR")} `}
-              <span className="text-zinc-500 text-xs sm:text-base font-normal">
+              <span className="text-zinc-600 text-xs sm:text-base font-normal">
                 ریال
               </span>
             </p>
           </div>
           <div className="flex flex-col xs:flex-row items-center justify-center gap-2">
             <p className="text-sm sm:text-base text-center">در وجه</p>
-            <p className=" text-zinc-500 text-sm sm:text-base">
+            <p className=" text-zinc-600 text-sm sm:text-base">
               {Prop.payable}
             </p>
           </div>

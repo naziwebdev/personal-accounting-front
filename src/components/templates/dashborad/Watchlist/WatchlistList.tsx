@@ -46,7 +46,7 @@ export default function WatchlistList({ statusItem }: WatchlistProp) {
   const totalPages = Math.ceil(watchlists.totalCount / limit);
   return (
     <>
-      <div className="flex justify-center items-center flex-wrap gap-6">
+      <div className="flex justify-center items-center flex-wrap gap-7">
         {totalPages > 1
           ? itemsShowPage.map((item, index) => {
               return index % 2 === 0 ? (

@@ -235,7 +235,7 @@ export default function IncomeCard(Prop: Income) {
       </div>
       <div className="flex justify-between items-center pt-2 xs:pt-4">
         <div className="text-center">
-          <p className="pb-1.5 text-gray-500">مبلغ</p>
+          <p className="pb-1.5 text-gray-600">مبلغ</p>
           <p className="text-[var(--color-secondary)] font-black text-lg xs:text-xl">
             {`${Number(Prop.price).toLocaleString("fa-IR")} `}
             <span className="text-[var(--color-secondary)] font-medium text-base">
@@ -244,7 +244,7 @@ export default function IncomeCard(Prop: Income) {
           </p>
         </div>
         <div className="text-center">
-          <p className="pb-1.5 text-gray-500">تاریخ</p>
+          <p className="pb-1.5 text-gray-600">تاریخ</p>
           <p className="text-gray-800 font-bold text-sm xs:text-base">
             {toPersianDigits(Prop.date.toLocaleString().split(" ")[0])}
           </p>
@@ -252,11 +252,11 @@ export default function IncomeCard(Prop: Income) {
       </div>
       <div className="w-full flex justify-between bg-pink-50/40 p-2.5 xs:p-4 mt-3 xs:mt-4 border-[1px] border-[var(--color-primary)]/70 rounded-2xl text-sm xs:text-base">
         <div className="flex gap-1">
-          <p className="text-gray-500">عنوان : </p>
+          <p className="text-gray-600">عنوان : </p>
           <p className="text-gray-800 font-bold text-center">{Prop.title}</p>
         </div>
         <div className="flex gap-1 ps-3 xs:ps-0">
-          <p className="text-gray-500 whitespace-nowrap">دسته بندی : </p>
+          <p className="text-gray-600 whitespace-nowrap">دسته بندی : </p>
           <p className="text-gray-800 font-bold text-center">
             {Prop.category.title}
           </p>

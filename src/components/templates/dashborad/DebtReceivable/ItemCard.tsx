@@ -280,13 +280,13 @@ export default function ItemCard(Prop: DebtReceivable) {
         <div className="w-full flex justify-between mt-2.5 sm:mt-4">
           <div className="text-center">
             <p className="text-sm sm:text-base">از/ به شخص:</p>
-            <p className="text-sm sm:text-base pt-1.5  text-zinc-500">
+            <p className="text-sm sm:text-base pt-1.5  text-zinc-600">
               {Prop.person}
             </p>
           </div>
           <div className="text-center">
             <p className="text-sm sm:text-base">تاریخ</p>
-            <p className="pt-1.5 text-zinc-500 text-sm sm:text-base">
+            <p className="pt-1.5 text-zinc-600 text-sm sm:text-base">
               {toPersianDigits(Prop.date.toLocaleString().split(" ")[0])}
             </p>
           </div>
@@ -295,23 +295,23 @@ export default function ItemCard(Prop: DebtReceivable) {
         <div className="flex justify-between items-center mt-2.5 sm:mt-4">
           <div className="flex  items-center gap-x-2.5">
             <div
-              className={`flex w-16 sm:w-[75px] border-[3px]  ${
+              className={`flex w-[60px] sm:w-[65px] border-[3px]  ${
                 isPaid
                   ? "border-[var(--color-secondary)] justify-end"
-                  : "border-zinc-500 justify-start"
+                  : "border-zinc-600 justify-start"
               } rounded-2xl p-0.5`}
             >
               <button
                 onClick={handleToggleStatus}
                 className={`w-6 h-6 cursor-pointer rounded-full  ${
-                  isPaid ? "bg-[var(--color-secondary)]" : "bg-zinc-500"
+                  isPaid ? "bg-[var(--color-secondary)]" : "bg-zinc-600"
                 }`}
               ></button>
             </div>
 
             <span
               className={`whitespace-nowrap ${
-                isPaid ? "text-[var(--color-secondary)]" : "text-zinc-500"
+                isPaid ? "text-[var(--color-secondary)]" : "text-zinc-600"
               } font-semibold text-xs sm:text-[.9rem]`}
             >
               {!isPaid ? "پرداخت نشده" : "پرداخت شده"}
