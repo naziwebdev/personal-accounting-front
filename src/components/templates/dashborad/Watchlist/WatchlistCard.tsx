@@ -139,7 +139,7 @@ export default function WatchlistCard(Prop: Watchlist) {
 
       let res = await makeRequest(accessToken!);
       let result = await res.json();
-
+      console.log(result);
       if (result.statusCode === 401) {
         const newToken = await restoreAccessToken();
         if (!newToken) throw new Error("Unauthorized");
@@ -153,8 +153,9 @@ export default function WatchlistCard(Prop: Watchlist) {
       return result.data;
     },
 
-    onSuccess: () => {
+    onSuccess: (data, newStatus) => {
       toast.success("وضعیت با موفقیت به‌روزرسانی شد");
+      setIsPendding(newStatus === "pendding");
       queryClient.invalidateQueries({ queryKey: ["watchlists"] });
     },
 
@@ -164,10 +165,8 @@ export default function WatchlistCard(Prop: Watchlist) {
   });
 
   const handleToggleStatus = () => {
-    const newStatus = isPendding ? "pendding" : "purchased";
-    updateStatusMutation.mutate(newStatus, {
-      onSuccess: () => setIsPendding(!isPendding),
-    });
+    const newStatus = isPendding ? "purchased" : "pendding";
+    updateStatusMutation.mutate(newStatus);
   };
 
   //////// delete logic ///////
@@ -245,7 +244,7 @@ export default function WatchlistCard(Prop: Watchlist) {
             isPendding ? "bg-yellow-300" : "bg-[var(--color-primary)]"
           } text-white  px-4 py-1 rounded-lg text-sm sm:text-base shadow-lg shadow-black/20`}
         >
-          {Prop.status === "pendding" ? "در اتظار" : "تکمیل شده"}
+          {Prop.status === "pendding" ? "در انتظار" : "تکمیل شده"}
         </p>
         <div className="flex flex-col gap-3 xs:gap-3.5">
           <div className="flex items-center justify-center gap-4 xs:gap-6">
