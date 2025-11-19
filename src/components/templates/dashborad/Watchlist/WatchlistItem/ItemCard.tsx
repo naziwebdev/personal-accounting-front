@@ -36,8 +36,8 @@ export default function ItemCard() {
             <p className="text-zinc-600"> ۲ عدد</p>
           </div>
         </div>
-        <div className="flex items-center justify-between">
-          <div className="flex gap-x-2.5">
+        <div className="flex flex-col items-center gap-y-4 justify-between">
+          <div className="w-full  flex justify-between gap-x-2.5">
             <p
               className={`${
                 isPendding
@@ -62,7 +62,7 @@ export default function ItemCard() {
             </div>
           </div>
 
-          <div className="flex items-center gap-x-1">
+          <div className="flex items-center gap-x-1 -order-2">
             <button className="cursor-pointer">
               <IconPaper size="w-7 h-7" color="#52525c" />
             </button>
