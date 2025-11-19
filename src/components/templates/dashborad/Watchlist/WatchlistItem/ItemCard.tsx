@@ -3,9 +3,14 @@ import { IconDelete } from "@/components/icons/IconDelete";
 import { IconEdit } from "@/components/icons/IconEdit";
 import { IconPaper } from "@/components/icons/IconPaper";
 import React, { useState } from "react";
+import Modal from "@/components/modules/dashboard/Modal";
 
 export default function ItemCard() {
   const [isPendding, setIsPendding] = useState<boolean>(false);
+  const [openDescriptionModal, setOpenDescreptionModal] =
+    useState<boolean>(false);
+
+  const descriptionModalHandle = () => setOpenDescreptionModal(false);
   return (
     <div className="relative w-full xs:w-[350px] lg:w-[400px] h-[300px] rounded-4xl px-3 xs:px-4 py-8 bg-white border-2 border-dashed border-stone-300 ">
       {/* half-cyrcle shapes */}
@@ -63,7 +68,10 @@ export default function ItemCard() {
           </div>
 
           <div className="flex items-center gap-x-1 -order-2">
-            <button className="cursor-pointer">
+            <button
+              onClick={() => setOpenDescreptionModal(!openDescriptionModal)}
+              className="cursor-pointer"
+            >
               <IconPaper size="w-7 h-7" color="#52525c" />
             </button>
             <button className="cursor-pointer">
@@ -75,6 +83,19 @@ export default function ItemCard() {
           </div>
         </div>
       </div>
+      {openDescriptionModal && (
+        <Modal onClose={descriptionModalHandle}>
+          <>
+            <h4 className="text-center text-2xl">توضیحات</h4>
+            <div className="mt-6 border-4 border-double border-[var(--color-primary)] p-10 text-center rounded-xl text-zinc-700 tracking-wider">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus
+              eveniet magnam a delectus totam consectetur saepe repellat eaque
+              accusamus maxime doloribus, explicabo tenetur neque quia iure
+              facere officia, illum esse!
+            </div>
+          </>
+        </Modal>
+      )}
     </div>
   );
 }
