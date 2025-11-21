@@ -4,9 +4,13 @@ import { IconEdit } from "@/components/icons/IconEdit";
 import { IconPaper } from "@/components/icons/IconPaper";
 import React, { useState } from "react";
 import Modal from "@/components/modules/dashboard/Modal";
+import { WatchlistItem } from "@/types/watchlist";
+import { toPersianDigits } from "@/utils/normalizeDigits";
 
-export default function ItemCard() {
-  const [isPendding, setIsPendding] = useState<boolean>(false);
+export default function ItemCard(Prop: WatchlistItem) {
+  const [isPendding, setIsPendding] = useState<boolean>(
+    Prop.status === "pendding"
+  );
   const [openDescriptionModal, setOpenDescreptionModal] =
     useState<boolean>(false);
 
@@ -21,12 +25,12 @@ export default function ItemCard() {
         <div className="flex items-center justify-between">
           <div className="">
             <p className=" pb-2">عنوان</p>
-            <h4 className=" text-zinc-600 ">خرید مرغ</h4>
+            <h4 className=" text-zinc-600 ">{Prop.title}</h4>
           </div>
           <div className="text-left">
             <p className=" pb-2">مبلغ کل</p>
             <p className="text-[var(--color-primary)] font-semibold text-xl xs:text-2xl">
-              ۴۰۰۰۰۰۰ {"  "}
+              {`${Number(Prop.price).toLocaleString("fa-IR")} `}
               <span className=" font-medium text-zinc-600 text-sm">تومان</span>
             </p>
           </div>
@@ -34,11 +38,14 @@ export default function ItemCard() {
         <div className="flex items-center justify-between">
           <div className="">
             <p className="pb-2">تاریخ ایجاد</p>
-            <p className="text-zinc-600 ">۱۴۰۴/۰۸/۲۲</p>
+            <p className="text-zinc-600 ">
+              {" "}
+              {toPersianDigits(Prop.createdAt.toLocaleString().split(" ")[0])}
+            </p>
           </div>
           <div className="">
             <p className="pb-2">تعداد</p>
-            <p className="text-zinc-600"> ۲ عدد</p>
+            <p className="text-zinc-600"> {toPersianDigits(String(Prop.count))} عدد</p>
           </div>
         </div>
         <div className="flex flex-col items-center gap-y-4 justify-between">
@@ -50,24 +57,24 @@ export default function ItemCard() {
                   : "bg-[var(--color-secondary)]"
               } text-white  px-4 py-1 rounded-lg text-sm sm:text-base shadow-lg shadow-zinc-100`}
             >
-              در انتظار
+              {Prop.status === "pendding" ? "در انتظار" : "تکمیل شده"}
             </p>
             <div
               className={`flex w-[60px] sm:w-[65px] border-[3px]  ${
-                isPendding
+                !isPendding
                   ? "border-[var(--color-secondary)] justify-end"
                   : "border-zinc-600 justify-start"
               } rounded-2xl p-0.5`}
             >
               <button
                 className={`w-6 h-6 cursor-pointer rounded-full  ${
-                  isPendding ? "bg-[var(--color-secondary)]" : "bg-zinc-600"
+                  !isPendding ? "bg-[var(--color-secondary)]" : "bg-zinc-600"
                 }`}
               ></button>
             </div>
           </div>
 
-          <div className="flex items-center gap-x-1 -order-2">
+          <div className="flex items-center gap-x-2 -order-2">
             <button
               onClick={() => setOpenDescreptionModal(!openDescriptionModal)}
               className="cursor-pointer"
@@ -88,10 +95,7 @@ export default function ItemCard() {
           <>
             <h4 className="text-center text-2xl">توضیحات</h4>
             <div className="mt-6 border-4 border-double border-[var(--color-primary)] p-10 text-center rounded-xl text-zinc-700 tracking-wider">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus
-              eveniet magnam a delectus totam consectetur saepe repellat eaque
-              accusamus maxime doloribus, explicabo tenetur neque quia iure
-              facere officia, illum esse!
+              {Prop?.description}
             </div>
           </>
         </Modal>

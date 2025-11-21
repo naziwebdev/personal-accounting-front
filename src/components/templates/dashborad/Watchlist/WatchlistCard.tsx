@@ -306,7 +306,7 @@ export default function WatchlistCard(Prop: Watchlist) {
           <div className="relative w-full flex items-center justify-between mt-2 pr-2">
             <div className="flex items-center gap-x-4">
               <Link
-                href={`/dashboard/watchlist/${Prop.id}`}
+                href={`/dashboard/watchlist/${Prop.id}?page=1`}
                 className="relative flex justify-center items-center p-1 rounded-full bg-black cursor-pointer group"
               >
                 <IconRightUpArrow size="w-7 h-7" color="#fff" />
