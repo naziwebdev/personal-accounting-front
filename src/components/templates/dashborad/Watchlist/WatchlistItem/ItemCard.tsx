@@ -28,7 +28,7 @@ export default function ItemCard(Prop: WatchlistItem) {
             <h4 className=" text-zinc-600 ">{Prop.title}</h4>
           </div>
           <div className="text-left">
-            <p className=" pb-2">مبلغ کل</p>
+            <p className=" pb-2">مبلغ</p>
             <p className="text-[var(--color-primary)] font-semibold text-xl xs:text-2xl">
               {`${Number(Prop.price).toLocaleString("fa-IR")} `}
               <span className=" font-medium text-zinc-600 text-sm">تومان</span>
