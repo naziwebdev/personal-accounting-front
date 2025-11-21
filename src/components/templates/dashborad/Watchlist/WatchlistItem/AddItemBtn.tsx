@@ -30,14 +30,14 @@ export default function AddItemBtn({
         </p>
         <div className="relative flex gap-x-2 lg:gap-x-4 items-center">
           <select
-            // value={statusItem ?? "all"}
-            // onChange={(e) =>
-            //   setStatusItem(
-            //     e.target.value === "all"
-            //       ? null
-            //       : (e.target.value as StatusFilterWatchlist)
-            //   )
-            // }
+            value={statusItem ?? "all"}
+            onChange={(e) =>
+              setStatusItem(
+                e.target.value === "all"
+                  ? null
+                  : (e.target.value as StatusFilterWatchlist)
+              )
+            }
             className="text-sm xs:text-base w-24 xs:w-28 appearance-none shadow-sm shadow-zinc-300/50 bg-white py-1.5 px-4 placeholder:text-black rounded-lg text-black outline-0"
           >
             <option
