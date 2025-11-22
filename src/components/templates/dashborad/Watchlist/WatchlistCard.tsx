@@ -241,7 +241,7 @@ export default function WatchlistCard(Prop: Watchlist) {
       <div className="relative inset-0 z-20 rounded-3xl">
         <p
           className={`absolute left-1  -top-6 z-20 ${
-            isPendding ? "bg-yellow-300" : "bg-[var(--color-primary)]"
+            isPendding ? "bg-yellow-400" : "bg-[var(--color-primary)]"
           } text-white  px-4 py-1 rounded-lg text-sm sm:text-base shadow-lg shadow-black/20`}
         >
           {Prop.status === "pendding" ? "در انتظار" : "تکمیل شده"}
@@ -283,7 +283,7 @@ export default function WatchlistCard(Prop: Watchlist) {
             <p className=" text-white text-sm xs:text-base [text-shadow:_1px_1px_4px_rgba(0,0,0,0.9)]">
               تارگت زمانی تو{" "}
             </p>
-            <p className="text-lg xs:text-xl font-bold text-yellow-300 font-titr">
+            <p className="text-lg xs:text-xl font-bold text-yellow-400 font-titr">
               {Prop.waitingPeriod === "day"
                 ? "یک روز"
                 : Prop.waitingPeriod === "month"
@@ -316,15 +316,13 @@ export default function WatchlistCard(Prop: Watchlist) {
 
             <div className="flex  items-center gap-x-2">
               <div
-                className={`flex w-[60px] sm:w-[65px] border-[3px] border-black  ${
-                  isPendding ? "justify-end" : "justify-start"
-                } rounded-2xl p-0.5`}
+                className={`flex w-[60px] sm:w-[65px] ${
+                  isPendding ? "bg-yellow-400 justify-end" : "bg-[var(--color-primary)] justify-start"
+                } rounded-2xl p-1`}
               >
                 <button
                   onClick={handleToggleStatus}
-                  className={`w-6 h-6 cursor-pointer rounded-full  ${
-                    isPendding ? "bg-yellow-300" : "bg-[var(--color-primary)]"
-                  }`}
+                  className={`w-6 h-6 cursor-pointer rounded-full bg-white`}
                 ></button>
               </div>
               <button

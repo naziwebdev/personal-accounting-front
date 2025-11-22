@@ -288,17 +288,15 @@ export default function ItemCard(Prop: WatchlistItem) {
               {Prop.status === "pendding" ? "در انتظار" : "تکمیل شده"}
             </p>
             <div
-              className={`flex w-[60px] sm:w-[65px] border-[3px]  ${
+              className={`flex w-[60px] sm:w-[65px] items-center  ${
                 !isPendding
-                  ? "border-[var(--color-secondary)] justify-end"
-                  : "border-zinc-600 justify-start"
-              } rounded-2xl p-0.5`}
+                  ? "bg-[var(--color-secondary)] justify-end"
+                  : "bg-zinc-600 justify-start"
+              } rounded-2xl p-1`}
             >
               <button
                 onClick={handleToggleStatus}
-                className={`w-6 h-6 cursor-pointer rounded-full  ${
-                  !isPendding ? "bg-[var(--color-secondary)]" : "bg-zinc-600"
-                }`}
+                className={`w-6 h-6 cursor-pointer rounded-full bg-white`}
               ></button>
             </div>
           </div>
@@ -327,7 +325,7 @@ export default function ItemCard(Prop: WatchlistItem) {
           <>
             <h4 className="text-center text-2xl">توضیحات</h4>
             <div className="mt-6 border-4 border-double border-[var(--color-primary)] p-10 text-center rounded-xl text-zinc-700 tracking-wider">
-              {Prop?.description}
+              {Prop?.description.length !== 0 ? Prop.description : 'توضیحاتی وجود ندارد'}
             </div>
           </>
         </Modal>

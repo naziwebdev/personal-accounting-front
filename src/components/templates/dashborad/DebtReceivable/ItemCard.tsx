@@ -254,7 +254,7 @@ export default function ItemCard(Prop: DebtReceivable) {
       <div className="absolute inset-0 z-0 bg-white/70 rounded-3xl"></div>
       {/* content */}
       <div className="relative inset-0 z-20 rounded-3xl">
-        <p className="absolute left-1/2 -translate-x-1/2 xs:translate-none -top-5 xs:-top-4 xs:-left-7 z-20 bg-[var(--color-secondary)] text-white px-4 py-0.5 rounded-lg text-sm xs:-rotate-[30deg]">
+        <p className="absolute left-1/2 -translate-x-1/2  -top-5 xs:-top-6 z-20 bg-[var(--color-secondary)] text-white px-4 py-0.5 rounded-lg text-sm ">
           {Prop.type === "receivable" ? "طلب" : "بدهی"}
         </p>
         <div className="w-full flex justify-between">
@@ -295,17 +295,15 @@ export default function ItemCard(Prop: DebtReceivable) {
         <div className="flex justify-between items-center mt-2.5 sm:mt-4">
           <div className="flex  items-center gap-x-2.5">
             <div
-              className={`flex w-[60px] sm:w-[65px] border-[3px]  ${
+              className={`flex w-[60px] sm:w-[65px]  ${
                 isPaid
-                  ? "border-[var(--color-secondary)] justify-end"
-                  : "border-zinc-600 justify-start"
-              } rounded-2xl p-0.5`}
+                  ? "bg-[var(--color-secondary)] justify-end"
+                  : "bg-zinc-600 justify-start"
+              } rounded-2xl p-1`}
             >
               <button
                 onClick={handleToggleStatus}
-                className={`w-6 h-6 cursor-pointer rounded-full  ${
-                  isPaid ? "bg-[var(--color-secondary)]" : "bg-zinc-600"
-                }`}
+                className={`w-6 h-6 cursor-pointer rounded-full bg-white`}
               ></button>
             </div>
 
