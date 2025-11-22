@@ -207,7 +207,7 @@ export default function WatchlistCard(Prop: Watchlist) {
 
       const totalCount = data.totalCount;
 
-      const lastPage = Math.ceil(totalCount / 6); // 6 = your pagination limit
+      const lastPage = Math.ceil(totalCount / 6);
 
       router.push(`/dashboard/watchlist?page=${lastPage}`);
 
