@@ -12,8 +12,8 @@ export const fetchWatchlistItems = async (
 ): Promise<WatchlistItemArrayType> => {
   const baseUrl = "http://localhost:4002/api/v1/watchlists";
   const url = status
-    ? `${baseUrl}/items/status?status=${status}&page=${page}&limit=${limit}`
-    : `${baseUrl}/${id}`;
+    ? `${baseUrl}/${id}/items/status?status=${status}&page=${page}&limit=${limit}`
+    : `${baseUrl}/${id}/items?page=${page}&limit=${limit}`;
 
   const res = await fetch(url, {
     method: "GET",

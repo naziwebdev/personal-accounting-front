@@ -68,6 +68,8 @@ export default function AddItemBtn({
         count: data.count ?? 0,
         watchlistId: Number(watchlistID),
       };
+
+     
       const makeRequest = async (token: string) => {
         return await fetch("http://localhost:4002/api/v1/watchlists/item", {
           method: "POST",
@@ -90,7 +92,6 @@ export default function AddItemBtn({
         res = await makeRequest(newToken);
         result = await res.json();
       }
-      console.log(result);
 
       if (result.statusCode !== 201)
         throw new Error("Failed to add watchlist item");
@@ -116,7 +117,7 @@ export default function AddItemBtn({
       <button
         onClick={() => setOpenModal(true)}
         className="flex justify-center items-center p-3 lg:p-4 gap-2  text-base xs:text-lg lg:text-[18px] bg-[var(--color-secondary)] text-white w-auto h-auto rounded-2xl lg:rounded-3xl shadow-xl cursor-pointer"
-      >
+      > 
         افزودن واچ لیست جدید
         <IconAdd size="w-6 h-6 lg:w-7 lg:h-7" color="#ffffff" />
       </button>

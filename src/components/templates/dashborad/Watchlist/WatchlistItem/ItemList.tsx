@@ -45,6 +45,10 @@ export default function ItemList({ statusItem, watchlistID }: WatchlistProp) {
   if (isError || !watchlistItems) return null;
 
   const totalPages = Math.ceil(watchlistItems.totalCount / limit);
+
+  console.log(watchlistItems)
+
+
   return (
     <>
       <div className="flex justify-center items-center flex-wrap gap-7">
@@ -72,7 +76,7 @@ export default function ItemList({ statusItem, watchlistID }: WatchlistProp) {
           itemes={watchlistItems.items}
           itemsLimit={6}
           totalItems={watchlistItems.totalCount}
-          pathname="/watchlist"
+          pathname={`/watchlist/${watchlistID}`}
           setShowItems={setItemsShowPage}
         />
       )}
