@@ -76,6 +76,7 @@
     /* --color-secondary: #9373f3; */
     /* --color-secondary: #9d51ef; */
     --color-secondary: #8c66e5;
+    /* --color-secondary:#9334E9; */
     /* --color-secondary:#7f22fe; */
 
     /* --color-secondary: #C4B5FD; */
@@ -132,6 +133,13 @@
 
   .svg-bg-shape {
     background-image: url("/images/bg-svg-4.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .svg-bg {
+    background-image: url("/images/bg-svg-3.svg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
