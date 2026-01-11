@@ -258,7 +258,7 @@ export default function CheckCard(Prop: Check) {
       <div className="absolute inset-0 z-0 bg-white/70 rounded-3xl"></div>
       {/* content */}
       <div className="relative inset-0 z-20 rounded-3xl">
-        <p className="absolute -top-6 -left-9 z-20 bg-[var(--color-secondary)] text-white px-2 xs:px-3 py-0.5 rounded-lg text-sm -rotate-[30deg]">
+        <p className="absolute -top-6 left-1/2 -translate-x-1/2 z-20 bg-[var(--color-secondary)] text-white px-2 xs:px-3 py-0.5 rounded-lg text-sm">
           {Prop.type === "pay" ? "پرداختی" : "دریافتی"}
         </p>
         <div className="flex justify-between">
@@ -268,7 +268,7 @@ export default function CheckCard(Prop: Check) {
               {toPersianDigits(Prop.due_date.toLocaleString().split(" ")[0])}
             </p>
           </div>
-          <div className="flex flex-col items-center gap-2.5">
+          <div className="flex flex-col items-center gap-2 pt-2">
             <IconBank size="w-7 h-7 xs:w-8 xs:h-8" color="#8c66e5" />
             <p className="text-sm xs:text-base  font-titr  text-center text-[var(--color-secondary)]">
               بانک <span className="font-black">{Prop.bank}</span>

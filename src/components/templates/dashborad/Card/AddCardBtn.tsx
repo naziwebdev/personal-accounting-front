@@ -105,9 +105,9 @@ export default function AddCardBtn() {
             </h2>
             <form
               onSubmit={handleSubmit(addCardHandle)}
-              className="px-0 md:px-32 flex items-center justify-center flex-wrap gap-y-5 text-xs xs:text-base"
+              className="px-4 md:px-20 lg:px-0 flex items-center justify-between lg:justify-center flex-wrap gap-y-3  lg:gap-y-8 gap-x-4 lg:gap-x-20 text-xs xs:text-base"
             >
-              <div className="w-full">
+              <div className="w-full lg:max-w-5/12">
                 <div className="flex items-center gap-2">
                   <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-secondary)]">
                     <IconBank size="w-5 h-5 xs:w-6 xs:h-6" color="#ffffff" />
@@ -124,7 +124,7 @@ export default function AddCardBtn() {
                   {errors.bankName && errors.bankName.message}
                 </span>
               </div>
-              <div className="w-full">
+              <div className="w-full lg:max-w-5/12">
                 <div className="flex items-center gap-2">
                   <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-secondary)]">
                     <IconBankCard
@@ -148,7 +148,7 @@ export default function AddCardBtn() {
                   {errors.cardNumber && errors.cardNumber.message}
                 </span>
               </div>
-              <div className="w-full">
+              <div className="w-full lg:max-w-5/12">
                 <div className="flex items-center gap-2">
                   <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-theme)]">
                     <IconCoin size="w-6 h-6 xs:w-7 xs:h-7" color="#52525B" />
@@ -169,12 +169,14 @@ export default function AddCardBtn() {
                   {errors.balance && errors.balance.message}
                 </span>
               </div>
-              <button
-                type="submit"
-                className="mt-7 w-1/2 md:w-1/6 h-10 xs:h-12 flex justify-center items-center text-white rounded-xl bg-[var(--color-primary)] text-base  xs:text-lg cursor-pointer"
-              >
-                تایید
-              </button>
+              <div className="w-full flex justify-center">
+                <button
+                  type="submit"
+                  className="mt-3 lg:mt-7 w-1/3 lg:w-1/6 h-10 xs:h-12 flex justify-center items-center text-white rounded-xl bg-[var(--color-primary)] text-base  xs:text-lg cursor-pointer"
+                >
+                  تایید
+                </button>
+              </div>
             </form>
           </>
         </Modal>
