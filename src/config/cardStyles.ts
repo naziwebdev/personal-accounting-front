@@ -41,13 +41,8 @@ export const cardStyles = [
     fillOne: "#000",
     fillTwo: "#000",
   },
-  {
-    bgCard: "bg-card-4",
-    fillOne: "#000",
-    fillTwo: "#000",
-  },
+
   { bgCard: "bg-card-5", fillOne: "#000", fillTwo: "#000" },
   { bgCard: "bg-card-6", fillOne: "#000", fillTwo: "#000" },
-  { bgCard: "bg-card-7", fillOne: "#000", fillTwo: "#000" },
-  { bgCard: "bg-card-8", fillOne: "#000", fillTwo: "#fff" },
+  { bgCard: "bg-card-8", fillOne: "#000", fillTwo: "#000" },
 ];

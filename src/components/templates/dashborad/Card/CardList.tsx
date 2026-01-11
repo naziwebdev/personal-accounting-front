@@ -12,6 +12,8 @@ import EmptyState from "@/components/modules/dashboard/EmptyState";
 export default function CardList() {
   const { data: cards, isLoading, isError } = useCards();
   const { loading } = useAuth();
+  let style: any = null;
+  let indexSecondary = 0;
 
   useEffect(() => {
     const toastId = "cards-loading";
@@ -34,13 +36,19 @@ export default function CardList() {
     <div className="flex justify-center items-center flex-wrap gap-6">
       {cards.length !== 0 &&
         cards.map((card, index) => {
-          const style = cardStyles[index];
+          if (index > 5) {
+            style = cardStyles[indexSecondary];
+            indexSecondary++;
+          } else {
+            style = cardStyles[index];
+          }
+
           return (
             <BankCard
               key={card.id}
-              bgCard={style.bgCard}
-              fillOne={style.fillOne}
-              fillTwo={style.fillTwo}
+              bgCard={style?.bgCard}
+              fillOne={style?.fillOne}
+              fillTwo={style?.fillTwo}
               {...card}
             />
           );
