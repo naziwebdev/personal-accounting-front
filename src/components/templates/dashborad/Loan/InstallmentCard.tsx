@@ -1,19 +1,34 @@
 "use client";
+import { Installment } from "@/types/loan";
+import { toPersianDigits } from "@/utils/normalizeDigits";
 import React, { useState } from "react";
 
-export default function InstallmentCard() {
-  const [isPendding, setIsPendding] = useState<boolean>(false);
+type InstallmentProps = {
+  Prop: Installment;
+  lable: number;
+};
+
+export default function InstallmentCard({ Prop, lable }: InstallmentProps) {
+  const [isPendding, setIsPendding] = useState<boolean>(
+    Prop.status === "pendding"
+  );
 
   return (
     <div className="w-full xs:w-[350px] lg:w-[400px] rounded-xl shadow-zinc-300/80 shadow-sm bg-white p-2.5 xs:p-4 border-r-8 border-r-zinc-600">
       <div className="flex items-center justify-between">
-        <p className="text-zinc-800 text-base lg:text-lg">قسط ۱</p>
+        <p className="text-zinc-800 text-base lg:text-lg">
+          قسط {toPersianDigits(String(lable))}
+        </p>
         <p className="text-zinc-800 text-base lg:text-lg proportional-nums">
-          ۲۰۰۰۰۰۰ <span className="text-base text-zinc-800">تومان</span>
+          {`${Number(Prop.price).toLocaleString("fa-IR")} `}{" "}
+          <span className="text-base text-zinc-800">تومان</span>
         </p>
       </div>
       <div className="pt-2 flex items-center justify-between">
-        <p className="text-zinc-800 text-sm lg:text-base">۱۴۰۴/۱۰/۱۲</p>
+        <p className="text-zinc-800 text-sm lg:text-base">
+          {" "}
+          {toPersianDigits(Prop.dueDate.toLocaleString().split(" ")[0])}
+        </p>
         <div className="flex items-center gap-x-2">
           <p
             className={`text-xs p-1 rounded-md text-white ${
@@ -22,7 +37,7 @@ export default function InstallmentCard() {
                 : "bg-green-500 justify-start"
             }`}
           >
-            پرداخت نشده
+            {Prop.status === "pendding" ? "پرداخت نشده" : "پرداخت شده"}
           </p>
           <div
             className={`flex w-[55px] sm:w-[60px] ${

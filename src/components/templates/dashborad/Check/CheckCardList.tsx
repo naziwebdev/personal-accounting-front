@@ -43,8 +43,6 @@ export default function CheckCardList({ typeItem, statusItem }: CheckProp) {
   if (loading || isLoading) return null;
   if (isError || !checks) return null;
 
-  console.log(checks.items);
-
   const totalPages = Math.ceil(checks?.totalCount / limit);
   return (
     <>
