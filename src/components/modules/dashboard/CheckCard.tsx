@@ -258,7 +258,7 @@ export default function CheckCard(Prop: Check) {
       <div className="absolute inset-0 z-0 bg-white/70 rounded-3xl"></div>
       {/* content */}
       <div className="relative inset-0 z-20 rounded-3xl">
-        <p className="absolute -top-6 left-1/2 -translate-x-1/2 z-20 bg-[var(--color-secondary)] text-white px-2 xs:px-3 py-0.5 rounded-lg text-sm">
+        <p className="absolute -top-6 left-1/2 -translate-x-1/2 z-20 bg-zinc-400/80 text-white px-4 xs:px-8 py-0.5 rounded-lg text-sm ">
           {Prop.type === "pay" ? "پرداختی" : "دریافتی"}
         </p>
         <div className="flex justify-between">

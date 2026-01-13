@@ -80,7 +80,7 @@ export default function Header() {
         <h1 className="block sm:hidden text-2xl font-titr font-bold">
           دایموند
         </h1>
-        <Image src="/images/logo-2.png" width={50} height={30} alt="logo" />
+        {/* <Image src="/images/logo-2.png" width={50} height={30} alt="logo" /> */}
       </div>
       <div className="flex items-center gap-x-4">
         <div className="cursor-pointer">
