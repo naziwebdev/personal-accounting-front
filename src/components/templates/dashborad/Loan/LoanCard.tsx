@@ -11,6 +11,13 @@ export default function LoanCard(Prop: Loan) {
     Prop.status === "pendding"
   );
   const [isOpenInstallments, setIsOpenInstallments] = useState<boolean>(false);
+
+  const sortedInstallments = [...Prop.installments].sort((a, b) =>
+    a.dueDate.localeCompare(b.dueDate)
+  );
+
+  const lastIndex = sortedInstallments.length - 1;
+
   return (
     <div className="flex w-full xs:w-auto flex-col gap-y-2">
       <div className="relative w-full xs:w-[350px] lg:w-[400px] rounded-3xl  p-3 xs:p-4 shadow-zinc-300/80 shadow-sm">
@@ -53,7 +60,7 @@ export default function LoanCard(Prop: Loan) {
               <p className="text-[#e7e7e7]"> تاریخ شروع </p>
               <p className="text-white text-base lg:text-[1.05rem] proportional-nums">
                 {toPersianDigits(
-                  Prop.firstDateInstallment.toLocaleString().split(" ")[0]
+                  sortedInstallments[0].dueDate.toLocaleString().split(" ")[0]
                 )}
               </p>
             </div>
@@ -61,7 +68,9 @@ export default function LoanCard(Prop: Loan) {
               <p className="text-[#e7e7e7]"> تاریخ پایان </p>
               <p className="text-white text-base lg:text-[1.05rem] proportional-nums">
                 {toPersianDigits(
-                  Prop.installments[1].dueDate.toLocaleString().split(" ")[0]
+                  sortedInstallments[lastIndex].dueDate
+                    .toLocaleString()
+                    .split(" ")[0]
                 )}
               </p>
             </div>
@@ -93,8 +102,8 @@ export default function LoanCard(Prop: Loan) {
       </div>
       {isOpenInstallments && (
         <div className="flex flex-col items-center gap-y-2 w-full xs:w-[350px] lg:w-[400px]">
-          {Prop.installments?.map((item , index) => (
-            <InstallmentCard key={item.id} Prop={item} lable={index+1}/>
+          {sortedInstallments.map((item, index) => (
+            <InstallmentCard key={item.id} Prop={item} lable={index + 1} />
           ))}
         </div>
       )}

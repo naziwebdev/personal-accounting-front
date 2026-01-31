@@ -23,6 +23,8 @@ import { IconCalender } from "@/components/icons/IconCalender";
 import { IconPaper } from "@/components/icons/IconPaper";
 import { IconSerial } from "@/components/icons/IconSerial";
 import { IconDescription } from "@/components/icons/IconDescription";
+import { IconPeriod } from "@/components/icons/IconPeriod";
+import { IconPerson } from "@/components/icons/IconPerson";
 
 type FilterProp = {
   statusItem: FilterLoanByStatus;
@@ -193,7 +195,7 @@ export default function AddLoanBtn({ statusItem, setStatusItem }: FilterProp) {
               <div className="w-full lg:max-w-5/12">
                 <div className="flex items-center gap-2">
                   <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-secondary)]">
-                    <IconCategory size="w-6 h-6 xs:w-7 xs:h-7" color="#fff" />
+                    <IconPeriod size="w-6 h-6 xs:w-7 xs:h-7" color="#fff" />
                   </div>
                   <Controller
                     name="periodInstallment"
@@ -313,7 +315,7 @@ export default function AddLoanBtn({ statusItem, setStatusItem }: FilterProp) {
               <div className="w-full lg:max-w-5/12">
                 <div className="flex items-center gap-2">
                   <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-secondary)]">
-                    <IconPaper size="w-7 h-7 xs:w-8 xs:h-8" color="#ffffff" />
+                    <IconPerson size="w-7 h-7 xs:w-8 xs:h-8" color="#ffffff" />
                   </div>
                   <input
                     {...register("giverName")}
@@ -351,10 +353,7 @@ export default function AddLoanBtn({ statusItem, setStatusItem }: FilterProp) {
               <div className="w-full lg:max-w-5/12">
                 <div className="flex items-center gap-2">
                   <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-secondary)]">
-                    <IconDescription
-                      size="w-5 h-5 xs:w-6 xs:h-6"
-                      color="#ffffff"
-                    />
+                    <IconPaper size="w-7 h-7 xs:w-8 xs:h-8" color="#ffffff" />
                   </div>
                   <input
                     {...register("title")}
