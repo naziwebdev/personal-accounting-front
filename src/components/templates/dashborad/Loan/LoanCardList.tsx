@@ -17,6 +17,7 @@ export default function LoanCardList({ statusItem }: FilterProp) {
   const page = Number(searchParams.get("page") ?? "1");
   const limit = Number(searchParams.get("limit") ?? "4");
 
+
   const { data: loans, isLoading, isError } = useLoans(page, limit, statusItem);
   const [loansShowPage, setLoansShowPage] = useState<Loan[]>([]);
   const { loading } = useAuth();

@@ -5,6 +5,14 @@ import { IconDownArrow } from "@/components/icons/IconDownAroow";
 import InstallmentCard from "./InstallmentCard";
 import { Loan } from "@/types/loan";
 import { toPersianDigits } from "@/utils/normalizeDigits";
+import { IconEdit } from "@/components/icons/IconEdit";
+import { IconDelete } from "@/components/icons/IconDelete";
+import { IconActionDot } from "@/components/icons/IconActiondot";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import { restoreAccessToken } from "@/utils/restoreAccessToken";
+import { toast } from "sonner";
 
 export default function LoanCard(Prop: Loan) {
   const [isPendding, setIsPendding] = useState<boolean>(
@@ -17,6 +25,67 @@ export default function LoanCard(Prop: Loan) {
   );
 
   const lastIndex = sortedInstallments.length - 1;
+
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const { accessToken, setAccessToken } = useAuth();
+
+  //////// delete logic ///////
+
+  const removeMutation = useMutation({
+    mutationFn: async () => {
+      const makeRequest = async (token: string) => {
+        return await fetch(`http://localhost:4002/api/v1/loans/${Prop.id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+        });
+      };
+
+      let res = await makeRequest(accessToken!);
+      let result = await res.json();
+
+      if (result.statusCode === 401) {
+        const newToken = await restoreAccessToken();
+        if (!newToken) throw new Error("Unauthorized");
+        setAccessToken(newToken);
+        res = await makeRequest(newToken);
+        result = await res.json();
+      }
+      if (result.statusCode !== 200) throw new Error("Failed to remove loan");
+
+      return result.data;
+    },
+    onSuccess: (data) => {
+      toast.success(" با موفقیت حذف شد");
+
+      const totalCount = data.totalCount;
+
+      const lastPage = Math.ceil(totalCount / 6); // 6 = your pagination limit
+
+      router.push(`/dashboard/loans?page=${lastPage}`);
+
+      queryClient.invalidateQueries({ queryKey: ["loans"] });
+    },
+    onError: () => {
+      toast.error("خطا در حذف ");
+    },
+  });
+
+  const deleteItemHandle = () => {
+    swal({
+      title: "آیا از حذف اطمینان دارید ؟",
+      icon: "warning",
+      buttons: ["خیر", "بله"],
+    }).then((value) => {
+      if (value) {
+        removeMutation.mutate();
+      }
+    });
+  };
 
   return (
     <div className="flex w-full xs:w-auto flex-col gap-y-2">
@@ -84,9 +153,18 @@ export default function LoanCard(Prop: Loan) {
                 {toPersianDigits(String(Prop.countInstallment))}
               </span>
             </div>
+
+            <div className={"flex justify-center items-center gap-x-3"}>
+              <button className="cursor-pointer">
+                <IconEdit size="w-6 h-6 font-bold" color="#fff" />
+              </button>
+              <button onClick={deleteItemHandle} className="cursor-pointer">
+                <IconDelete size="w-7 h-7 font-bold" color="#e19ab3" />
+              </button>
+            </div>
             <div
               onClick={() => setIsOpenInstallments(!isOpenInstallments)}
-              className="mt-2 mx-auto w-auto flex gap-x-2 justify-center items-center p-2.5 text-white rounded-xl shadow-lg shadow-black/20 bg-zinc-600 cursor-pointer"
+              className="mb-2 mx-auto w-auto flex gap-x-2 justify-center items-center p-2.5 text-white rounded-xl shadow-lg shadow-black/20 bg-zinc-600 cursor-pointer"
             >
               <span className="text-sm xs:text-base text-nowrap">
                 مشاهده اقساط
