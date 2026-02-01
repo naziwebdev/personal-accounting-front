@@ -1,3 +1,4 @@
+import { toEnglishDigits } from "@/utils/normalizeDigits";
 import * as yup from "yup";
 
 export const addLoan = yup.object().shape({
@@ -27,28 +28,33 @@ export const addLoan = yup.object().shape({
     .required("دوره اقساط را وارد کنید "),
 });
 
-export const editLoan = yup.object().shape({
+export const editLoan = yup.object({
   giverName: yup.string().notRequired(),
   title: yup.string().notRequired(),
+
   totalPrice: yup
-    .number()
-    .transform((value, originalValue) =>
-      originalValue === "" || isNaN(value) ? undefined : value
-    )
-    .notRequired(),
+    .string()
+    .nullable()
+    .test("is-number", "عدد معتبر نیست", (v) =>
+      v ? !isNaN(Number(toEnglishDigits(v))) : true
+    ),
+
+  countInstallment: yup
+    .string()
+    .nullable()
+    .test("is-number", "عدد معتبر نیست", (v) =>
+      v ? !isNaN(Number(toEnglishDigits(v))) : true
+    ),
+
   description: yup.string().notRequired(),
-  countInstallment: yup.number().notRequired(),
+
   firstDateInstallment: yup
     .string()
-    .transform((value) =>
-      value?.replace(/[۰-۹]/g, (d: string) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))
-    )
+    .transform((v) => (v ? toEnglishDigits(v) : v))
     .notRequired(),
+
   periodInstallment: yup
     .string()
-    .oneOf(
-      ["weekly", "monthly", "yearly"],
-      "دوره اقساط فقط میتواند هفتگی / ماهانه یا سالانه باشد"
-    )
+    .oneOf(["weekly", "monthly", "yearly"])
     .notRequired(),
 });

@@ -29,6 +29,16 @@ import { IconSerial } from "@/components/icons/IconSerial";
 import { IconPaper } from "@/components/icons/IconPaper";
 import { IconDescription } from "@/components/icons/IconDescription";
 
+type EditItemFormUI = {
+  giverName?: string | null;
+  title?: string | null;
+  totalPrice?: string | null;
+  description?: string | null;
+  countInstallment?: string | null;
+  firstDateInstallment?: string | null;
+  periodInstallment?: "monthly" | "weekly" | "yearly" | null;
+};
+
 type editItemFormData = {
   giverName?: string | null;
   title?: string | null;
@@ -68,11 +78,16 @@ export default function LoanCard(Prop: Loan) {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      giverName:Prop.giverName,
+      giverName: Prop.giverName,
       title: Prop.title,
-      totalPrice: Number(Prop.totalPrice),
+      totalPrice: Prop.totalPrice
+        ? toPersianDigits(String(Prop.totalPrice))
+        : null,
       description: Prop?.description,
-      countInstallment: Prop.countInstallment,
+      countInstallment: Prop.countInstallment
+        ? toPersianDigits(String(Prop.countInstallment))
+        : null,
+
       firstDateInstallment: Prop.firstDateInstallment
         ? new Date(Prop.firstDateInstallment).toISOString().split("T")[0]
         : null,
@@ -135,15 +150,27 @@ export default function LoanCard(Prop: Loan) {
     },
   });
 
-  const editItemHandle = async (data: editItemFormData) => {
+  const editItemHandle = async (data: EditItemFormUI) => {
     swal({
       title: "آیا از ویرایش اطمینان دارید ؟",
       icon: "warning",
       buttons: ["خیر", "بله"],
     }).then((value) => {
-      if (value) {
-        editMutation.mutate(data);
-      }
+      if (!value) return;
+
+      const payload: editItemFormData = {
+        ...data,
+
+        totalPrice: data.totalPrice
+          ? Number(toEnglishDigits(data.totalPrice))
+          : 0,
+
+        countInstallment: data.countInstallment
+          ? Number(toEnglishDigits(data.countInstallment))
+          : 4,
+      };
+
+      editMutation.mutate(payload);
     });
   };
 
@@ -309,7 +336,7 @@ export default function LoanCard(Prop: Loan) {
         <Modal onClose={editModalHandle}>
           <>
             <h2 className="w-1/2 md:w-1/5 mx-auto text-center pb-2 mb-6 lg:mb-12 text-lg xs:text-2xl font-bold  rounded-xl text-nowrap">
-              افزودن چک
+              ویرایش وام
             </h2>
             <form
               onSubmit={handleSubmit(editItemHandle)}
@@ -376,11 +403,13 @@ export default function LoanCard(Prop: Loan) {
                     <IconCoin size="w-7 h-7 xs:w-8 xs:h-8" color="#52525B" />
                   </div>
                   <input
-                    {...register("totalPrice", {
-                      onChange: (e) => {
-                        e.target.value = toEnglishDigits(e.target.value);
-                      },
-                    })}
+                    {...register("totalPrice")}
+                    onChange={(e) => {
+                      const value = toPersianDigits(
+                        toEnglishDigits(e.target.value)
+                      );
+                      setValue("totalPrice", value, { shouldValidate: true });
+                    }}
                     type="text"
                     className="w-full bg-[var(--color-theme)] p-3 placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
                     placeholder="مبلغ کل وام را وارد کنید"
@@ -458,13 +487,15 @@ export default function LoanCard(Prop: Loan) {
                     <IconSerial size="w-6 h-6 xs:w-7 xs:h-7" color="#52525B" />
                   </div>
                   <input
-                    {...register("countInstallment", {
-                      onChange: (e) => {
-                        e.target.value = toEnglishDigits(e.target.value);
-                      },
-                    })}
+                      {...register("countInstallment")}
+                    onChange={(e) => {
+                      const value = toPersianDigits(
+                        toEnglishDigits(e.target.value)
+                      );
+                      setValue("countInstallment", value, { shouldValidate: true });
+                    }}
                     type="text"
-                    className="w-full bg-[var(--color-theme)] p-3 placeholder:text-white rounded-xl text-zinc-600 outline-0"
+                    className="w-full bg-[var(--color-theme)] p-3 placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
                     placeholder=" تعداد کل اقساط  را وارد کنید"
                   />
                 </div>
@@ -481,7 +512,7 @@ export default function LoanCard(Prop: Loan) {
                   <input
                     {...register("title")}
                     type="text"
-                    className="w-full bg-[var(--color-theme)] p-3 placeholder:text-white rounded-xl text-zinc-600 outline-0"
+                    className="w-full bg-[var(--color-theme)] p-3 placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
                     placeholder=" نام ای برای وام وارد کنید"
                   />
                 </div>
