@@ -4,7 +4,7 @@ import { IconLoanGiver } from "@/components/icons/IconLoanGiver";
 import { IconDownArrow } from "@/components/icons/IconDownAroow";
 import InstallmentCard from "./InstallmentCard";
 import { Loan } from "@/types/loan";
-import { toPersianDigits } from "@/utils/normalizeDigits";
+import { toEnglishDigits, toPersianDigits } from "@/utils/normalizeDigits";
 import { IconEdit } from "@/components/icons/IconEdit";
 import { IconDelete } from "@/components/icons/IconDelete";
 import { IconActionDot } from "@/components/icons/IconActiondot";
@@ -13,13 +13,38 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { restoreAccessToken } from "@/utils/restoreAccessToken";
 import { toast } from "sonner";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { editLoan } from "@/validations/loan";
+import DatePicker, { DateObject } from "react-multi-date-picker";
+import Modal from "@/components/modules/dashboard/Modal";
+import persian from "react-date-object/calendars/persian";
+import persian_fa from "react-date-object/locales/persian_fa";
+import "react-multi-date-picker/styles/colors/purple.css";
+import { IconPeriod } from "@/components/icons/IconPeriod";
+import { IconCoin } from "@/components/icons/IconCoin";
+import { IconCalender } from "@/components/icons/IconCalender";
+import { IconPerson } from "@/components/icons/IconPerson";
+import { IconSerial } from "@/components/icons/IconSerial";
+import { IconPaper } from "@/components/icons/IconPaper";
+import { IconDescription } from "@/components/icons/IconDescription";
+
+type editItemFormData = {
+  giverName?: string | null;
+  title?: string | null;
+  totalPrice?: number | null;
+  description?: string | null;
+  countInstallment?: number | null;
+  firstDateInstallment?: string | null;
+  periodInstallment?: "monthly" | "weekly" | "yearly" | null;
+};
 
 export default function LoanCard(Prop: Loan) {
   const [isPendding, setIsPendding] = useState<boolean>(
     Prop.status === "pendding"
   );
   const [isOpenInstallments, setIsOpenInstallments] = useState<boolean>(false);
-
+  const [openEditModal, setOpenEditModal] = useState<boolean>(false);
   const sortedInstallments = [...Prop.installments].sort((a, b) =>
     a.dueDate.localeCompare(b.dueDate)
   );
@@ -29,6 +54,98 @@ export default function LoanCard(Prop: Loan) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { accessToken, setAccessToken } = useAuth();
+
+  const editModalHandle = () => setOpenEditModal(false);
+
+  ///// edit logic ////
+
+  const {
+    register,
+    reset,
+    control,
+    setValue,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      giverName:Prop.giverName,
+      title: Prop.title,
+      totalPrice: Number(Prop.totalPrice),
+      description: Prop?.description,
+      countInstallment: Prop.countInstallment,
+      firstDateInstallment: Prop.firstDateInstallment
+        ? new Date(Prop.firstDateInstallment).toISOString().split("T")[0]
+        : null,
+      periodInstallment: Prop.periodInstallment,
+    },
+    resolver: yupResolver(editLoan),
+  });
+
+  const editMutation = useMutation({
+    mutationFn: async (data: editItemFormData) => {
+      const makeRequest = async (token: string) => {
+        const persianDate = new DateObject({
+          date: data.firstDateInstallment ?? undefined,
+          format: "YYYY/MM/DD",
+          calendar: persian,
+        });
+        const gregorianDate = persianDate.convert("gregorian" as any).toDate();
+
+        const finalData = {
+          ...data,
+          totalPrice: data?.totalPrice ?? 0,
+          firstDateInstallment: gregorianDate.toISOString(),
+          countInstallment: data?.countInstallment ?? 4,
+        };
+
+        return await fetch(`http://localhost:4002/api/v1/loans/${Prop.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+          body: JSON.stringify(finalData),
+        });
+      };
+      let res = await makeRequest(accessToken!);
+
+      let result = await res.json();
+
+      if (result.statusCode === 401) {
+        const newToken = await restoreAccessToken();
+        if (!newToken) throw new Error("Unauthorized");
+        setAccessToken(newToken);
+        res = await makeRequest(newToken);
+        result = await res.json();
+      }
+      if (result.statusCode !== 200) throw new Error("Failed to edit check");
+
+      return result.data;
+    },
+
+    onSuccess: () => {
+      toast.success(" با موفقیت ویرایش شد");
+      queryClient.invalidateQueries({ queryKey: ["loans"] });
+      editModalHandle();
+    },
+    onError: () => {
+      toast.error("خطا در ویرایش ");
+      editModalHandle();
+    },
+  });
+
+  const editItemHandle = async (data: editItemFormData) => {
+    swal({
+      title: "آیا از ویرایش اطمینان دارید ؟",
+      icon: "warning",
+      buttons: ["خیر", "بله"],
+    }).then((value) => {
+      if (value) {
+        editMutation.mutate(data);
+      }
+    });
+  };
 
   //////// delete logic ///////
 
@@ -155,7 +272,10 @@ export default function LoanCard(Prop: Loan) {
             </div>
 
             <div className={"flex justify-center items-center gap-x-3"}>
-              <button className="cursor-pointer">
+              <button
+                onClick={() => setOpenEditModal(true)}
+                className="cursor-pointer"
+              >
                 <IconEdit size="w-6 h-6 font-bold" color="#fff" />
               </button>
               <button onClick={deleteItemHandle} className="cursor-pointer">
@@ -185,6 +305,221 @@ export default function LoanCard(Prop: Loan) {
           ))}
         </div>
       )}
+      {openEditModal ? (
+        <Modal onClose={editModalHandle}>
+          <>
+            <h2 className="w-1/2 md:w-1/5 mx-auto text-center pb-2 mb-6 lg:mb-12 text-lg xs:text-2xl font-bold  rounded-xl text-nowrap">
+              افزودن چک
+            </h2>
+            <form
+              onSubmit={handleSubmit(editItemHandle)}
+              className="px-4 md:px-20 lg:px-0 flex items-center justify-between lg:justify-evenly flex-wrap gap-y-3  lg:gap-y-8 gap-x-4 lg:gap-x-20 text-xs xs:text-base"
+            >
+              <div className="w-full lg:max-w-5/12">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-theme)]">
+                    <IconPeriod size="w-6 h-6 xs:w-7 xs:h-7" color="#52525B" />
+                  </div>
+                  <Controller
+                    name="periodInstallment"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <div className="relative w-full">
+                        <select
+                          {...field}
+                          value={field.value ?? "-1"}
+                          id="type"
+                          className="appearance-none w-full bg-[var(--color-theme)] p-3 placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
+                        >
+                          <option value={"-1"} className=" text-zinc-600">
+                            دوره پرداخت اقساط را مشخص کنید
+                          </option>
+                          <option
+                            className="bg-[var(--color-primary)] text-white"
+                            value={"weeky"}
+                          >
+                            هفتگی
+                          </option>
+                          <option
+                            className="bg-[var(--color-primary)] text-white"
+                            value={"monthly"}
+                          >
+                            ماهیانه
+                          </option>
+                          <option
+                            className="bg-[var(--color-primary)] text-white"
+                            value={"yearly"}
+                          >
+                            سالیانه
+                          </option>
+                        </select>
+                        <span className="absolute left-3 top-1/2 z-10 transform -translate-y-1/2 pointer-events-none">
+                          <IconDownArrow
+                            size="w-3 h-3 xs:w-4 xs:h-4"
+                            color="#52525B"
+                          />
+                        </span>
+                      </div>
+                    )}
+                  />
+                </div>
+
+                <span className="text-right pt-1.5 text-sm  text-red-600">
+                  {errors.periodInstallment && errors.periodInstallment.message}
+                </span>
+              </div>
+
+              <div className="w-full lg:max-w-5/12">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-theme)]">
+                    <IconCoin size="w-7 h-7 xs:w-8 xs:h-8" color="#52525B" />
+                  </div>
+                  <input
+                    {...register("totalPrice", {
+                      onChange: (e) => {
+                        e.target.value = toEnglishDigits(e.target.value);
+                      },
+                    })}
+                    type="text"
+                    className="w-full bg-[var(--color-theme)] p-3 placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
+                    placeholder="مبلغ کل وام را وارد کنید"
+                  />
+                </div>
+                <span className="text-right pt-1.5 text-sm  text-red-600">
+                  {errors.totalPrice && errors.totalPrice.message}
+                </span>
+              </div>
+              <div className="w-full lg:max-w-5/12">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-theme)]">
+                    <IconCalender
+                      size="w-6 h-6 xs:w-7 xs:h-7"
+                      color="#52525B"
+                    />
+                  </div>
+                  <Controller
+                    control={control}
+                    name="firstDateInstallment"
+                    rules={{ required: true }} //optional
+                    render={({ field: { onChange, value } }) => (
+                      <>
+                        <DatePicker
+                          inputClass="custom-input-edit"
+                          className="purple w-full"
+                          format="YYYY/MM/DD"
+                          value={
+                            value
+                              ? new DateObject({
+                                  date: value,
+                                  format: "YYYY/MM/DD",
+                                  calendar: persian,
+                                })
+                              : undefined
+                          }
+                          placeholder="تاریخ اولین قسط را مشخص کنید"
+                          onChange={(dateObject) => {
+                            const formatted =
+                              dateObject?.format?.("YYYY/MM/DD");
+                            onChange(formatted ?? "");
+                          }}
+                          locale={persian_fa}
+                          calendar={persian}
+                        />
+                      </>
+                    )}
+                  />
+                </div>
+                <span className="text-right pt-1.5  text-sm  text-red-600">
+                  {errors.firstDateInstallment &&
+                    errors.firstDateInstallment.message}
+                </span>
+              </div>
+              <div className="w-full lg:max-w-5/12">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-theme)]">
+                    <IconPerson size="w-7 h-7 xs:w-8 xs:h-8" color="#52525B" />
+                  </div>
+                  <input
+                    {...register("giverName")}
+                    type="text"
+                    className="w-full bg-[var(--color-theme)] p-3 placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
+                    placeholder=" نام وام دهنده را وارد کنید"
+                  />
+                </div>
+
+                <span className="text-right pt-1.5  text-sm  text-red-600">
+                  {errors.giverName && errors.giverName.message}
+                </span>
+              </div>
+              <div className="w-full lg:max-w-5/12">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-theme)]">
+                    <IconSerial size="w-6 h-6 xs:w-7 xs:h-7" color="#52525B" />
+                  </div>
+                  <input
+                    {...register("countInstallment", {
+                      onChange: (e) => {
+                        e.target.value = toEnglishDigits(e.target.value);
+                      },
+                    })}
+                    type="text"
+                    className="w-full bg-[var(--color-theme)] p-3 placeholder:text-white rounded-xl text-zinc-600 outline-0"
+                    placeholder=" تعداد کل اقساط  را وارد کنید"
+                  />
+                </div>
+
+                <span className="text-right pt-1.5  text-sm  text-red-600">
+                  {errors.countInstallment && errors.countInstallment.message}
+                </span>
+              </div>
+              <div className="w-full lg:max-w-5/12">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-theme)]">
+                    <IconPaper size="w-7 h-7 xs:w-8 xs:h-8" color="#52525B" />
+                  </div>
+                  <input
+                    {...register("title")}
+                    type="text"
+                    className="w-full bg-[var(--color-theme)] p-3 placeholder:text-white rounded-xl text-zinc-600 outline-0"
+                    placeholder=" نام ای برای وام وارد کنید"
+                  />
+                </div>
+
+                <span className="text-right pt-1.5  text-sm  text-red-600">
+                  {errors.title && errors.title.message}
+                </span>
+              </div>
+              <div className="w-full lg:max-w-5/12">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-theme)]">
+                    <IconDescription
+                      size="w-6 h-6 xs:w-7 xs:h-7"
+                      color="#52525B"
+                    />
+                  </div>
+                  <textarea
+                    {...register("description")}
+                    className="w-full bg-[var(--color-theme)] p-3 resize-none placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
+                    placeholder="توضیحات را وارد کنید (اختیاری)"
+                  ></textarea>
+                </div>
+                <span className="text-right pt-1.5  text-sm  text-red-600">
+                  {errors.description && errors.description.message}
+                </span>
+              </div>
+              <div className="w-full flex justify-center">
+                <button
+                  type="submit"
+                  className="mt-3 lg:mt-7 w-1/3 lg:w-1/6 h-10 xs:h-12 flex justify-center items-center text-white rounded-xl bg-[var(--color-primary)] text-base  xs:text-lg cursor-pointer"
+                >
+                  تایید
+                </button>
+              </div>
+            </form>
+          </>
+        </Modal>
+      ) : null}
     </div>
   );
 }
