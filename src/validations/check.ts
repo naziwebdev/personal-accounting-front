@@ -1,3 +1,4 @@
+import { toEnglishDigits } from "@/utils/normalizeDigits";
 import * as yup from "yup";
 
 export const addCheck = yup.object().shape({
@@ -48,9 +49,10 @@ export const editCheck = yup.object().shape({
     )
     .notRequired(),
   price: yup
-    .number()
-    .transform((value, originalValue) =>
-      originalValue === "" || isNaN(value) ? undefined : value
+    .string()
+    .nullable()
+    .test("is-number", "عدد معتبر نیست", (v) =>
+      v ? !isNaN(Number(toEnglishDigits(v))) : true
     )
     .notRequired(),
   bank: yup.string().notRequired(),
