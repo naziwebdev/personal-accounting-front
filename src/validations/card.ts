@@ -1,3 +1,4 @@
+import { toEnglishDigits } from "@/utils/normalizeDigits";
 import * as yup from "yup";
 
 export const addCard = yup.object().shape({
@@ -19,21 +20,20 @@ export const addCard = yup.object().shape({
 
 export const editCard = yup.object().shape({
   bankName: yup.string().optional(),
-
   cardNumber: yup
     .string()
     .nullable()
-    .notRequired()
-    .matches(/^\d{16}$/, {
-      message: "شماره کارت باید ۱۶ رقم باشد",
-      excludeEmptyString: true,
-    }),
-
-  balance: yup
-    .number()
-    .transform((value, originalValue) =>
-      originalValue === "" || isNaN(value) ? undefined : value
+    .test("is-number", "عدد معتبر نیست", (v) =>
+      v ? !isNaN(Number(toEnglishDigits(v))) : true
     )
-    .nullable()
+    .test("is-16-digits", "شماره کارت باید ۱۶ رقم باشد", (v) =>
+      v ? /^\d{16}$/.test(toEnglishDigits(v)) : true
+    )
     .notRequired(),
+  balance: yup
+    .string()
+    .nullable()
+    .test("is-number", "عدد معتبر نیست", (v) =>
+      v ? !isNaN(Number(toEnglishDigits(v))) : true
+    ),
 });

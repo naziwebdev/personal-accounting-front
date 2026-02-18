@@ -8,7 +8,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { editCard } from "@/validations/card";
-import { toEnglishDigits } from "@/utils/normalizeDigits";
+import { toEnglishDigits, toPersianDigits } from "@/utils/normalizeDigits";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
 import { restoreAccessToken } from "@/utils/restoreAccessToken";
@@ -28,6 +28,12 @@ type editCardFormData = {
   bankName?: string | null;
   cardNumber?: string | null;
   balance?: number | null;
+};
+
+type editCardFormUI = {
+  bankName?: string | null;
+  cardNumber?: string | null;
+  balance?: string | null;
 };
 
 type BankCardProps = BgcardPropsType & Card;
@@ -50,12 +56,13 @@ export default function BankCard({
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: {
       bankName,
-      cardNumber,
-      balance,
+      cardNumber: toPersianDigits(String(cardNumber)),
+      balance: balance ? toPersianDigits(String(balance)) : null,
     },
     resolver: yupResolver(editCard),
   });
@@ -103,15 +110,23 @@ export default function BankCard({
     },
   });
 
-  const editCardHandle = async (data: editCardFormData) => {
+  const editCardHandle = async (data: editCardFormUI) => {
     swal({
       title: "آیا از ویرایش کارت اطمینان دارید ؟",
       icon: "warning",
       buttons: ["خیر", "بله"],
     }).then((value) => {
-      if (value) {
-        editMutation.mutate(data);
-      }
+      if (!value) return;
+
+      const payload: editCardFormData = {
+        bankName: data.bankName ?? null,
+
+        cardNumber: data.cardNumber ? toEnglishDigits(data.cardNumber) : null,
+
+        balance: data.balance ? Number(toEnglishDigits(data.balance)) : 0,
+      };
+
+      editMutation.mutate(payload);
     });
   };
 
@@ -263,11 +278,13 @@ export default function BankCard({
                     />
                   </div>
                   <input
-                    {...register("cardNumber", {
-                      onChange: (e) => {
-                        e.target.value = toEnglishDigits(e.target.value);
-                      },
-                    })}
+                    {...register("cardNumber")}
+                    onChange={(e) => {
+                      const value = toPersianDigits(
+                        toEnglishDigits(e.target.value)
+                      );
+                      setValue("cardNumber", value, { shouldValidate: true });
+                    }}
                     type="text"
                     className="w-full bg-[var(--color-theme)] p-3 placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
                     placeholder="شماره کارت ۱۶ رقمی را وارد کنید (اختیاری)"
@@ -284,11 +301,13 @@ export default function BankCard({
                     <IconCoin size="w-6 h-6 xs:w-7 xs:h-7" color="#52525B" />
                   </div>
                   <input
-                    {...register("balance", {
-                      onChange: (e) => {
-                        e.target.value = toEnglishDigits(e.target.value);
-                      },
-                    })}
+                    {...register("balance")}
+                    onChange={(e) => {
+                      const value = toPersianDigits(
+                        toEnglishDigits(e.target.value)
+                      );
+                      setValue("balance", value, { shouldValidate: true });
+                    }}
                     type="text"
                     className="w-full bg-[var(--color-theme)] p-3 placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
                     placeholder="موجودی کارت را وارد کنید ( اختیاری )"
