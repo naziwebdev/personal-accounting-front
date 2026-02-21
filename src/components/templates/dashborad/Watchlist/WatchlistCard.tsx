@@ -21,12 +21,18 @@ import { IconDescription } from "@/components/icons/IconDescription";
 import { IconCalender } from "@/components/icons/IconCalender";
 import { IconDownArrow } from "@/components/icons/IconDownAroow";
 import { IconCoin } from "@/components/icons/IconCoin";
-import { toEnglishDigits } from "@/utils/normalizeDigits";
+import { toEnglishDigits, toPersianDigits } from "@/utils/normalizeDigits";
 
 type editWatchlistFormData = {
   title?: string | null;
   waitingPeriod?: "day" | "week" | "month" | "year" | null;
   currentBudget?: number | null;
+};
+
+type editWatchlistFormUI = {
+  title?: string | null;
+  waitingPeriod?: "day" | "week" | "month" | "year" | null;
+  currentBudget?: string | null;
 };
 
 export default function WatchlistCard(Prop: Watchlist) {
@@ -53,7 +59,9 @@ export default function WatchlistCard(Prop: Watchlist) {
   } = useForm({
     defaultValues: {
       title: Prop.title,
-      currentBudget: Prop.currentBudget,
+      currentBudget: Prop.currentBudget
+        ? toPersianDigits(String(Prop.currentBudget))
+        : null,
       waitingPeriod: Prop.waitingPeriod,
     },
     resolver: yupResolver(editWatchlist),
@@ -106,14 +114,24 @@ export default function WatchlistCard(Prop: Watchlist) {
     },
   });
 
-  const editItemHandle = async (data: editWatchlistFormData) => {
+  const editItemHandle = async (data: editWatchlistFormUI) => {
     swal({
       title: "آیا از ویرایش اطمینان دارید ؟",
       icon: "warning",
       buttons: ["خیر", "بله"],
     }).then((value) => {
       if (value) {
-        editMutation.mutate(data);
+        if (!value) return;
+
+        const payload: editWatchlistFormData = {
+          ...data,
+
+          currentBudget: data.currentBudget
+            ? Number(toEnglishDigits(data.currentBudget))
+            : 0,
+        };
+
+        editMutation.mutate(payload);
       }
     });
   };
@@ -432,7 +450,7 @@ export default function WatchlistCard(Prop: Watchlist) {
                         <span className="absolute left-3 top-1/2 z-10 transform -translate-y-1/2 pointer-events-none">
                           <IconDownArrow
                             size="w-3 h-3 xs:w-4 xs:h-4"
-                            color="#fff"
+                            color="#52525B"
                           />
                         </span>
                       </div>
@@ -450,11 +468,15 @@ export default function WatchlistCard(Prop: Watchlist) {
                     <IconCoin size="w-6 h-6 xs:w-7 xs:h-7" color="#52525B" />
                   </div>
                   <input
-                    {...register("currentBudget", {
-                      onChange: (e) => {
-                        e.target.value = toEnglishDigits(e.target.value);
-                      },
-                    })}
+                    {...register("currentBudget")}
+                    onChange={(e) => {
+                      const value = toPersianDigits(
+                        toEnglishDigits(e.target.value)
+                      );
+                      setValue("currentBudget", value, {
+                        shouldValidate: true,
+                      });
+                    }}
                     type="text"
                     className="w-full bg-[var(--color-theme)] p-3 placeholder:text-[#52525B] rounded-xl text-[#52525B] outline-0"
                     placeholder="بودجه فعلی خود را وارد کنید"

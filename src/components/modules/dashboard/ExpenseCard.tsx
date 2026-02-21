@@ -39,6 +39,15 @@ type editExpenseFormData = {
   description?: string | null;
 };
 
+type editExpenseFormUI = {
+  title?: string | null;
+  categoryID?: number | null;
+  bankCardID?: number | null;
+  price?: string | null;
+  date?: string | null | undefined;
+  description?: string | null;
+};
+
 export default function ExpenseCard(Prop: Expense) {
   const router = useRouter();
   const [isShowAction, setIsShowAction] = useState<boolean>(false);
@@ -57,7 +66,7 @@ export default function ExpenseCard(Prop: Expense) {
 
   const {
     register,
-    reset,
+    setValue,
     handleSubmit,
     control,
     formState: { errors },
@@ -66,7 +75,7 @@ export default function ExpenseCard(Prop: Expense) {
       title: Prop.title,
       categoryID: Prop.category.id,
       bankCardID: Prop?.bankCard?.id,
-      price: Number(Prop.price),
+      price: Prop.price ? toPersianDigits(String(Prop.price)) : null,
       date: Prop.date ? new Date(Prop.date).toISOString().split("T")[0] : null,
       description: Prop?.description,
     },
@@ -88,10 +97,15 @@ export default function ExpenseCard(Prop: Expense) {
         const finalData = {
           ...data,
           price: data.price ?? 0,
-          bankCard_id: data.bankCardID === -1 ? null : data.bankCardID,
+          bankCard_id:
+            typeof data.bankCardID === "number" && data.bankCardID !== -1
+              ? data.bankCardID
+              : null,
           category_id: data.categoryID,
           date: gregorianDate.toISOString(),
         };
+
+        console.log(finalData);
         return await fetch(`http://localhost:4002/api/v1/expenses/${Prop.id}`, {
           method: "PUT",
           headers: {
@@ -129,14 +143,22 @@ export default function ExpenseCard(Prop: Expense) {
     },
   });
 
-  const editExpenseHandle = async (data: editExpenseFormData) => {
+  const editExpenseHandle = async (data: editExpenseFormUI) => {
     swal({
       title: "آیا از ویرایش اطمینان دارید ؟",
       icon: "warning",
       buttons: ["خیر", "بله"],
     }).then((value) => {
       if (value) {
-        editMutation.mutate(data);
+        if (!value) return;
+
+        const payload: editExpenseFormData = {
+          ...data,
+
+          price: data.price ? Number(toEnglishDigits(data.price)) : 0,
+        };
+
+        editMutation.mutate(payload);
       }
     });
   };
@@ -257,7 +279,9 @@ export default function ExpenseCard(Prop: Expense) {
         </div>
         <div className="flex gap-1 ps-2 xs:ps-0">
           <p className="text-gray-600 whitespace-nowrap">دسته بندی : </p>
-          <p className="text-gray-800 font-bold  text-center">{Prop.category.title}</p>
+          <p className="text-gray-800 font-bold  text-center">
+            {Prop.category.title}
+          </p>
         </div>
       </div>
       {openEditModal ? (
@@ -293,11 +317,13 @@ export default function ExpenseCard(Prop: Expense) {
                     <IconCoin size="w-7 h-7 xs:w-8 xs:h-8" color="#52525b" />
                   </div>
                   <input
-                    {...register("price", {
-                      onChange: (e) => {
-                        e.target.value = toEnglishDigits(e.target.value);
-                      },
-                    })}
+                    {...register("price")}
+                    onChange={(e) => {
+                      const value = toPersianDigits(
+                        toEnglishDigits(e.target.value)
+                      );
+                      setValue("price", value, { shouldValidate: true });
+                    }}
                     type="text"
                     className="w-full bg-[var(--color-theme)] p-3 placeholder:text-[#52525b] rounded-xl text-[#52525b] outline-0"
                     placeholder="مبلغ هزینه را وارد کنید"
@@ -329,7 +355,7 @@ export default function ExpenseCard(Prop: Expense) {
                           className="appearance-none w-full bg-[var(--color-theme)] p-3 placeholder:text-[#52525b] rounded-xl text-[#52525b] outline-0"
                         >
                           <option
-                            value={"-1"}
+                            value={-1}
                             className="bg-primary-p text-[#52525b]"
                           >
                             دسته بندی را انتخاب کنید
@@ -375,12 +401,12 @@ export default function ExpenseCard(Prop: Expense) {
                       <div className="relative w-full">
                         <select
                           {...field}
-                          value={field.value ?? "-1"}
+                          value={field.value ?? -1}
                           id="bankCardID"
                           className="appearance-none w-full p-3 bg-[var(--color-theme)] placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
                         >
                           <option
-                            value={"-1"}
+                            value={-1}
                             className="bg-primary-p text-white"
                           >
                             برداشت شده از کارت (اختیاری)

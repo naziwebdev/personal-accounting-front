@@ -1,3 +1,4 @@
+import { toEnglishDigits } from "@/utils/normalizeDigits";
 import * as yup from "yup";
 
 export const addDebtReceivable = yup.object().shape({
@@ -32,11 +33,11 @@ export const editDebtReceivable = yup.object().shape({
     .oneOf(["debt", "receivable"], "نوع   یا بدهی یا طلب باید باشد")
     .notRequired(),
   price: yup
-    .number()
-    .transform((value, originalValue) =>
-      originalValue === "" || isNaN(value) ? undefined : value
-    )
-    .notRequired(),
+    .string()
+    .nullable()
+    .test("is-number", "عدد معتبر نیست", (v) =>
+      v ? !isNaN(Number(toEnglishDigits(v))) : true
+    ),
   person: yup
     .string()
     .min(2, "نام شخص حداقل دو کارکتر باید باشد")

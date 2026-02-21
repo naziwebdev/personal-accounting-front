@@ -32,6 +32,13 @@ type editItemFormData = {
   description?: string | null;
 };
 
+type editItemFormUI = {
+  type?: "debt" | "receivable" | null;
+  price?: string | null;
+  person?: string | null;
+  date?: string | null;
+  description?: string | null;
+};
 
 export default function ItemCard(Prop: DebtReceivable) {
   const [isPaid, setIsPaid] = useState<boolean>(Prop.status === "paid");
@@ -55,7 +62,7 @@ export default function ItemCard(Prop: DebtReceivable) {
     defaultValues: {
       type: Prop.type as any,
       person: Prop.person,
-      price: Number(Prop.price),
+      price: Prop.price ? toPersianDigits(String(Prop.price)) : null,
       date: Prop.date ? new Date(Prop.date).toISOString().split("T")[0] : null,
       description: Prop?.description,
     },
@@ -120,14 +127,22 @@ export default function ItemCard(Prop: DebtReceivable) {
     },
   });
 
-  const editItemHandle = async (data: editItemFormData) => {
+  const editItemHandle = async (data: editItemFormUI) => {
     swal({
       title: "آیا از ویرایش اطمینان دارید ؟",
       icon: "warning",
       buttons: ["خیر", "بله"],
     }).then((value) => {
       if (value) {
-        editMutation.mutate(data);
+        if (!value) return;
+
+        const payload: editItemFormData = {
+          ...data,
+
+          price: data.price ? Number(toEnglishDigits(data.price)) : 0,
+        };
+
+        editMutation.mutate(payload);
       }
     });
   };
@@ -332,7 +347,7 @@ export default function ItemCard(Prop: DebtReceivable) {
         <Modal onClose={editModalHandle}>
           <>
             <h2 className="w-1/2 md:w-1/5 mx-auto text-center pb-2 mb-6 lg:mb-12 text-lg xs:text-2xl font-bold  rounded-xl text-nowrap">
-              افزودن بدهی / طلب
+              ویرایش بدهی / طلب
             </h2>
             <form
               onSubmit={handleSubmit(editItemHandle)}
@@ -396,11 +411,13 @@ export default function ItemCard(Prop: DebtReceivable) {
                     <IconCoin size="w-7 h-7 xs:w-8 xs:h-8" color="#52525B" />
                   </div>
                   <input
-                    {...register("price", {
-                      onChange: (e) => {
-                        e.target.value = toEnglishDigits(e.target.value);
-                      },
-                    })}
+                    {...register("price")}
+                    onChange={(e) => {
+                      const value = toPersianDigits(
+                        toEnglishDigits(e.target.value)
+                      );
+                      setValue("price", value, { shouldValidate: true });
+                    }}
                     type="text"
                     className="w-full bg-[var(--color-theme)] p-3 placeholder:text-[#52525B] rounded-xl text-[#52525B] outline-0"
                     placeholder="مبلغ را وارد کنید"

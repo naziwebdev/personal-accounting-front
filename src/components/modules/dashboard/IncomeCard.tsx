@@ -40,6 +40,15 @@ type editIncomeFormData = {
   description?: string | null;
 };
 
+type editIncomeFormUI = {
+  title?: string | null;
+  categoryID?: number | null;
+  bankCardID?: number | null;
+  price?: string | null;
+  date?: string | null | undefined;
+  description?: string | null;
+};
+
 export default function IncomeCard(Prop: Income) {
   const router = useRouter();
   const [isShowAction, setIsShowAction] = useState<boolean>(false);
@@ -58,7 +67,7 @@ export default function IncomeCard(Prop: Income) {
 
   const {
     register,
-    reset,
+    setValue,
     handleSubmit,
     control,
     formState: { errors },
@@ -67,7 +76,7 @@ export default function IncomeCard(Prop: Income) {
       title: Prop.title,
       categoryID: Prop.category.id,
       bankCardID: Prop?.bankCard?.id,
-      price: Number(Prop.price),
+      price: Prop.price ? toPersianDigits(String(Prop.price)) : null,
       date: Prop.date ? new Date(Prop.date).toISOString().split("T")[0] : null,
       description: Prop?.description,
     },
@@ -130,14 +139,22 @@ export default function IncomeCard(Prop: Income) {
     },
   });
 
-  const editIncomeHandle = async (data: editIncomeFormData) => {
+  const editIncomeHandle = async (data: editIncomeFormUI) => {
     swal({
       title: "آیا از ویرایش اطمینان دارید ؟",
       icon: "warning",
       buttons: ["خیر", "بله"],
     }).then((value) => {
       if (value) {
-        editMutation.mutate(data);
+        if (!value) return;
+
+        const payload: editIncomeFormData = {
+          ...data,
+
+          price: data.price ? Number(toEnglishDigits(data.price)) : 0,
+        };
+
+        editMutation.mutate(payload);
       }
     });
   };
@@ -295,11 +312,13 @@ export default function IncomeCard(Prop: Income) {
                     <IconCoin size="w-7 h-7 xs:w-8 xs:h-8" color="#52525B" />
                   </div>
                   <input
-                    {...register("price", {
-                      onChange: (e) => {
-                        e.target.value = toEnglishDigits(e.target.value);
-                      },
-                    })}
+                    {...register("price")}
+                    onChange={(e) => {
+                      const value = toPersianDigits(
+                        toEnglishDigits(e.target.value)
+                      );
+                      setValue("price", value, { shouldValidate: true });
+                    }}
                     type="text"
                     className="w-full bg-[var(--color-theme)] p-3 placeholder:text-[#52525B] rounded-xl text-[#52525B] outline-0"
                     placeholder="مبلغ درامد را وارد کنید"

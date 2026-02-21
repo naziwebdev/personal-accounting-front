@@ -516,7 +516,7 @@ export default function CheckCard(Prop: Check) {
                         <span className="absolute left-3 top-1/2 z-10 transform -translate-y-1/2 pointer-events-none">
                           <IconDownArrow
                             size="w-3 h-3 xs:w-4 xs:h-4"
-                            color="#fff"
+                            color="#52525B"
                           />
                         </span>
                       </div>

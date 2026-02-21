@@ -1,3 +1,4 @@
+import { toEnglishDigits } from "@/utils/normalizeDigits";
 import * as yup from "yup";
 
 export const addWatchlist = yup.object().shape({
@@ -29,11 +30,11 @@ export const editWatchlist = yup.object().shape({
     .oneOf(["day", "week", "month", "year"], "")
     .notRequired(),
   currentBudget: yup
-    .number()
-    .transform((value, originalValue) =>
-      originalValue === "" || isNaN(value) ? undefined : value
-    )
-    .notRequired(),
+    .string()
+    .nullable()
+    .test("is-number", "عدد معتبر نیست", (v) =>
+      v ? !isNaN(Number(toEnglishDigits(v))) : true
+    ),
 });
 
 export const addWatchlistItem = yup.object().shape({
@@ -70,16 +71,22 @@ export const editWatchlistItem = yup.object().shape({
     .max(150, "نام حداکثر مینواد ۱۵۰ کارکتر باشد")
     .notRequired(),
   price: yup
-    .number()
-    .transform((value, originalValue) =>
-      originalValue === "" || isNaN(value) ? undefined : value
-    )
-    .notRequired(),
+    .string()
+    .nullable()
+    .test("is-number", "عدد معتبر نیست", (v) =>
+      v ? !isNaN(Number(toEnglishDigits(v))) : true
+    ),
   count: yup
-    .number()
-    .integer()
-    .min(1, "تعداد حداقل میتواند ۱ عدد باشد")
-    .required("تعداد را وارد کنید"),
+    .string()
+    .nullable()
+    .test("is-number", "عدد معتبر نیست", (v) =>
+      v ? !isNaN(Number(toEnglishDigits(v))) : true
+    )
+    .test("min-value", "حداقل مقدار باید ۱ باشد", (v) => {
+      if (!v) return true; // allow null/empty
+      const num = Number(toEnglishDigits(v));
+      return num >= 1;
+    }),
   description: yup.string().notRequired(),
   status: yup
     .string()

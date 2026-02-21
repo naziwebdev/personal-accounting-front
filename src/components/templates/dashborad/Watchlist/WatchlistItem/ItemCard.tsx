@@ -28,6 +28,14 @@ type editWatchlistItemFormData = {
   status?: null | "pendding" | "purchased";
 };
 
+type editWatchlistItemFormUI = {
+  title?: null | string;
+  price?: null | string;
+  count?: null | string;
+  description?: null | string;
+  status?: null | "pendding" | "purchased";
+};
+
 export default function ItemCard(Prop: WatchlistItem) {
   const [isPendding, setIsPendding] = useState<boolean>(
     Prop.status === "pendding"
@@ -55,8 +63,9 @@ export default function ItemCard(Prop: WatchlistItem) {
   } = useForm({
     defaultValues: {
       title: Prop.title,
-      price: Prop.price,
-      count: Prop.count,
+      price: Prop.price ? toPersianDigits(String(Prop.price)) : null,
+      count: Prop.count ? toPersianDigits(String(Prop.count)) : null,
+
       description: Prop.description,
       status: Prop.status,
     },
@@ -74,6 +83,7 @@ export default function ItemCard(Prop: WatchlistItem) {
           count: data.count ?? 0,
           watchlistId: Number(Prop.watchlist?.id),
         };
+        console.log(finalData);
         return await fetch(
           `http://localhost:4002/api/v1/watchlists/item/${Prop.id}`,
           {
@@ -115,15 +125,25 @@ export default function ItemCard(Prop: WatchlistItem) {
     },
   });
 
-  const editItemHandle = async (data: editWatchlistItemFormData) => {
+  const editItemHandle = async (data: editWatchlistItemFormUI) => {
     swal({
       title: "آیا از ویرایش اطمینان دارید ؟",
       icon: "warning",
       buttons: ["خیر", "بله"],
     }).then((value) => {
       if (value) {
-        editMutation.mutate(data);
+        if (!value) return;
       }
+
+      const payload: editWatchlistItemFormData = {
+        ...data,
+
+        price: data.price ? Number(toEnglishDigits(data.price)) : null,
+
+        count: data.count ? Number(toEnglishDigits(data.count)) : null,
+      };
+
+      editMutation.mutate(payload);
     });
   };
 
@@ -148,7 +168,7 @@ export default function ItemCard(Prop: WatchlistItem) {
 
       let res = await makeRequest(accessToken!);
       let result = await res.json();
-      console.log(result);
+
       if (result.statusCode === 401) {
         const newToken = await restoreAccessToken();
         if (!newToken) throw new Error("Unauthorized");
@@ -325,7 +345,9 @@ export default function ItemCard(Prop: WatchlistItem) {
           <>
             <h4 className="text-center text-2xl">توضیحات</h4>
             <div className="mt-6 border-4 border-double border-[var(--color-primary)] p-10 text-center rounded-xl text-zinc-700 tracking-wider">
-              {Prop?.description.length !== 0 ? Prop.description : 'توضیحاتی وجود ندارد'}
+              {Prop?.description.length !== 0
+                ? Prop.description
+                : "توضیحاتی وجود ندارد"}
             </div>
           </>
         </Modal>
@@ -363,11 +385,13 @@ export default function ItemCard(Prop: WatchlistItem) {
                     <IconCoin size="w-7 h-7 xs:w-8 xs:h-8" color="#52525B" />
                   </div>
                   <input
-                    {...register("price", {
-                      onChange: (e) => {
-                        e.target.value = toEnglishDigits(e.target.value);
-                      },
-                    })}
+                    {...register("price")}
+                    onChange={(e) => {
+                      const value = toPersianDigits(
+                        toEnglishDigits(e.target.value)
+                      );
+                      setValue("price", value, { shouldValidate: true });
+                    }}
                     type="text"
                     className="w-full bg-[var(--color-theme)] p-3 placeholder:text-[#52525B] rounded-xl text-[#52525B] outline-0"
                     placeholder="مبلغ واچ لیست را وارد کنید"
@@ -383,14 +407,17 @@ export default function ItemCard(Prop: WatchlistItem) {
                     <IconSerial size="w-6 h-6 xs:w-7 xs:h-7" color="#52525B" />
                   </div>
                   <input
-                    {...register("count", {
-                      onChange: (e) => {
-                        e.target.value = toEnglishDigits(e.target.value);
-                      },
-                    })}
-                    type="number"
-                    min="0"
-                    step="1"
+                    {...register("count")}
+                    onChange={(e) => {
+                      const value = toPersianDigits(
+                        toEnglishDigits(e.target.value)
+                      );
+                      setValue("count", value, {
+                        shouldValidate: true,
+                      });
+                    }}
+                    type="text"
+                    inputMode="numeric"
                     className="w-full bg-[var(--color-theme)] p-3 placeholder:text-[#52525B] rounded-xl text-[#52525B] outline-0"
                     placeholder="تعداد را وارد کنید"
                   />
