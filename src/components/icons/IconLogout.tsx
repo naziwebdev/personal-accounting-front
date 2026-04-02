@@ -4,7 +4,7 @@ export const IconLogout = () => (
     viewBox="0 0 30 30"
     version="1.1"
     xmlns="http://www.w3.org/2000/svg"
-    className="h-[32px] cursor-pointer"
+    className="h-[24px] cursor-pointer"
   >
     <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
     <g
