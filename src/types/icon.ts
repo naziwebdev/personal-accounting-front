@@ -12,3 +12,9 @@ export type IconWithoutBgPropsType = {
 export type IconEmptyColorType = {
   color: string;
 };
+
+export type IconReportYearType = {
+  size: string;
+  color: string;
+  shadowColor: string;
+};
