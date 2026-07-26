@@ -13,6 +13,7 @@ import swal from "sweetalert";
 import { IconProfile } from "@/components/icons/IconProfile";
 import { useGetMe } from "@/hooks/useGetMe";
 import Logo from "@/images/logo-1.svg";
+import NotifBox from "@/components/templates/dashborad/Header/NotifBox";
 
 export default function Header() {
   const { accessToken, setAccessToken } = useAuth();
@@ -90,7 +91,7 @@ export default function Header() {
             <IconNotification color="#000" />
           </button>
           <div
-            className={`absolute w-[300px]  z-20 left-0 bg-white rounded-lg shadow-2xl transition-all duration-300 ease-in-out
+            className={`absolute w-[250px] xs:w-[300px]  z-50 top-11 xs:top-9 -left-12 xs:left-0 bg-white rounded-lg shadow-2xl transition-all duration-300 ease-in-out
       ${
         isVisibleNotifBox
           ? "opacity-100 translate-y-0"
@@ -98,51 +99,7 @@ export default function Header() {
       }
     `}
           >
-            <div className="flex items-center justify-between w-full bg-[var(--color-primary)] rounded-t-lg px-4 py-0.5 text-white">
-              <p>پیام ها</p>
-              <p className="text-xs">خواندن همه ✓</p>
-            </div>
-            <ul className="py-2">
-              <li className="px-4 py-2 border-b-[1px] border-stone-200">
-                <div className="flex justify-between items-center text-sm">
-                  <p className="bg-black text-white rounded-md py-0.5 px-2 text-xs">
-                    موعد چک
-                  </p>
-                  <button className="bg-[var(--color-secondary)] text-white rounded-md py-0.5 px-2 text-xs cursor-pointer">
-                    خواندم
-                  </button>
-                </div>
-                <p className="text-xs text-zinc-600 pt-0.5">
-                  موعد چک شما در تاریخ امروز هست
-                </p>
-              </li>
-              <li className="px-4 py-2 border-b-[1px] border-stone-200">
-                <div className="flex justify-between items-center text-sm">
-                  <p className="bg-black text-white rounded-md py-0.5 px-2 text-xs">
-                    موعد چک
-                  </p>
-                  <button className="bg-[var(--color-secondary)] text-white rounded-md py-0.5 px-2 text-xs cursor-pointer">
-                    خواندم
-                  </button>
-                </div>
-                <p className="text-xs text-zinc-600 pt-0.5">
-                  موعد چک شما در تاریخ امروز هست
-                </p>
-              </li>
-              <li className="px-4 py-2">
-                <div className="flex justify-between items-center text-sm">
-                  <p className="bg-black text-white rounded-md py-0.5 px-2 text-xs">
-                    موعد چک
-                  </p>
-                  <button className="bg-[var(--color-secondary)] text-white rounded-md py-0.5 px-2 text-xs cursor-pointer">
-                    خواندم
-                  </button>
-                </div>
-                <p className="text-xs text-gray-600 pt-0.5">
-                  موعد چک شما در تاریخ امروز هست
-                </p>
-              </li>
-            </ul>
+            <NotifBox />
           </div>
         </div>
 
@@ -154,7 +111,7 @@ export default function Header() {
             <IconProfile color="#e19ab3" />
           </button>
           <div
-            className={`absolute w-[200px] py-1 px-4 top-16 z-20 left-0 bg-white rounded-lg shadow-2xl transition-all duration-300 ease-in-out
+            className={`absolute w-[200px] py-1 px-4 top-16 z-50 left-0 bg-white rounded-lg shadow-2xl transition-all duration-300 ease-in-out
       ${
         isVisibleProfile
           ? "opacity-100 translate-y-0"

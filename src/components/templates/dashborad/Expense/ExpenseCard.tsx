@@ -1,37 +1,36 @@
 "use client";
 
 import React, { useState } from "react";
-import { IconCardIncom } from "@/components/icons/IconCardIncome";
-import { IconDownDirection } from "@/components/icons/IconDownDirection";
+import { IconCardExpense } from "@/components/icons/IconCardExpense";
+import { IconUpDirection } from "@/components/icons/IconUpDirection";
 import { IconActionDot } from "@/components/icons/IconActiondot";
 import { IconDelete } from "@/components/icons/IconDelete";
 import { IconEdit } from "@/components/icons/IconEdit";
-import { Income } from "@/types/income";
+import { Expense } from "@/types/expense";
 import { toEnglishDigits, toPersianDigits } from "@/utils/normalizeDigits";
-import Modal from "./Modal";
+import { useCards } from "@/hooks/useCards";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@/context/AuthContext";
+import { useCategoriesByType } from "@/hooks/useCategories";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { editExpense } from "@/validations/expense";
+import DatePicker, { DateObject } from "react-multi-date-picker";
+import persian from "react-date-object/calendars/persian";
+import persian_fa from "react-date-object/locales/persian_fa";
+import { restoreAccessToken } from "@/utils/restoreAccessToken";
+import { toast } from "sonner";
+import Modal from "../../../modules/dashboard/Modal";
 import { IconPaper } from "@/components/icons/IconPaper";
 import { IconCoin } from "@/components/icons/IconCoin";
 import { IconCategory } from "@/components/icons/IconCategory";
 import { IconDownArrow } from "@/components/icons/IconDownAroow";
 import { IconBankCard } from "@/components/icons/IconBankCard";
 import { IconCalender } from "@/components/icons/IconCalender";
-import DatePicker, { DateObject } from "react-multi-date-picker";
 import { IconDescription } from "@/components/icons/IconDescription";
-import persian from "react-date-object/calendars/persian";
-import persian_fa from "react-date-object/locales/persian_fa";
-import { useForm, Controller } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { editIncome } from "@/validations/income";
-import { useCategoriesByType } from "@/hooks/useCategories";
-import { useCards } from "@/hooks/useCards";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import swal from "sweetalert";
-import { restoreAccessToken } from "@/utils/restoreAccessToken";
-import { useAuth } from "@/context/AuthContext";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-type editIncomeFormData = {
+type editExpenseFormData = {
   title?: string | null;
   categoryID?: number | null;
   bankCardID?: number | null;
@@ -40,7 +39,7 @@ type editIncomeFormData = {
   description?: string | null;
 };
 
-type editIncomeFormUI = {
+type editExpenseFormUI = {
   title?: string | null;
   categoryID?: number | null;
   bankCardID?: number | null;
@@ -49,7 +48,7 @@ type editIncomeFormUI = {
   description?: string | null;
 };
 
-export default function IncomeCard(Prop: Income) {
+export default function ExpenseCard(Prop: Expense) {
   const router = useRouter();
   const [isShowAction, setIsShowAction] = useState<boolean>(false);
   const [openEditModal, setOpenEditModal] = useState<boolean>(false);
@@ -63,7 +62,7 @@ export default function IncomeCard(Prop: Income) {
     data: categories,
     isError,
     isLoading,
-  } = useCategoriesByType("income");
+  } = useCategoriesByType("expense");
 
   const {
     register,
@@ -80,13 +79,13 @@ export default function IncomeCard(Prop: Income) {
       date: Prop.date ? new Date(Prop.date).toISOString().split("T")[0] : null,
       description: Prop?.description,
     },
-    resolver: yupResolver(editIncome),
+    resolver: yupResolver(editExpense),
   });
 
   const editModalHandle = () => setOpenEditModal(false);
 
   const editMutation = useMutation({
-    mutationFn: async (data: editIncomeFormData) => {
+    mutationFn: async (data: editExpenseFormData) => {
       const makeRequest = async (token: string) => {
         const persianDate = new DateObject({
           date: data?.date ?? undefined,
@@ -98,11 +97,16 @@ export default function IncomeCard(Prop: Income) {
         const finalData = {
           ...data,
           price: data.price ?? 0,
-          bankCard_id: data.bankCardID === -1 ? null : data.bankCardID,
+          bankCard_id:
+            typeof data.bankCardID === "number" && data.bankCardID !== -1
+              ? data.bankCardID
+              : null,
           category_id: data.categoryID,
           date: gregorianDate.toISOString(),
         };
-        return await fetch(`http://localhost:4002/api/v1/incomes/${Prop.id}`, {
+
+        console.log(finalData);
+        return await fetch(`http://localhost:4002/api/v1/expenses/${Prop.id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -123,23 +127,23 @@ export default function IncomeCard(Prop: Income) {
         res = await makeRequest(newToken);
         result = await res.json();
       }
-      if (result.statusCode !== 200) throw new Error("Failed to edit income");
+      if (result.statusCode !== 200) throw new Error("Failed to edit expense");
 
       return result.data;
     },
 
     onSuccess: () => {
-      toast.success("درامد با موفقیت ویرایش شد");
-      queryClient.invalidateQueries({ queryKey: ["incomes"] });
+      toast.success("هزینه با موفقیت ویرایش شد");
+      queryClient.invalidateQueries({ queryKey: ["expenses"] });
       editModalHandle();
     },
     onError: () => {
-      toast.error("خطا در ویرایش کارت");
+      toast.error("خطا در ویرایش هزینه");
       editModalHandle();
     },
   });
 
-  const editIncomeHandle = async (data: editIncomeFormUI) => {
+  const editExpenseHandle = async (data: editExpenseFormUI) => {
     swal({
       title: "آیا از ویرایش اطمینان دارید ؟",
       icon: "warning",
@@ -148,7 +152,7 @@ export default function IncomeCard(Prop: Income) {
       if (value) {
         if (!value) return;
 
-        const payload: editIncomeFormData = {
+        const payload: editExpenseFormData = {
           ...data,
 
           price: data.price ? Number(toEnglishDigits(data.price)) : 0,
@@ -164,7 +168,7 @@ export default function IncomeCard(Prop: Income) {
   const removeMutation = useMutation({
     mutationFn: async () => {
       const makeRequest = async (token: string) => {
-        return await fetch(`http://localhost:4002/api/v1/incomes/${Prop.id}`, {
+        return await fetch(`http://localhost:4002/api/v1/expenses/${Prop.id}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
@@ -184,26 +188,27 @@ export default function IncomeCard(Prop: Income) {
         res = await makeRequest(newToken);
         result = await res.json();
       }
-      if (result.statusCode !== 200) throw new Error("Failed to remove income");
+      if (result.statusCode !== 200)
+        throw new Error("Failed to remove expense");
 
       return result.data;
     },
     onSuccess: (data) => {
-      toast.success("درامد با موفقیت حذف شد");
+      toast.success("هزینه با موفقیت حذف شد");
 
       const totalCount = data.totalCount;
       const lastPage = Math.ceil(totalCount / 6); // 6 = your pagination limit
 
-      router.push(`/dashboard/incomes?page=${lastPage}`);
+      router.push(`/dashboard/expenses?page=${lastPage}`);
 
-      queryClient.invalidateQueries({ queryKey: ["incomes"] });
+      queryClient.invalidateQueries({ queryKey: ["expenses"] });
     },
     onError: () => {
-      toast.error("خطا در حذف درامد");
+      toast.error("خطا در حذف هزینه");
     },
   });
 
-  const deleteIncomeHandle = () => {
+  const deleteExpenseHandle = () => {
     swal({
       title: "آیا از حذف اطمینان دارید ؟",
       icon: "warning",
@@ -217,9 +222,9 @@ export default function IncomeCard(Prop: Income) {
 
   return (
     <div className="relative w-full xs:w-[350px] lg:w-[400px] bg-white rounded-3xl  p-3 xs:p-4 shadow-lg">
-      <div className="absolute left-0 top-0 w-1/3 xs:w-1/4 p-1 rounded-tl-2xl rounded-br-2xl flex justify-center items-center gap-1 bg-green-100 text-sm xs:text-base font-bold ">
-        <IconDownDirection size="w-6 h-[18px]" color="#13a00c" />
-        <p className="text-[#13a00c]">واریز</p>
+      <div className="absolute left-0 top-0 w-1/3 xs:w-1/4 p-1 rounded-tl-2xl rounded-br-2xl flex justify-center items-center gap-1 bg-red-100/80 text-sm xs:text-base font-bold ">
+        <IconUpDirection size="w-6 h-5" color="#c81c2a" />
+        <p className="text-[#c81c2a]">برداشت</p>
       </div>
       <div className="absolute top-9 xs:top-12 left-4 flex gap-1">
         <button
@@ -239,13 +244,13 @@ export default function IncomeCard(Prop: Income) {
           >
             <IconEdit size="w-6 h-6 font-bold" color="#e19ab3" />
           </button>
-          <button onClick={deleteIncomeHandle} className="cursor-pointer">
+          <button onClick={deleteExpenseHandle} className="cursor-pointer">
             <IconDelete size="w-6 h-6 font-bold" color="#e19ab3" />
           </button>
         </div>
       </div>
       <div className="flex gap-2 items-center">
-        <IconCardIncom size="xs:w-12 xs:h-12 w-9 h-9" color="#8c66e5" />
+        <IconCardExpense size="xs:w-12 xs:h-12 w-9 h-9" color="#8c66e5" />
         <p className="font-black text-gray-800">
           {Prop.bankCard?.bankName ? Prop.bankCard?.bankName : "پیش فرض"}
         </p>
@@ -267,14 +272,14 @@ export default function IncomeCard(Prop: Income) {
           </p>
         </div>
       </div>
-      <div className="w-full flex justify-between bg-pink-50/40 p-2.5 xs:p-4 mt-3 xs:mt-4 border-[1px] border-[var(--color-primary)]/70 rounded-2xl text-sm xs:text-base">
+      <div className="w-full flex justify-between bg-pink-50/40 p-2.5 xs:p-4 mt-3 xs:mt-4 border-[1px] border-[var(--color-primary)]/40 rounded-2xl text-sm xs:text-base">
         <div className="flex gap-1">
           <p className="text-gray-600">عنوان : </p>
           <p className="text-gray-800 font-bold text-center">{Prop.title}</p>
         </div>
-        <div className="flex gap-1 ps-3 xs:ps-0">
+        <div className="flex gap-1 ps-2 xs:ps-0">
           <p className="text-gray-600 whitespace-nowrap">دسته بندی : </p>
-          <p className="text-gray-800 font-bold text-center">
+          <p className="text-gray-800 font-bold  text-center">
             {Prop.category.title}
           </p>
         </div>
@@ -283,22 +288,22 @@ export default function IncomeCard(Prop: Income) {
         <Modal onClose={editModalHandle}>
           <>
             <h2 className="w-1/2 md:w-1/5 mx-auto text-center pb-2 mb-6 lg:mb-12 text-lg xs:text-2xl font-bold  rounded-xl text-nowrap">
-              ویرایش درامد
+              ویرایش هزینه
             </h2>
             <form
-              onSubmit={handleSubmit(editIncomeHandle)}
+              onSubmit={handleSubmit(editExpenseHandle)}
               className="px-4 md:px-20 lg:px-0 flex items-center justify-between lg:justify-evenly flex-wrap gap-y-3  lg:gap-y-8 gap-x-4 lg:gap-x-20 text-xs xs:text-base"
             >
               <div className="w-full lg:max-w-5/12">
                 <div className="flex items-center gap-2">
                   <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-theme)]">
-                    <IconPaper size="w-7 h-7 xs:w-8 xs:h-8" color="#52525B" />
+                    <IconPaper size="w-7 h-7 xs:w-8 xs:h-8" color="#52525b" />
                   </div>
                   <input
                     {...register("title")}
                     type="text"
-                    className="w-full bg-[var(--color-theme)] p-3 placeholder:text-[#52525B] rounded-xl text-[#52525B] outline-0"
-                    placeholder="عنوان درامد را وارد کنید"
+                    className="w-full bg-[var(--color-theme)] p-3 placeholder:text-[#52525b] rounded-xl text-[#52525b] outline-0"
+                    placeholder="عنوان هزینه را وارد کنید"
                   />
                 </div>
 
@@ -309,7 +314,7 @@ export default function IncomeCard(Prop: Income) {
               <div className="w-full lg:max-w-5/12">
                 <div className="flex items-center gap-2">
                   <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-theme)]">
-                    <IconCoin size="w-7 h-7 xs:w-8 xs:h-8" color="#52525B" />
+                    <IconCoin size="w-7 h-7 xs:w-8 xs:h-8" color="#52525b" />
                   </div>
                   <input
                     {...register("price")}
@@ -320,8 +325,8 @@ export default function IncomeCard(Prop: Income) {
                       setValue("price", value, { shouldValidate: true });
                     }}
                     type="text"
-                    className="w-full bg-[var(--color-theme)] p-3 placeholder:text-[#52525B] rounded-xl text-[#52525B] outline-0"
-                    placeholder="مبلغ درامد را وارد کنید"
+                    className="w-full bg-[var(--color-theme)] p-3 placeholder:text-[#52525b] rounded-xl text-[#52525b] outline-0"
+                    placeholder="مبلغ هزینه را وارد کنید"
                   />
                 </div>
                 <span className="text-right pt-1.5 text-sm  text-red-600">
@@ -333,7 +338,7 @@ export default function IncomeCard(Prop: Income) {
                   <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-theme)]">
                     <IconCategory
                       size="w-7 h-7 xs:w-8 xs:h-8"
-                      colorBg="#52525B"
+                      colorBg="#52525b"
                       colorIcon="#e4e2f1"
                     />
                   </div>
@@ -347,11 +352,11 @@ export default function IncomeCard(Prop: Income) {
                           {...field}
                           value={field.value ?? -1}
                           id="category"
-                          className="appearance-none w-full bg-[var(--color-theme)] p-3 placeholder:text-[#52525B] rounded-xl text-[#52525B] outline-0"
+                          className="appearance-none w-full bg-[var(--color-theme)] p-3 placeholder:text-[#52525b] rounded-xl text-[#52525b] outline-0"
                         >
                           <option
-                            value={"-1"}
-                            className="bg-primary-p text-[#52525B"
+                            value={-1}
+                            className="bg-primary-p text-[#52525b]"
                           >
                             دسته بندی را انتخاب کنید
                           </option>
@@ -369,7 +374,7 @@ export default function IncomeCard(Prop: Income) {
                         <span className="absolute left-3 top-1/2 z-10 transform -translate-y-1/2 pointer-events-none">
                           <IconDownArrow
                             size="w-3 h-3 xs:w-4 xs:h-4"
-                            color="#52525B"
+                            color="#52525b"
                           />
                         </span>
                       </div>
@@ -396,15 +401,15 @@ export default function IncomeCard(Prop: Income) {
                       <div className="relative w-full">
                         <select
                           {...field}
-                          value={field.value ?? "-1"}
+                          value={field.value ?? -1}
                           id="bankCardID"
                           className="appearance-none w-full p-3 bg-[var(--color-theme)] placeholder:text-zinc-600 rounded-xl text-zinc-600 outline-0"
                         >
                           <option
-                            value={"-1"}
-                            className="bg-primary-p text-[#52525B]"
+                            value={-1}
+                            className="bg-primary-p text-white"
                           >
-                            واریز شده به کارت (اختیاری)
+                            برداشت شده از کارت (اختیاری)
                           </option>
                           {cards?.length !== 0 &&
                             cards?.map((card) => (
@@ -439,7 +444,7 @@ export default function IncomeCard(Prop: Income) {
                   <div className="w-10 h-10 xs:w-12 xs:h-12 flex justify-center items-center rounded-full bg-[var(--color-theme)]">
                     <IconCalender
                       size="w-6 h-6 xs:w-7 xs:h-7"
-                      color="#52525B"
+                      color="#52525b"
                     />
                   </div>
                   <Controller

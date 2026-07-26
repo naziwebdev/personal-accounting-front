@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import IncomeCard from "@/components/modules/dashboard/IncomeCard";
+import IncomeCard from "@/components/templates/dashborad/Income/IncomeCard";
 import { useIncomes } from "@/hooks/useIncomes";
 import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";

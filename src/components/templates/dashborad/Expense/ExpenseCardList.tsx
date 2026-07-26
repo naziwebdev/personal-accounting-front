@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import ExpenseCard from "@/components/modules/dashboard/ExpenseCard";
+import ExpenseCard from "@/components/templates/dashborad/Expense/ExpenseCard";
 import { useExpense } from "@/hooks/useExpense";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
