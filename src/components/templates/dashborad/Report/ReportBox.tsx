@@ -6,7 +6,7 @@ import { IconReportSave } from "@/components/icons/reports/IconReportSave";
 type reportBoxDetails = {
   name: string;
   icon: string;
-  price: number;
+  price: number | undefined;
   period: string;
 };
 
@@ -18,7 +18,7 @@ export default function ReportBox({
 }: reportBoxDetails) {
   return (
     <div className="w-[220px] bg-white rounded-xl p-4 shadow-lg border-[1px] border-zinc-300">
-      <div className="flex justify-between items-center gap-x-16 pb-2.5 border-b-2 border-dotted border-b-zinc-200 ">
+      <div className="flex justify-between items-center gap-x-16 pb-2.5 border-b-[2.5px] border-dotted border-b-zinc-200 ">
         <div className="flex items-center gap-x-1.5">
           {icon === "income-month" ? (
             <IconReportIncome size="w-11 h-10" color="#06b11a" />
@@ -56,12 +56,12 @@ export default function ReportBox({
               ? "text-[#06b11a]"
               : name === "هزینه"
               ? "text-[#f51467]"
-              : name === "پس انداز"
+              : name === "مانده"
               ? "text-[#7b57c1]"
               : ""
           }`}
         >
-          {price}
+          {price?.toLocaleString("fa-IR")}
         </p>
         <p>تومان</p>
       </div>
