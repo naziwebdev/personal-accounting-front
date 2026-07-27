@@ -5,10 +5,17 @@ import { useSearchParams } from "next/navigation";
 import { useReports } from "@/hooks/useReports";
 import { ReportBoxMonthly } from "@/types/report";
 
+type YearReportType = {
+  totalIncome: number;
+  totalExpense: number;
+  savings: number;
+};
+
 export default function ReportBoxList() {
   const [persianDate, setPersianDate] = useState({ year: "", month: "" });
   const [currentMonthReport, setCurrentMonthReport] =
     useState<ReportBoxMonthly>();
+  const [currentYearReport, setCurrentYearReport] = useState<YearReportType>();
 
   const searchParams = useSearchParams();
   const year = Number(searchParams.get("year") ?? persianDate.year);
@@ -34,6 +41,18 @@ export default function ReportBoxList() {
     setCurrentMonthReport(
       reports?.find((item) => item.month == persianDate.month)
     );
+
+    const clcYearReportItem = reports?.reduce(
+      (acc, item) => {
+        acc.totalIncome += item.totalIncome;
+        acc.totalExpense += item.totalExpense;
+        acc.savings += item.savings;
+        return acc;
+      },
+      { totalIncome: 0, totalExpense: 0, savings: 0 }
+    );
+
+    setCurrentYearReport(clcYearReportItem);
   }, [reports]);
 
   return (
@@ -53,26 +72,26 @@ export default function ReportBoxList() {
       <ReportBox
         name={"مانده"}
         icon={"save-month"}
-        price={currentMonthReport?.totalExpense}
+        price={currentMonthReport?.savings}
         period={"ماهانه"}
       />
 
       <ReportBox
         name={"درامد"}
         icon={"income-year"}
-        price={100000}
+        price={currentYearReport?.totalIncome}
         period={"سالانه"}
       />
       <ReportBox
         name={"هزینه"}
         icon={"expense-year"}
-        price={100000}
+        price={currentYearReport?.totalExpense}
         period={"سالانه"}
       />
       <ReportBox
         name={"مانده"}
         icon={"save-year"}
-        price={100000}
+        price={currentYearReport?.savings}
         period={"سالانه"}
       />
     </div>
