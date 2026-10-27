@@ -5,9 +5,16 @@ export type ReportBoxMonthly = {
   savings: number;
 };
 
-export type ReportWeekly = {
-  week: string;
-  totalIncome: string;
-};
+export type ReportWeekly =
+  | {
+      week: string;
+      totalIncome: number;
+      totalExpense?: never;
+    }
+  | {
+      week: string;
+      totalExpense: number;
+      totalIncome?: never;
+    };
 
 

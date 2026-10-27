@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import CustomSelectBox from "./CustomSelectBox";
 import { useSearchParams } from "next/navigation";
 import { useReportsWeekly } from "@/hooks/useReportsWeekly";
+import { WeeklyChartBar } from "./WeeklyChartBar";
 
 type SwitchBtn = "income" | "expense";
 type CurrentDateType = { year: string; month: string };
@@ -11,7 +12,7 @@ export default function ReportWeeklyChart() {
   const [switchBtnReportType, setSwitchBtnReportType] =
     useState<SwitchBtn>("income");
 
-    console.log(switchBtnReportType)
+  console.log(switchBtnReportType);
 
   const [persianDate, setPersianDate] = useState<CurrentDateType>({
     year: "",
@@ -25,9 +26,11 @@ export default function ReportWeeklyChart() {
   const year = Number(searchParams.get("year") ?? persianDate.year);
   const month = Number(searchParams.get("month") ?? monthSelectedWeeklyChart);
 
-  const { data: reportsWeekly } = useReportsWeekly(switchBtnReportType , year , month);
-
-  console.log(reportsWeekly , 'wtf')
+  const { data: reportsWeekly } = useReportsWeekly(
+    switchBtnReportType,
+    year,
+    month
+  );
 
   //get current month & year (persain date)
   useEffect(() => {
@@ -79,7 +82,9 @@ export default function ReportWeeklyChart() {
           />
         </div>
       </div>
-      <div className=""></div>
+      <div className="w-4/5 mt-8">
+        <WeeklyChartBar data={reportsWeekly} />
+      </div>
     </div>
   );
 }
