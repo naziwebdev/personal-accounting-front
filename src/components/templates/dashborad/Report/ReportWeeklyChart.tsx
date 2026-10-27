@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import CustomSelectBox from "./CustomSelectBox";
+import { useSearchParams } from "next/navigation";
+import { useReportsWeekly } from "@/hooks/useReportsWeekly";
 
 type SwitchBtn = "income" | "expense";
 type CurrentDateType = { year: string; month: string };
@@ -9,6 +11,8 @@ export default function ReportWeeklyChart() {
   const [switchBtnReportType, setSwitchBtnReportType] =
     useState<SwitchBtn>("income");
 
+    console.log(switchBtnReportType)
+
   const [persianDate, setPersianDate] = useState<CurrentDateType>({
     year: "",
     month: "",
@@ -16,6 +20,14 @@ export default function ReportWeeklyChart() {
 
   const [monthSelectedWeeklyChart, setMonthSelectedWeeklyChart] =
     useState<string>("");
+
+  const searchParams = useSearchParams();
+  const year = Number(searchParams.get("year") ?? persianDate.year);
+  const month = Number(searchParams.get("month") ?? monthSelectedWeeklyChart);
+
+  const { data: reportsWeekly } = useReportsWeekly(switchBtnReportType , year , month);
+
+  console.log(reportsWeekly , 'wtf')
 
   //get current month & year (persain date)
   useEffect(() => {
@@ -33,7 +45,7 @@ export default function ReportWeeklyChart() {
 
     setPersianDate({ year, month });
     setMonthSelectedWeeklyChart(month);
-  }, []);
+  }, [switchBtnReportType]);
 
   return (
     <div className="flex flex-col items-center mt-12">
@@ -67,6 +79,7 @@ export default function ReportWeeklyChart() {
           />
         </div>
       </div>
+      <div className=""></div>
     </div>
   );
 }

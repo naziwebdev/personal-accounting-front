@@ -5,4 +5,9 @@ export type ReportBoxMonthly = {
   savings: number;
 };
 
+export type ReportWeekly = {
+  week: string;
+  totalIncome: string;
+};
+
 

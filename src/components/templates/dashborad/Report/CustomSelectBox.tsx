@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { IconDownArrow } from "@/components/icons/IconDownAroow";
 import type { Dispatch, SetStateAction } from "react";
 
