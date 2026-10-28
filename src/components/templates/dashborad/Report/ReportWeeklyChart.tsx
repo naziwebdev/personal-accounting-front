@@ -58,7 +58,7 @@ export default function ReportWeeklyChart() {
             onClick={() => setSwitchBtnReportType("income")}
             className={`cursor-pointer py-2 w-1/2  rounded-full ${
               switchBtnReportType === "income"
-                ? "bg-[var(--color-secondary)] text-white"
+                ? "bg-[var(--color-primary)] text-white"
                 : ""
             }`}
           >
@@ -68,7 +68,7 @@ export default function ReportWeeklyChart() {
             onClick={() => setSwitchBtnReportType("expense")}
             className={` cursor-pointer py-2 flex-1 rounded-full ${
               switchBtnReportType === "expense"
-                ? "bg-[var(--color-primary)] text-white"
+                ? "bg-[var(--color-secondary)] text-white"
                 : ""
             }`}
           >
@@ -82,7 +82,7 @@ export default function ReportWeeklyChart() {
           />
         </div>
       </div>
-      <div className="w-4/5 mt-8">
+      <div className="w-4/5 h-[400px] mt-8 bg-white p-4 rounded-xl shadow-xl">
         <WeeklyChartBar data={reportsWeekly} />
       </div>
     </div>

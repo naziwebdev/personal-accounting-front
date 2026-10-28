@@ -7,9 +7,10 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
+  LabelList,
   ResponsiveContainer,
 } from "recharts";
+import type { LabelProps } from "recharts";
 import { ReportWeekly } from "@/types/report";
 
 type WeeklyChartBarProps = { data: ReportWeekly[] | undefined };
@@ -39,8 +40,92 @@ export const WeeklyChartBar = ({ data }: WeeklyChartBarProps) => {
 
     return `هفته: ${formatPersianNumber(weekNumber)}`;
   };
+
+  const totalPrice =
+    data?.reduce((sum, item) => {
+      return sum + Number(item[dataKey] ?? 0);
+    }, 0) ?? 0;
+  // Custom Y-axis tick
+  const renderYAxisTick = (props: {
+    x?: number;
+    y?: number;
+    payload?: { value: number };
+  }) => {
+    const { x = 0, y = 0, payload } = props;
+
+    return (
+      <text
+        x={x - 8}
+        y={y}
+        textAnchor="end"
+        dominantBaseline="middle"
+        fill="#222"
+        fontSize={16}
+        style={{ direction: "ltr" }}
+      >
+        {formatPersianNumber(payload?.value)}
+      </text>
+    );
+  };
+
+  // Custom price label
+  const renderPriceLabel = (props: LabelProps) => {
+    const { x, y, width, value } = props;
+
+    if (
+      typeof x !== "number" ||
+      typeof y !== "number" ||
+      typeof width !== "number" ||
+      value == null
+    ) {
+      return null;
+    }
+
+    const label = formatPersianNumber(value);
+    const labelWidth = 110;
+    const labelHeight = 28;
+
+    const centerX = x + width / 2;
+    const labelY = y - labelHeight - 8;
+
+    return (
+      <g>
+        <rect
+          x={centerX - labelWidth / 2}
+          y={labelY}
+          width={labelWidth}
+          height={labelHeight}
+          rx={8}
+          fill="#000"
+          stroke="#000"
+          strokeWidth={1}
+        />
+
+        <text
+          x={centerX}
+          y={labelY + labelHeight / 2}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fill="#fff"
+          fontSize={12}
+          fontWeight={600}
+        >
+          {label} تومان
+        </text>
+      </g>
+    );
+  };
+
   return (
-    <div className="h-[300px] w-full min-w-0">
+    <div className="h-[310px] w-full min-w-0 pb-4 ">
+      <div className="flex flex-col gap-y-3.5">
+        <p className="text-xl text-zinc-600">
+          مجموع {dataKey === "totalIncome" ? " درامد" : "هزینه "} ماه
+        </p>
+        <p className="text-2xl pr-10">
+          {totalPrice.toLocaleString("fa-IR")} تومان
+        </p>
+      </div>
       {chartData.length === 0 ? (
         <p>No data available</p>
       ) : (
@@ -48,16 +133,18 @@ export const WeeklyChartBar = ({ data }: WeeklyChartBarProps) => {
           <BarChart
             data={chartData}
             margin={{
-              top: 10,
+              top: 35,
               right: 10,
               left: 0,
               bottom: 5,
             }}
           >
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid horizontal={false} vertical={false} />
 
             <XAxis
               dataKey="week"
+              tick={{ fill: "#222", fontSize: 15 }}
+              tickMargin={10}
               tickFormatter={(value) => {
                 const text = String(value);
                 const match = text.match(/\d+/);
@@ -73,7 +160,13 @@ export const WeeklyChartBar = ({ data }: WeeklyChartBarProps) => {
               }}
             />
 
-            <YAxis />
+            <YAxis
+              tick={renderYAxisTick}
+              tickFormatter={(value) => formatPersianNumber(value)}
+              orientation="left"
+              width={100}
+              domain={[0, (max: number) => max * 1.15]}
+            />
 
             <Tooltip
               labelFormatter={formatWeekLabel}
@@ -83,9 +176,16 @@ export const WeeklyChartBar = ({ data }: WeeklyChartBarProps) => {
             <Bar
               dataKey={dataKey}
               name={dataKey === "totalIncome" ? "جمع درآمد" : "جمع هزینه"}
-              fill="var(--color-primary)"
+              fill={
+                dataKey === "totalIncome"
+                  ? "var(--color-primary)"
+                  : "var(--color-secondary)"
+              }
               radius={[10, 10, 0, 0]}
-            />
+              barSize={60}
+            >
+              <LabelList content={renderPriceLabel} />
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       )}
